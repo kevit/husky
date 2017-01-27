@@ -1,0 +1,527 @@
+@c this is the proposal info file
+
+This chapter describes how a fidoconfig config-file is written, which keywords
+exist and where to put the file.
+
+@menu
+* Location:: Where to put the config file
+* Syntax::   Syntax
+* Common::   Common keywords
+* HPT::      HPT (Highly Portable Tosser) keywords
+* HTick::    HTick (Husky Ticker) keywords
+* NLTools::  NLTools keywords
+* EmailPkt:: EmailPkt keywords
+* BSOpack::  BSOpack keywords
+* herp::     Husky External Request Processor keywords
+* Example::  Here is a sample config file which works for me
+@end menu
+
+@node Location, Syntax, config file, config file
+@section Config file location
+The fidoconfig library searches the config file on different locations:
+
+@table @asis
+@item linux:
+/etc/fido/config
+@item freebsd:
+/usr/local/etc/fido/config
+@item os2/win32/etc:
+in the current directory
+@end table
+
+If you compile library with huskymak.cfg, the location will be overset with
+CFGDIR parameter.
+
+Additionally you can set an enviroment variable called @code{FIDOCONFIG} which
+points to the file:
+
+@example
+set FIDOCONFIG=e:\bbs\fidoconfig\config
+
+FIDOCONFIG=~/fidoconfig/config
+export FIDOCONFIG
+@end example
+
+The config file(s) must be readable. If you plan using the autoareacreate
+feature of HPT / autofilecreate featute of HTick / etc..., the config
+file(s) must be writeable.
+
+@node Syntax, Common, Location, config file
+@section Syntax
+
+All symbols are @strong{not} case-sensitive.
+
+@{<whiteSpace>@} at the start of the line will be ignored.
+
+All keywords are evaluated as occurring, the first matching
+keyword found is valid. If there are more then one keywords of the
+same type allowed, the @strong{last} line matching the situation is
+valid. Another words: second definition overwrites the previous one.
+If no match is found, a default value will be used.
+
+"#" at the start of a line or <whiteSpace>#<whiteSpace> within the
+line starts a comment. The comment ends with the line. Comment char "#" can
+be overwritten by @code{commentChar} token.
+
+If the first word in a line is an undefined keyword, program exits
+with error message.
+
+Each keyword has to start a new line.
+
+Keyword parameters:
+@table @code
+@item <integer>
+string including integer numbers, like: @code{1234567890}
+@item <string>
+text string, optionally in double quotes.
+@item <bool>
+may be set to "1", "0", "yes", "no", "on", "off", and also without
+parameters (it means "on").
+@item <addr>
+address string like zone:net/node[.point][@@domain]@*
+example: @code{2:5000/117}
+@item <file>
+file name. path can be omitted.
+@item <path>
+only path. trailing slash may be included or not.
+@end table
+
+Note! @code{[<parameter>]} means that it can be omitted.
+
+FIDOCONFIG library can set up internal variables:
+@example
+set basedir=/home/user/fido/
+@end example
+
+@code{[OS]} variable is automatically set up for following operating systems:
+@table @asis
+@item UNIX
+All unix-like OS: Linux, *BSD, BeOS, ...
+@item OS/2
+@item WIN
+@item MSDOS
+
+@end table
+
+You can set something like:
+@example
+if [OS]==UNIX
+tearline `uptime`
+endif
+@end example
+
+Some programs can be compiled with @strong{module} variable. It can be
+used to speed up config parsing:
+
+@example
+if [module]==htick
+include /etc/ftn/fileareas
+endif
+@end example
+
+And if @strong{HPT} is running, fileareas aren't parsed because [module]==hpt.
+
+There are following modules available:
+@table @asis
+@item hpt (Highly Portable Tosser)
+@item htick (Husky Ticker)
+@item hptutil
+@item hpucode
+@end table
+
+Also @strong{external} variables can be parsed:
+@example
+autoexec.bat:
+SET VAR=myvar
+
+fidoconfig:
+if [VAR]==myvar
+...
+else
+...
+endif
+
+ifdef UNIX
+MsgBaseDir  [home]/msgbase
+endif
+@end example
+
+You can use external programs output via @code{`cmd`}. It is available
+only for UNIX & OS/2+EMX:
+@example
+Name Power Station under `uname -mrs`
+@end example
+
+List of the additional commands:@*
+set, if, if not, else, elseif, ifdef, ifndef, endif.@*
+
+You can compare with a pattern by using =~ and !~ instead of == and !=:
+@example
+if [VAR] =~ *substr*
+...
+endif
+if [VAR] !~ bla?bla*
+...
+endif
+@end example
+
+@node Common, HPT, Syntax, config file
+@section Common keywords for HUSKY-programs
+These keywords may be used by several programs. More specific keywords
+you can find in the programs' individual documentations.
+
+@menu
+* version::                     version of fidoconfig
+* name::                        your system name
+* location::                    your location
+* sysop::                       your name
+* include::                     include other files
+* address::                     your system address
+* commentChar::                 Comment character
+
+* Outbound::                    outbound path
+* FileBoxesDir::                directory where fileBoxes of links are created
+* Inbound::                     inbound path
+* tempDir::                     path for temporary files (possible memory disk)
+* logfiledir::                  path for log files
+* syslogfacility::              facility to use for syslogging
+* loglevels::                   sets level of log output
+* ScreenLogLevels::             sets level of log output to screen
+
+* seqdir::                      path for msgid sequence stamp
+* seqoutrun::                   max msgid seq outrun from current time
+
+* pack::                        definition for packer
+* unpack::                      definition for unpacker
+
+* link::                        adding a link to your config
+* linkdefaults::                start/end/destroy link's default definitions
+* aka::                         link's address
+* ouraka::                      our aka for link
+* password::                    link's default password
+* pktpwd::                      pktpassword for this link
+* ticpwd::                      ticker password for this link
+* areafixpwd::                  areafix password for this link
+* filefixpwd::                  filefix password for this link
+* bbspwd::                      bbs password for this link (online user)
+* sessionpwd::                  session password for this link
+* handle::                      nickname or handle for link
+* packer::                      default packer for link
+
+* GrpDesc::                     area group description
+* BadArea::                     definition of badarea
+* DupeArea::                    definition of dupearea
+* EchoArea::                    definition of echoarea
+* NetMailArea::                 definition of netmailarea
+* RobotsArea::                  definition of robotsarea
+* LocalArea::                   definition of the BBS message area
+* FileArea::                    definition of filearea
+* BbsArea::                     definition of the BBS file area
+* ReadOnly::                    set link(s) readonly for area(s)
+* WriteOnly::                   set link(s) writeonly for area(s)
+@end menu
+
+@node HPT, HTick, Common, config file
+@section Highly Portable Tosser keywords
+This section contains keyword-list only. Read HPT Manual for more info.
+
+@example
+@include keywords.hpt
+@end example
+
+
+@node HTick, NLTools, HPT, config file
+@section HTick (Husky Ticker) keywords
+This section contains keyword-list only. Read HTick Manual for more info.
+
+@example
+@include keywords.htick
+@end example
+
+
+@node NLTools, EmailPkt, HTick, config file
+@section NLTools keywords
+
+@menu
+* nodelistdir::                 path for nodelists
+* fidouserlist::                name of compiled fido user list file
+* nodelist::                    adding a nodelist definition
+* diffupdate::                  where nodediffs for this nodelist can be found
+* fullupdate::                  where complete updates for the nodelist are
+* defaultzone::                 specifying a zone number for a nodelist
+* nodelistformat::              is it a nodelist or a pointlist?
+* delapplieddiff::              delete applied nodediff
+@end menu
+
+@node nodelistdir, fidouserlist, NLTools, NLTools
+@subsection nodelistDir
+@table @asis
+@item Syntax:
+@code{nodelistDir <path>}
+@item Example:
+@code{nodelistDir /var/spool/fido/nodelist}
+@end table
+
+This command specifies the path where the actual nodelists are or should
+be written to. This path contains the raw nodelist (@pxref{nodelist}). Also,
+compiled nodelists like the @file{FIDOUSER.LST} will be stored here.
+
+This statement cannot be repeated.
+
+@node fidouserlist, nodelist, nodelistdir, NLTools
+@subsection fidoUserList
+@table @asis
+@item Syntax:
+@code{fidoUserList <filename>}
+@item Example:
+@code{fidoUserList fidouser.lst}
+@end table
+
+If this keyword is present, the nodelist compiler (e.g. @code{ulc}) is
+instructed to build a user list file with the given filename in the nodelist
+directory (@pxref{nodelistdir}). This is a simple text file with fixed line
+length that contains user names (nodes, points) and their corresponding node
+or pointnumbers. The file is sorted alphabetically by user name (case
+insensitive), so that it can be bsearched to implement a quick node numer
+lookup functinality. The fido user list file format is understood by
+@code{msged}, for example.
+
+@node nodelist, diffupdate, fidouserlist, NLTools
+@subsection nodelist
+@table @asis
+@item Syntax:
+@code{Nodelist <name>}
+@item Example:
+@code{Nodelist nodelist} or @code{Nodelist points24}
+@end table
+
+This statement starts a new nodelist definition. All the following
+nodelist-related stamtements change the configuration of this nodelist until
+a new @code{nodelist} statement is found.
+
+The name that you specify must match the base name (without extension and
+without pathname) of the raw, unpacked, nodelist file. The husky tools
+@code{ulc} and @code{nlupdate} math the file name case-insensitively, but
+other tools may need the exact spelling. The raw nodelist file is
+expected to reside in the nodelist directory (@pxref{nodelistdir}).
+
+@node diffupdate, fullupdate, nodelist, NLTools
+@subsection diffupdate
+@table @asis
+@item Syntax:
+@code{DiffUpdate <path_and_basname>}
+@item Example:
+@code{DiffUpdate /var/spool/filebase/nodediff/nodediff}
+@end table
+
+Here you can specify the base filename of nodelist difference files
+(nodediffs) that are used to keep the corresponding nodelist up to date. The
+argument to the DiffUpdate is the full file name with path of a difference
+file, without the file extension. For example, if you have a file area at
+@file{/var/spool/filebase/24000}, where your ticker places the updates for
+the German Pointlist, and those update files are called @file{points24.a26},
+@file{points24.a33}, and so on, you would use
+
+@example
+DiffUpdate /var/spool/filebase/24000/points24
+@end example
+
+The @code{Diffupdate} keyword is used by @code{nlupdate}, for example. The
+nodelist updater will unpack the difference file (if it is archived, of
+course, unpacked diffs are also supported), apply the diff to the
+corresponding nodelist, and delete the temporary unpacked diff again.
+
+
+@node fullupdate, defaultzone, diffupdate, NLTools
+@subsection fullupdate
+@table @asis
+@item Syntax:
+@code{FullUpdate <path_and_basname>}
+@item Example:
+@code{FullUpdate /var/spool/filebase/nodelist/nodelist}
+@end table
+
+This statement works like @code{DiffUpdate} (@pxref{diffupdate}). The
+difference is that here you don't specify the location of a nodelist
+difference file, but the locations where complete nodelist files/archives can
+be found. Some othernets do not (regularly) distribute a nodediff file, but
+just hatch a new nodelist every few weeks. In this case, you need the
+@code{FullUpdate} statement.
+
+@node defaultzone, nodelistformat, fullupdate, NLTools
+@subsection defaultzone
+@table @asis
+@item Syntax:
+@code{DefaultZone <zone>}
+@item Example:
+@code{DefaultZone 2}
+@end table
+
+Some nodelist files do not start with a @samp{Zone} entry. This is the case
+for the German Points24 list, for example, but could also happen for
+othernets that only have one zone. In this case, you can use the
+@code{DefaultZone} keyword to specify the default zone number for all nodes
+listed in this nodelist.
+
+@node nodelistformat, delapplieddiff, defaultzone, NLTools
+@subsection nodelistformat
+@table @asis
+@item Syntax:
+@code{Nodelistformat <format>}
+@item Example:
+@example
+NodelistFormat standard
+NodelistFormat points4d
+NodelistFormat points24
+@end example
+@end table
+
+Here you can specify the format of the unpacked nodelist. The default is
+@samp{standard}; this is the normal Fidonet nodelist format. You can also
+specify @samp{points4d}, which is needed for the nodelist compiler to
+recognise a standart pointlist in 4D format or @samp{points24} for the
+German points24 format as such, so that it can see the proper 5D point
+numbers instead of the fakenet numbers.
+
+@node delapplieddiff, , nodelistformat, NLTools
+@subsection delapplieddiff
+@table @asis
+@item Syntax:
+@code{delAppliedDiff <bool>}
+@item Example:
+@code{delAppliedDiff on} or@code{delAppliedDiff off}
+@end table
+
+NLTools can delete nodediffs after applying them if you set @code{delAppliedDiff} to @code{on}.
+Default is @code{off}
+
+This token can't be repeated.
+
+@node EmailPkt, BSOpack, NLTools, config file
+@section EmailPkt keywords
+
+@menu
+Common tokens:
+* sendMailCmd::                 command line for sending file via e-mail
+
+Link definition tokens:
+* email::                       email address of this link
+* emailSubj::                   subject of email
+* emailFrom::                   sender address used for outgoing emails
+* emailEncoding::               encoding of outgoing emails
+@end menu
+
+
+@node sendMailCmd, email, EmailPkt, EmailPkt
+@subsection sendMailCmd
+@table @asis
+@item Syntax:
+@code{sendMailCmd string}
+@item Example:
+@code{sendMailCmd /usr/sbin/sendmail $a <$f}
+@end table
+
+This keyword is used to define send mail command & its parameters. Macro '$a'
+specifies position of the recipient e-mail address; macro '$f' specifies position
+of name of file with message body. If '$f' is omitted then message body will be
+taken from stdin.
+
+This statement can't be repeated.
+
+
+@node email, emailFrom, sendMailCmd, EmailPkt
+@subsection email
+@table @asis
+@item Syntax:
+@code{email <email-address>}
+@item Example:
+@code{email eddie@@ironmaiden.com}
+@end table
+
+This keyword is used to set the email-address for the link. This can
+be used to send pkts via email.
+
+This statement can only be repeated for different links.
+
+@node emailFrom, emailSubj, email, EmailPkt
+@subsection emailFrom
+@table @asis
+@item Syntax:
+@code{emailFrom <email-address>}
+@item Example:
+@code{emailFrom fred@@ironmaiden.com}
+@end table
+
+This keyword is used to set the email-address used as sender address
+for outgoing emails to this link.
+
+This statement can only be repeated for different links.
+
+@node emailSubj, emailEncoding, emailFrom, EmailPkt
+@subsection emailSubj
+@table @asis
+@item Syntax:
+@code{emailSubj <subject>}
+@item Example:
+@code{emailSubj Fido over EMail message in UUE format}
+@end table
+
+This keyword is used to set the subject for emails to and from this
+link. It may be ignored by some encodings (e.g. SEAT).
+
+This statement can only be repeated for different links.
+
+@node emailEncoding, , emailSubj, EmailPkt
+@subsection emailEncoding
+@table @asis
+@item Syntax:
+@code{emailEncoding (MIME | SEAT | UUE)}
+@item Example:
+@code{emailEncoding MIME}
+@end table
+
+This keyword is used to set the encoding for outgoing emails to this link.
+
+This statement can only be repeated for different links.
+
+
+@node BSOpack, herp, EmailPkt, config file
+@section BSOpack keywords
+This section contains keyword-list only. Read BsoPack Manual for more info.
+
+@example
+@include keywords.bp
+@end example
+
+@node herp, Example, BSOpack, config file
+@section herp keywords
+Herp is the Husky External file Request Processor. The following fidoconfig
+keywords are specific to herp. Some programs of herp, in particular
+@file{herpidx}, also use part of the @file{htick} configuration,
+i.E. filearea definitions.
+
+@menu
+* reqidxdir::                   path for herp request index files
+@end menu
+
+@node reqidxdir,,herp,herp
+@subsection reqidxdir
+@table @asis
+@item Syntax:
+@code{reqidxDir <path>}
+@item Example:
+@code{reqidxDir /var/spool/fido/reqidx}
+@end table
+
+This command specifies a subdirectory which will be used to store the request
+index generated by @file{herpidx}. This subdirectory should be writable for
+the @file{herpidx} process and at least readable for the user under which
+your mailer and @file{herp} will be run. @file{herpidx} will place various
+request index files here. The subdirectory should not be used for any other
+purposes. The index can become rather large, so plan for enough free disk space.
+
+@node Example,  , herp, config file
+@section A working sample config
+@example
+@include config
+@end example

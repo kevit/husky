@@ -1,0 +1,35 @@
+# $Id: makefile.emx,v 1.3 2003/10/17 07:40:09 andr_lukyanov Exp $
+# Makefile to build SQPACK/OS2 with gcc 3.x.x from EMX v0.9d.
+# No support for the Husky build environment.
+
+# include Husky-Makefile-Config,
+# copy this file from ../../huskybse/huskymak.cfg.emx
+include ../huskymak.cfg
+
+include makefile.inc
+
+# includes directories
+CINCL= -I$(H_DIR) -I../huskylib -I../smapi -I../fidoconf
+
+# libraries need to build binary file
+LIBS	= ../fidoconf/make/$(LIBPREFIX)fidoconfig$(LIBSUFFIX)$(_LIB) \
+	  ../smapi/make/$(LIBPREFIX)smapi$(LIBSUFFIX)$(_LIB) \
+	  ../huskylib/make/$(LIBPREFIX)husky$(LIBSUFFIX)$(_LIB)
+
+READMEFILES= ./ChangeLog ./VERSION ./HISTORY ./BUGS ./INSTALL ./COPYING
+
+default:
+	@echo Run 'make programs' to build static version of programs ($(PROGRAMS))
+	@echo Run 'make all' to build all above
+
+all:	programs
+
+programs: $(PROGRAMS)
+
+%$(_OBJ): $(SRC_DIR)%$(_C)
+	@echo Compiling $<
+	@$(CC) $(CFLAGS) $(CDEFS) $(CINCL) $(OPTCFLAGS) $<
+
+$(PROGRAMS): $(OBJS)
+	@echo Create $(PROGRAMS)
+	@$(CC) $(STRIP) $(CFLAGS) $(CDEFS) $(CINCL) $(EXENAMEFLAG) $@ $< $(LIBS)

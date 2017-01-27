@@ -1,0 +1,24 @@
+# makefile to build OS/2 32bit executable by Watcom C
+
+CC      = wcc386
+LINK    = wlink
+
+CFLAGS  = -i=.. -oneatx -zq -bt=os2v2
+LFLAGS  = system os2v2
+
+all: sqpack.exe
+
+sqpack.obj : sqpack.c
+  @echo compiling sqpack
+  $(CC) $(CFLAGS) sqpack.c
+
+sqpack.exe: sqpack.obj
+  @echo linking sqpack
+  $(LINK) $(LFLAGS) FILE sqpack.obj Library ..\smapi\smapiwco.lib, ..\fidoconf\fconfwco.lib NAME sqpack.exe
+
+clean:
+	del *.obj *.bak
+
+distclean: clean
+	del *.exe
+

@@ -1,0 +1,51 @@
+# Makefile for DEC Unix with vendor Cxx Version 6.0
+
+# include Husky-Makefile-Config
+include ../huskymak.cfg
+
+CC=cxx
+CFLAGS=
+CDEFS=	-DUNIX -DCONFIGDIR=\"lxtrack.cfg\" -DIS_NOTGCC
+
+# -g cannot be combined with -O3, so rebuild if you make a release!
+ifeq ($(DEBUG), 1)
+  COPT=-g -I$(INCDIR)
+else
+  COPT=-s -I$(INCDIR)
+endif
+
+LOPT=-L$(LIBDIR)
+
+TARGET= lxtrack
+
+SMAPI=smapiunix
+
+OBJS=	action.o  \
+	area.o    \
+	config.o  \
+	ftnaddr.o \
+	global.o  \
+	log.o     \
+	lxtrack.o \
+	mask.o    \
+	msg.o     \
+	pkt.o     \
+        strsep.o  
+
+all: lxtrack
+
+.cc.o:
+	$(CC) $(CFLAGS) $(CDEFS) $(LOPT) $(COPT) -c $< -o $@
+
+lxtrack: $(OBJS)
+	$(CC) $(OBJS) $(LOPT) $(COPT) -l$(SMAPI) -o lxtrack
+
+clean:
+	rm *.o core
+
+distclean: clean
+	rm lxtrack
+
+install: lxtrack
+	install $(IBOPT) lxtrack $(BINDIR)
+

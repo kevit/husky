@@ -1,0 +1,44 @@
+# $Id: makefile.cyg,v 1.20 2005/12/20 05:23:46 nick_voronin Exp $
+# Makefile to build HTICK/win32 with Mingw32 from Cygwin.
+# No support for the Husky build environment.
+
+# include Husky-Makefile-Config,
+# copy this file from ../../huskybse/huskymak.cfg.cyg
+include ../../huskymak.cfg
+
+include ../makefile.inc
+
+# Uncomment one of these lines if you want to enable hardlinking
+# on NTFS 4.0 or 5.0
+#CDEFS	+= -D_WIN32_WINNT=0x0400
+#CDEFS	+= -D_WIN32_WINNT=0x0500
+
+# includes directories
+CINCL	= -I$(H_DIR) -I../../huskylib -I../../smapi -I../../fidoconf -I../../areafix
+
+# libraries need to build binary file
+LIBS	= ../../areafix/make/$(LIBPREFIX)areafix$(LIBSUFFIX)$(_LIB) \
+	  ../../fidoconf/make/$(LIBPREFIX)fidoconfig$(LIBSUFFIX)$(_LIB) \
+	  ../../smapi/make/$(LIBPREFIX)smapi$(LIBSUFFIX)$(_LIB) \
+	  ../../huskylib/make/$(LIBPREFIX)husky$(LIBSUFFIX)$(_LIB)
+
+READMEFILES= ../ChangeLog ../COPYING ../CREDITS ../HISTORY ../INSTALL \
+	     ../README ../TODO ../VERSION
+
+default:
+	@echo
+	@echo Run \'make programs\' to build static version of programs \($(PROGRAMS)\)
+	@echo
+	@echo Run \'make all\' to build all above
+
+all:	programs
+
+programs: $(PROGRAMS)
+
+%$(_OBJ): $(_SRC_DIR)%$(_C)
+	@echo Compiling $<
+	@$(CC) $(CFLAGS) $(CDEFS) $(CINCL) $(OPTCFLAGS) $<
+
+$(PROGRAMS): $(OBJS)
+	@echo Create $(PROGRAMS)
+	@$(CC) $(STRIP) $(CFLAGS) $(CDEFS) $(CINCL) $(EXENAMEFLAG) $@ $^ $(LIBS)

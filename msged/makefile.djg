@@ -1,0 +1,99 @@
+# Legacy Makefile for DOS / DJGPP
+# No support for the Husky build environment.
+
+include ../huskybse/huskymak.cfg.djg
+
+CC=	$(CROSSPREFIX)gcc
+CFLAGS= -Wall -I../smapi -I.. -I../huskylib -I../fidoconf
+CDEFS=	-D__FLAT__ -DUSE_MSGAPI -DNOSEMAPHORES
+COPT=	-O3 -fomit-frame-pointer -fstrength-reduce
+LFLAGS= -L../smapi -L../huskylib -L../fidoconf -s
+
+TARGET=	msged32.exe
+MSGAPI	= ../areafix/make/$(LIBPREFIX)areafix$(LIBSUFFIX)$(_LIB) \
+	  ../fidoconf/make/$(LIBPREFIX)fconf$(LIBSUFFIX)$(_LIB) \
+	  ../smapi/make/$(LIBPREFIX)smapi$(LIBSUFFIX)$(_LIB) \
+	  ../huskylib/make/$(LIBPREFIX)husky$(LIBSUFFIX)$(_LIB)
+
+
+#If you don't have ncurses, try this, but be aware that the Linux termcap
+#database has many bugs. For example, you will lose pseudographics in the
+#xterm this way.
+#TERMCAP=-ltermcap
+
+objs=   addr.o     \
+	areas.o    \
+	bmg.o      \
+	charset.o  \
+	config.o   \
+	control.o  \
+	curses.o   \
+	date.o     \
+	dialogs.o  \
+	dirute.o   \
+	dlgbox.o   \
+	dlist.o    \
+	dosasm.o   \
+	echotoss.o \
+	environ.o  \
+	fconf.o    \
+	fecfg145.o \
+	fido.o     \
+	filedlg.o  \
+	flags.o    \
+	freq.o     \
+	gestr120.o \
+	getopts.o  \
+	group.o    \
+	help.o     \
+	helpcmp.o  \
+	helpinfo.o \
+	ibmscrn.o  \
+	init.o     \
+	keycode.o  \
+	list.o     \
+	maintmsg.o \
+	makemsgn.o \
+	memextra.o \
+	menu.o     \
+	misc.o     \
+	mnu.o      \
+	mouse4.o   \
+	msg.o      \
+	msged.o    \
+	mxbt.o     \
+	normalc.o  \
+	nshow.o    \
+	quick.o    \
+	quote.o    \
+	readmail.o \
+	screen.o   \
+	strextra.o \
+	system.o   \
+	template.o \
+	textfile.o \
+	timezone.o \
+	userlist.o \
+	vio.o      \
+	vsev.o     \
+	vsevops.o  \
+	win.o      \
+	wrap.o
+
+all: $(TARGET)
+
+.c.o:
+	@echo Compiling $<
+	@$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
+
+$(TARGET): $(objs)
+	@echo Create $(TARGET)
+	@$(CC) $(COPT) $(LFLAGS) -o $(TARGET) $(objs) $(MSGAPI)
+
+clean:
+	-del *.o
+	-del *~
+
+distclean: clean
+	-del $(TARGET)
+

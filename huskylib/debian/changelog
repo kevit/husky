@@ -1,0 +1,41 @@
+huskylib (1.9-20090324-1) unstable; urgency=low
+
+  * New CVS version
+  * fix build
+
+ -- Stas Degteff <stas_degteff@users.sourceforge.net>  Tue, 24 Mar 2009 00:51:52 +0500
+
+huskylib (1.9-20070915-1) unstable; urgency=low
+
+  * New CVS version
+  * Corrected a typo in libhusky1.shlibs
+
+ -- Stanislav Maslovski <stanislav.maslovski@gmail.com>  Sat, 15 Sep 2007 19:43:53 +0400
+
+huskylib (1.9-20030317-1) unstable; urgency=low
+
+  * New cvs version
+  * Update version number: libhusky0->libhusky1
+  * Ship gnmsgid program with debian package
+
+ -- Pavel Andreew <pavel@collage.etel.ru>  Mon, 17 Mar 2003 12:01:58 +0500
+
+huskylib (0.1-20030311-1) unstable; urgency=low
+
+  * New cvs version
+
+ -- Pavel Andreew <pavel@collage.etel.ru>  Tue, 11 Mar 2003 14:22:31 +0500
+
+huskylib (0.1-20030305-1) unstable; urgency=low
+
+  * New cvs version
+  * Depends for new huskybase (>> 2.0-0)
+
+ -- Pavel Andreew <pavel@collage.etel.ru>  Wed,  5 Mar 2003 21:06:36 +0500
+
+huskylib (0.1-20030304-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Pavel Andreew <pavel@collage.etel.ru>  Tue,  4 Mar 2003 11:41:30 +0500
+

@@ -1,0 +1,22 @@
+# $Id: procmailrc,v 1.6 2002/10/28 09:10:45 stas_degteff Exp $
+#
+# Sample .procmailrc file for calling emailpkt/hereceive to automatically
+# receive FTN packets via email.
+# Copy and rename it to ~/.procmailrc
+
+# It is a good idea to have a log when something goes wrong
+
+LOGFILE=/home/fido/logs/procmail.log
+
+# You must declare here the full path to the alternate config file if you
+# want to use it.
+
+#FIDOCONFIG=/usr/local/etc/fido/config
+
+# Here's the main thing.
+# Of course, you should change this regexp for one that suits you. See
+# procmail man page for details.
+
+:0 H
+* ^Subject: FTN Mail Transport.*
+| /usr/local/bin/hereceive -q

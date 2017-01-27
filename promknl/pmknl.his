@@ -1,0 +1,36 @@
+History of ProMkNL:
+(- note, + added, * fixed)
+
+Version 0.9beta3:
+- first beta-release
+
+Version 0.9beta4
+* some fixes
+- ignoring EOF in UPDs
+- ignoring empty lines in UPDs
+
+Version 0.9beta5
+* really ignoring EOF in UPDs (previously ignored ESC instead)
++ SkipComments skips comments in UPDs
+
+Version 0.9beta6
+* lines with only a semicolon (and not even a space after it) are now
+  correctly identified as comments
+
+Version 0.9beta7
+* uses CRLF as line ending for outgoing UPDs also under Linux
++ added flags Z19, V90C, V90S, X2C, X2S, X75, V110H, V110L, ISDN, V34+
++ setting permissions of created batch to 755 (rwxr-xr-x)
+
+----- cvs ci ------
+Thu Oct 16 13:40:00 MET DST 1999
+sms:
+- reorganized Makefiles, please read README.Makefiles in the husky-common
+  package!
+
+Version 0.9beta8
++ added flags V120H, V120L
+
+Version 0.9beta9
+- allow absolute path for UPD-files
+

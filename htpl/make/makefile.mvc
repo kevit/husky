@@ -1,0 +1,81 @@
+# $Id: makefile.mvc,v 1.2 2004/02/13 20:16:07 andrew_ladutsko Exp $
+#
+# Microsoft Visual C++ Makefile for build static program(s)
+# No support for the Husky build environment.
+#
+# Tested on MS Visual C 6.0
+#
+include makefile.inc
+
+## programs ##
+
+CC	= cl
+AR	= lib
+LINK	= link
+RANLIB	=
+RM	= del
+
+## file suffixes ##
+_C	= .c
+_OBJ	= .obj
+_LIB	= .lib
+_EXE	= .exe
+_DLL	= .dll
+_EXP	= .exp
+_ILK	= .ilk
+_PDB	= .pdb
+
+## program options ##
+CFLAGS=-nologo -Zp1
+CINCL = -I$(H_DIR) -I..\..\huskylib
+LFLAGS= /link /opt:nowin98
+CDEFS =-D__NT__ -D_CONSOLE
+COPT  = -Ob2
+# DLL additional
+CFLAGS_DLL= -D_MAKE_DLL -MD
+LFLAGS_DLL= msvcrt.lib Kernel32.lib /nologo /opt:nowin98 /dll /nodefaultlib /implib:$(TARGETLIB)
+
+EXENAMEFLAG=-Fe
+
+# List of HUSKY libraries required to build binary file(s)
+LIBS	= ..\..\huskylib\make\huskymvc.lib
+
+default:
+	@echo Run 'make static' to build static version ($(TARGETLIB))
+	@echo Run 'make dll' to build dynamic version ($(TARGETDLL))
+	@echo Run 'make programs' to build static version ($(TARGETLIB)) and programs
+	@echo Run 'make dllprograms' to build dynamic version ($(TARGETDLL)) and programs
+
+static: $(TARGETLIB)
+programs: $(TARGETLIB) checktpl
+
+dll: $(TARGETDLL)
+dllprograms: $(TARGETDLL) checktpldll
+
+{$(_SRC_DIR)}.c$(_OBJ):
+	@$(CC) $(CFLAGS) $(CINCL) $(CDEFS) $(COPT) -c $<
+
+$(TARGETLIB): $(OBJS)
+	@echo Create $@...
+	@$(AR) /out:$(LIBNAME)$(_LIB) $(OBJS)
+
+$(TARGETDLL):
+	!$(MAKE) -f makefile.mvc CFLAGS="$(CFLAGS) $(CFLAGS_DLL)" $(OBJS)
+	@$(LINK) $(LFLAGS_DLL) /out:$(TARGETDLL) $(OBJS) $(LIBS)
+
+checktpl:
+	@$(CC) $(CFLAGS) $(CINCL) $(CDEFS) $(EXENAMEFLAG)checktpl.exe $(COPT) $(_SRC_DIR)checktpl.c $(LFLAGS) $(LIBS) $(TARGETLIB)
+
+checktpldll:
+	@$(CC) $(CFLAGS) $(CFLAGS_DLL) $(CINCL) $(CDEFS) $(EXENAMEFLAG)checktpl.exe $(COPT) $(_SRC_DIR)checktpl.c $(LFLAGS) $(LIBS) $(TARGETLIB)
+
+clean:
+	-$(RM) $(RMOPT) *$(_OBJ)
+	-$(RM) $(RMOPT) *$(_ILK)
+	-$(RM) $(RMOPT) *$(_PDB)
+
+distclean: clean
+	-$(RM) $(RMOPT) $(TARGETLIB)
+	-$(RM) $(RMOPT) $(TARGETDLL)
+	-$(RM) $(RMOPT) *$(_EXP)
+	-$(RM) $(RMOPT) *$(_EXE)

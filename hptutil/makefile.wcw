@@ -1,0 +1,34 @@
+# $Id: makefile.wcw,v 1.9 2002/12/03 15:28:19 stas_degteff Exp $
+# Makefile for Watcom C (Win32)
+#
+# Predefines: __WATCOMC__, __NT__
+
+LIBS    = ..\smapi\smapiwcw.lib ..\fidoconf\fconfwcw.lib
+TARGET  = hptutil.exe
+
+CC      = wcl386
+LINK    = wlink
+RM      = del
+RMOPT   =
+SRC     = src\
+OBJ     = .obj
+EXE     = .exe
+
+COPTS   = -zq -wx -bt=nt -ih;.. -oneatx -5 -fpi87 -c
+CDEFS   =
+LOPTS   = -bt=nt -l=nt
+TARGETFLAG = -fe=
+
+SYMBOLIC= .SYMBOLIC
+
+.DEFAULT
+	@%null
+
+!include makefile.inc
+
+
+.c :       $(SRC)
+.c$(OBJ) :
+	$(CC) $(COPTS) $(CDEFS) $<
+
+clean : commonclean  $(SYMBOLIC)

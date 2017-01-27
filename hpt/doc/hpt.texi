@@ -1,0 +1,2787 @@
+\input texinfo   @c -*-texinfo-*-
+
+@c %**start of header
+@c $Id: hpt.texi,v 1.189 2015/12/01 23:27:00 grsf Exp $
+@c adopted from msged.texi, written by Tobias Ernst
+@setfilename hpt.info
+@set HPT HPT
+@set MSGED MsgEd-TE
+@set VERSION 1.9
+@settitle @value{HPT} @value{VERSION} - Highly Portable Tosser
+@setchapternewpage odd
+@c %**end of header
+
+@titlepage
+@title @value{HPT} @value{VERSION} manual
+@subtitle Highly Portable Tosser
+@author Matthias Tichy @@ 2:2432/645 (1997 - 1999)
+@author Max Levenkov @@ 2:5000/117 (1999 - 2002)
+@page
+@c{empty page to get the page numbering right}
+@end titlepage
+
+@contents
+
+@ifinfo
+@dircategory Fidonet Software
+@direntry
+* HPT: (hpt).               HPT is the fidonet tosser
+@end direntry
+@end ifinfo
+
+@iftex
+@parindent=0pt
+@end iftex
+@iftex
+@afourpaper
+@end iftex
+
+@node Top, Overview, (dir), (dir)
+@top @value{HPT}
+This document describes @value{HPT} @value{VERSION}, a Fidonet Message
+Tosser for OS/2, Windows, BeOS and Unix.
+
+@value{HPT} is based on FIDOCONFIG library, so read documentation of
+FIDOCONFIG about location of config file, keywords ideology and about
+majority of the keywords,
+@xref{Top, Fidoconfig Manual, , fidoconfig, Fidoconfig manual}.
+
+@menu
+* Overview::                    What is @value{HPT}?
+* Installation::                Installation. @emph{Read this!}
+* Configuration Reference::     Explanation of the configuration file.
+* Advanced Concepts::           Advanced features and concepts.
+* Keyword Index::               Configuration File Keywords Index
+@end menu
+
+@node Overview, Installation, Top, Top
+@chapter An Overview on @value{HPT}
+
+@value{HPT} is a Fidonet message tosser and packer with areafix, written
+by Matthias Tichy, 2:2432/645@@fidonet. Now project is being supported by
+Max Levenkov, 2:5000/117@@fidonet and Husky Development Team.
+
+Features of @value{HPT}:
+@enumerate
+@item tossing packets of 2, 2.0 & 2+ types
+@item supporting Msg, Squish and Jam message bases
+@item posting to net & echo areas
+@item areafix (on the fly, from command line, limit for areas...)
+@item autocreate on the fly
+@item forward requests
+@item pause and autopause for links
+@item linking net & echo areas
+@item carbon copy
+@item groups & levels for personal and public access to echo areas
+@item powerful dupe checker
+@item link defaults
+@end enumerate
+
+The advantages of @value{HPT} are:
+
+@enumerate
+@item Open Source (GPL)
+@item many supported platforms & operating systems
+@item quick bug fixing
+@end enumerate
+
+The limitations of @value{HPT} is:
+
+@enumerate
+@item OPUS messagebase (type MSG) is limited to 65536 messages, this is SMAPI
+implementation limit;
+@item PKT password is limited to 8 characters, this is PKT 2+ limit.
+@end enumerate
+
+
+@node Installation, Configuration Reference, Overview, Top
+@chapter Installation Procedures and Release Notes
+This chapter provides you with information that is necessary to successfully
+install and use @value{HPT}.
+
+I suppose, that you already has compiled binaries. If not - read "Download"
+or "Compile the Source Code" chapters.
+
+@enumerate
+@item Read FIDOCONFIG documentation about location of config-file
+and majority of the configuration statements.
+@item Copy sample config files to config directory
+@item Edit config files for your purposes
+@item Run @code{tparser} from FIDOCONFIG package to test your config
+(read about @code{PublicGroup} or @code{AccessGrp} if you want to use
+groups for @code{EchoAreas})
+@item It is simply, isn't it? Enjoy! :-)
+@end enumerate
+
+@menu
+* Download::            Download the Source Code & Binary Files
+* Compiling::           How to compile the source code
+* Support::             Support, Contacting the Author, Reporting Bugs, Contributing Code
+* Credits::             Credits
+@end menu
+
+@node Download, Compiling, Installation, Installation
+@section Download the Source Code & Binary Files
+
+@table @asis
+@item Main page - @url{http://husky.sourceforge.net/}
+@item Latest win32 binaries - @url{http://elfy.nv.googlepages.com/}
+@end table
+
+@node Compiling, Support, Download, Installation
+@section Compiling the Source Code
+
+1. The smapi and fidoconf packages are required for hpt.
+
+2. Put the fidoconfig and smapi packages in the directory where the
+   other packages of fido linux reside:
+
+@table @asis
+@item /usr/src/packages/
+@item -> smapi/
+@item -> hpt/
+@item -> fidoconfig/
+@end table
+
+3. Compile and install smapi and fidoconf packages. Use "Makefile" for
+   dynamic executables and makefile.lnx (or what you need) for static
+   ones.
+
+4. Compile and install hpt:
+@table @asis
+@item $ make
+@item $ make install
+@end table
+You should use the _same_ makefiles in smapi, fidoconf and hpt.
+
+@node Support, Credits, Compiling, Installation
+@section Support, Contacting the Author, Reporting Bugs, Contributing Code
+
+There are numerous reasons why you might wish to establish contact with me,
+the author of @value{HPT}.
+
+@enumerate
+@item
+You have decided to use @value{HPT} on a regular basis. In this case,
+please do send me an e-mail at the address listed below. How much time I will
+spend on developing @value{HPT} in the future will heavily depend on the
+number of mails I receive from users that tell me that they do use
+@value{HPT}.
+
+@item
+You have a general questions on how to configure or on how to use a certain
+feature of @value{HPT}. In other words, you need support. In this case,
+you'd best post your question to one of the following echos:
+
+@table @code
+@item FIDOSOFT.HUSKY
+The international Husky conference. English is the preferred language here.
+@item RU.HUSKY
+This Russian echo covers Husky Project. I monitor it regularly.
+@item RU.ECHOPROCESSORS
+Russian talks about echoprocessors. I monitor it regularly.
+@end table
+
+If you do not have access to any of these echos, you may of course also
+contact me via netmail or e-mail at the addresses listed below.
+
+@item
+You want to report a bug. There are two sorts of bugs:
+
+@enumerate a
+@item Normal bugs.
+You think that a certain function of @value{HPT} does not work as expected,
+e.g. it is producing garbage, or doing strange things, or similar. In this
+case, either post to the echos listed above, or contact me via
+netmail. Please do supply all information that is necessary to understand
+your problem.
+
+@item Fatal bugs.
+A fatal bug occurs if @value{HPT} crashes. Depending on your operating
+system, the symptom might be a core dump, or a SYS 3175, or a general
+protection fault, or a system lockup, or a spontaneous reboot. I do consider
+a crash untolerable. No matter how stupid things you do, you should not be
+able to crash @value{HPT}.
+
+If you are an experienced user and get core dump, you can send me gdb
+report. If you have a crash, locate @file{core} file that has been
+generated. Then run $ gdb hpt core, type where. @value{HPT} must be
+compiled with debug information (DEBUG=1 in @file{huskymak.cfg} file).
+Then send report to address below.
+
+If you are running any other binary version (like Windows), you will not
+get a core file on a crash. Write down as much information as you can,
+try to find a way to reproduce the crash and contact me at the addresses
+below.
+@end enumerate
+
+@item You want to contribute to @value{HPT}.
+If you are a programmer and have fixed a problem in @value{MSGED} on your
+own, please submit your changes to me. The preferred way for doing this is to
+send me a difference file in GNU diff format (with -c parameter). Your
+work will be highly appreciated and honored in an appropriate place. If
+you want to regularly work on @value{HPT}, we also have a CVS server
+online that you can have access to if you like.
+
+If you want to write a new feature for @value{HPT}, please contact me
+beforehand to avoid that we do duplicate work. Again, I will appreciate and
+honor eny efforts done by you. Please note that for writing a @value{HPT}
+enhancement, you should be familiar with C. Also, @value{HPT} uses a
+special indentation style throughout the source code, that I would like
+you to adhere to.
+@end enumerate
+
+So here are my addresses if you want to get in contact with me:
+
+@itemize @bullet
+@item Fidonet:
+Max Levenkov @ 2:5000/117
+
+@item e-mail:
+sackett@@mail.ru
+
+@end itemize
+
+@node Credits,  , Support, Installation
+@section Credits
+
+Thanks to:
+
+@enumerate
+@item Matthias Tichy (basic code)
+@item Max Levenkov (areafix, group code, carbon copy, code clean up & speed up and more)
+@item Tobias Ernst (some features, stable releases, cvs & www support)
+@item Sacha M. Silbe (features, makefiles)
+@item Kolya Nesterov (unpack, post, link)
+@item Fedor Lizunkov (areafix, autocreate reports, group code, JAM code in SMAPI)
+@item Serguei Revtov (win32 version support, hptlink, features & good patches)
+@item Alexander Vernigora (dupe detection)
+@item Pavel Gulchouk (Perl support, JAM & link hacking)
+@item Alex Semenyaka (netmailExtern, processPkt)
+@item Alex Bronin (win32 patches)
+@item Nikolay Nestyurkin (makefiles)
+@item Lev Serebryakov (new %list)
+@item ... and all other people (sorry, if I've forget somebody)
+@end enumerate
+P.S. all this people make bug fixes, so I don't mention it.
+
+@node Configuration Reference, Advanced Concepts, Installation, Top
+@chapter @value{HPT} @value{VERSION} Configuration Reference
+
+@value{HPT} is based on FIDOCONFIG library, so read documentation of
+FIDOCONFIG about location of config file, keywords ideology and about
+majority of the keywords,
+@xref{Top, Fidoconfig Manual, , fidoconfig, Fidoconfig manual}.
+
+@menu
+* Using config::                Notes about fidoconfig usage in hpt
+* Keywords::                    This chapter describes keywords
+* Files and Paths::             File & Path keywords
+* Link Keywords::               Links configuration
+* Carbon Copy::                 Carbon Copy keywords
+@end menu
+
+@node Using config, Keywords, Configuration Reference, Configuration Reference
+@section Using config
+
+Although HPT uses fidocongig, not all config statements refer to hpt. Hpt
+ignores all unused config statements.The Husky Fidonet Software project
+concept is to use one config file for all fidonet programs.
+
+
+@subsection Predefined config variables
+
+In some cases need use different values for one statement in hpt, htick
+and/or other husky programs (called @dfn{modules}). It solve using config
+variable @code{module}: hpt define the @code{module} variable with value
+@code{hpt} and you may use if-elseif-else-endif conditions statements
+sequence like as:
+
+@example
+if "[module]"=="hpt"
+  Origin   High Portable Tosser at my node
+elseif "[module]"=="htick"
+  Origin   High Portable Ticker at my node
+else
+  Origin   My node
+endif
+@end example
+
+HPT define config variable @code{version} with value set to hpt version
+like @code{MAJOR.MINOR.PATHLEVEL}, i.e. @code{@value{VERSION}.0} or
+@code{1.4.1}.
+You may use this variable too for make common config for several hpt versions.
+
+To test config for hpt only you may call tparser tool with parameters
+@code{-Dmodule=hpt} and (if need) @code{-Dversion=@value{VERSION}.0}
+(tparser included into fidoconfig package) like this:
+
+@example
+tparser -Dmodule=hpt
+tparser -Dmodule=hpt -Dversion=@value{VERSION}.0
+@end example
+
+
+@subsection Statements order
+
+Common rule for config statements order is:
+@strong{Define object before using it!}.
+
+Examples:
+@itemize
+@item
+define addresses before any link, area and carbon definitions
+@item
+define packers before any link definitions
+@item
+define links before any area and route definitions
+@item
+define links and areas before any carbon definitions
+@end itemize
+
+
+@node Keywords, Files and Paths, Using config, Configuration Reference
+@section General Keywords
+
+@value{HPT} is based on FIDOCONFIG library, so read documentation of
+FIDOCONFIG about location of config file, keywords ideology and about
+majority of the keywords,
+@xref{Top, Fidoconfig Manual, , fidoconfig, Fidoconfig manual}.
+
+@menu
+* AddToSeen::                   add addr to seen-by's
+* AfterUnpack::                 execute string after unpack arcmail bundles
+* AreafixFromPkt::              process areafix requests on the fly
+* AreasFileNameCase::           case of filenames of autocreated areas
+* AutoPassive::                 set pause for links who don't poll our system
+* BeforePack::                  execute string before pack pkt files
+* BundleNameStyle::             style of filenames of arcmail bundles
+* DefArcmailSize::              default size for arcmail bundle
+* DisableTID::                  disable adding TID to messages
+* DisablePID::                  disable adding PID to messages
+* DisableKludgeRescanned::      disable adding kludge @@RESCANNED to messages
+* IgnoreCapWord::               ignore Capability Word in pkt files
+* IgnoreSeen::                  ignore SEEN-BYs and pack mail for link
+* KeepTrsFiles::                keep transit files
+* KeepTrsMail::                 keep transit netmail messages
+* KludgeAreaNetmail::           how to process netmail with kludge "AREA:NETMAIL"
+* LinkWithImportLog::           list of areas only which should be linked
+* NetmailFlag::                 create flag after unpacking netmail msg
+* NoProcessBundles::            no unpack arcmail bundles
+* Origin::                      add specified origin to hpt messages
+* PackNetMailOnScan::           pack netmail found in EchoTossLog file when scan
+* ProcessPkt::                  execute string before tossing pkts
+* RecodeMsgBase::               allow recoding of message base
+* Remap::                       remap mail to other address
+* Route::                       routing of netmails
+* RouteFile::                   routing of netmails with file attached
+* RouteMail::                   routing of netmails without file attached
+* SeparateBundles::             move echomail for each link to his own directory
+* SetConsoleTitle::             schange conesole title under win32
+* SortEchoList::                echolist sort mode
+* TearLine::                    add specified tearline to hpt messages
+* TossingExt::                  extension of mail files while tossing
+@end menu
+
+@node AddToSeen, AfterUnpack, Keywords, Keywords
+@subsection AddToSeen
+@findex AddToSeen
+@table @asis
+@item Syntax:
+@code{addToSeen <addr> [<addr> ...]}
+@item Example:
+@code{addToSeen 99/100 99/101}
+@end table
+
+Add <addr> to SEEN-BYs. If <addr> is present or not - it is always adds.
+
+This statement can be repeated.
+
+@node AfterUnpack, AreafixFromPkt, AddToSeen, Keywords
+@subsection AfterUnpack
+@findex AfterUnpack
+@table @asis
+@item Syntax:
+@code{afterUnpack <string>}
+@item Example:
+@code{afterUnpack pktpack /home/fido/in.tmp/*.pkt}
+@end table
+
+This <string> is executed after unpacking arcmail bundle. You may process
+your pkt files in @code{tempInbound} directory with external utility.
+
+This statement cannot be repeated.
+
+@node AreafixFromPkt, AreasFileNameCase, AfterUnpack, Keywords
+@subsection AreafixFromPkt
+@findex AreafixFromPkt
+@table @asis
+@item Syntax:
+@code{areafixFromPkt <bool>}
+@item Example:
+@code{areafixFromPkt}
+@end table
+
+Process areafix requests on the fly. Check "areafix", "areamgr" &
+"hpt" keywords in toUserName field. Request messages don't saves.
+
+This statement cannot be repeated.
+
+@xref{RobotNames,,,fidoconfig, fidoconfig}.
+
+@node AreasFileNameCase, AutoPassive, AreafixFromPkt, Keywords
+@subsection AreasFileNameCase
+@findex AreasFileNameCase
+@table @asis
+@item Syntax:
+@code{areasFileNameCase (Lower|Upper)}
+@item Example:
+@code{areasFileNameCase Upper}
+@end table
+
+This statement defines case of filemanes of autocreated areas.
+Default is lower case.
+
+This statement cannot be repeated.
+
+@node AutoPassive, BeforePack, AreasFileNameCase, Keywords
+@subsection AutoPassive
+@findex AutoPassive
+@table @asis
+@item Syntax:
+@code{autopassive <bool>}
+@item Example:
+@code{autopassive}
+@end table
+
+If this statement is defined HPT will check for old bundles in every run.
+Fileboxes are not checked. Links, for which there are bundles that are
+at least "@ref{AutoPause}" days old, will be paused. It stops exporting
+echomail for them. If @ref{AutoPause} is not defined or is equal to 0 for a link
+then AutoPassive is ignored for this link. If AutoPassive is not defined
+then @ref{AutoPause} is ignored for all links.
+
+The paused link is unsubscribed from the areas which are passthrough with no
+downlinks besides him (see -def in @ref{EchoArea,,,fidoconfig,fidoconfig} to make it work)
+AND which are allowed to be paused 
+(see -pause, -paused, -noautoareapause, -autoareapause in @ref{EchoArea,,,fidoconfig,fidoconfig} 
+and @ref{AutoAreaPause,,,fidoconfig,fidoconfig}). 
+An unsubscribe request is sent to the uplink for those areas. Note that
+this feature is unavailable when using %PAUSE Areafix command.
+
+By using "hpt pause" command-line parameter instead of defining AutoPassive in
+the configuration file, you can do the check for old bundles and all the rest
+of the functionality of AutoPassive only once.
+
+This statement cannot be repeated.
+
+See also @ref{AutoPause} and @ref{Pause,,,fidoconfig,fidoconfig} sections.
+
+@node BeforePack, BundleNameStyle, AutoPassive, Keywords
+@subsection BeforePack
+@findex BeforePack
+@table @asis
+@item Syntax:
+@code{beforePack <string>}
+@item Example:
+@code{beforePack pktpack /home/fido/out.tmp/*.pkt}
+@end table
+
+This <string> is executed before packing pkt files to arcmail bundles. You
+may process your pkt files in @code{tempOutbound} directory with
+external utility.
+
+This statement cannot be repeated.
+
+@node BundleNameStyle, DefArcmailSize, BeforePack, Keywords
+@subsection BundleNameStyle
+@findex BundleNameStyle
+@table @asis
+@item Syntax:
+@code{bundleNameStyle <timeStamp | addrDiff | addrsCRC32 | addrDiffAlways | addrsCRC32Always | Amiga>}
+@item Example:
+@code{bundleNameStyle timeStamp}
+@end table
+
+This statement sets a rule for creating names of arcmail bundles:
+
+@table @asis
+@item @code{timeStamp}
+some kind of random names (current time + some counter).
+@item @code{addrDiff}
+create name from difference of source and destination addreses. Always
+the same filename for every pair of links. Automatically  switches to
+@code{timeStamp} when all alowed extensions have been used.
+@item @code{addrsCRC32}
+create name from CRC32 of string composed from "hpt", source and destination
+addreses. Always the same filename for every pair of links, very unique.
+Automatically switches to @code{timeStamp} when all alowed extensions have
+been used.
+@item @code{addrDiffAlways}
+the same as addrDiff but tries to use lower free numbers of extension in
+case when all higher numbers are already busy.
+@item @code{addrsCRC32Always}
+the same as addrsCRC32 but tryes to use lower free numbers of extension in
+case when all higher numbers are already busy.
+@item @code{Amiga)}
+Amiga Style Outbound (ASO). Bundles are created in @ref{outbound,,,fidoconfig,FidoConfig Manual} directory
+like this:
+@example
+2.5000.117.1.hut
+2.5000.117.1.mo0
+@end example
+If @ref{SeparateBundles} is @code{on} and @ref{packer,,,fidoconfig,FidoConfig Manual} not defined, pkt is moved to
+@code{2.5000.117.1.sep} directory.
+
+Extensions & prefixes in flo files are created as in @code{addrDiffAlways} algorithm.
+@end table
+
+Default value is @code{timeStamp}
+
+This statement cannot be repeated.
+
+See also @ref{LinkBundleNameStyle}.
+
+
+@node DefArcmailSize, DisableTID, BundleNameStyle, Keywords
+@subsection DefArcmailSize
+@findex DefArcmailSize
+@table @asis
+@item Syntax:
+@code{defarcmailsize <integer>}
+@item Example:
+@code{defarcmailsize 1024}
+@end table
+
+default arcmail size in kb for all links.
+500kb if not defined.
+
+This statement cannot be repeated.
+
+@node DisableTID, DisablePID, DefArcmailSize, Keywords
+@subsection DisableTID
+@findex DisableTID
+@table @asis
+@item Syntax:
+@code{DisableTID <bool>}
+@item Example:
+@code{DisableTID}
+@end table
+
+Don't add TID-line to scanned messages.
+
+This statement cannot be repeated.
+
+@node DisablePID, DisableKludgeRescanned, DisableTID, Keywords
+@subsection DisablePID
+@findex DisablePID
+@table @asis
+@item Syntax:
+@code{DisablePID <bool>}
+@item Example:
+@code{DisablePID}
+@end table
+
+Don't add PID-line to generated messages.
+
+This statement cannot be repeated.
+
+
+@node DisableKludgeRescanned, IgnoreCapWord, DisablePID, Keywords
+@subsection DisableKludgeRescanned
+@findex DisableKludgeRescanned
+@table @asis
+@item Syntax:
+@code{DisableKludgeRescanned <bool>}
+@item Example:
+@code{DisableKludgeRescanned}
+@end table
+
+Don't add kludge RESCANNED to generated messages.
+
+This statement cannot be repeated.
+
+
+@node IgnoreCapWord, IgnoreSeen, DisableKludgeRescanned, Keywords
+@subsection IgnoreCapWord
+@findex IgnoreCapWord
+@table @asis
+@item Syntax:
+@code{IgnoreCapWord <bool>}
+@item Example:
+@code{IgnoreCapWord}
+@end table
+
+Ignoring Capability Word in pkt files. If some pkt moved to bad. This
+may help, but not recommended. It is better to change old software.
+
+This statement cannot be repeated.
+
+@node IgnoreSeen, KeepTrsFiles, IgnoreCapWord, Keywords
+@subsection IgnoreSeen
+@findex IgnoreSeen
+@table @asis
+@item Syntax:
+@code{IgnoreSeen <addr> [<addr> ...]}
+@item Example:
+@code{IgnoreSeen 99/150}
+@end table
+
+Ignore this SEEN-BY & pack mail for link.
+But no pack it back if the mail was from him.
+
+This statement can be repeated.
+
+@node KeepTrsFiles, KeepTrsMail, IgnoreSeen, Keywords
+@subsection KeepTrsFiles
+@findex KeepTrsFiles
+@table @asis
+@item Syntax:
+@code{keepTrsFiles <bool>}
+@item Example:
+@code{keepTrsFiles}
+@end table
+
+Leave transit (routed) files in @code{Inbound} directory. If this
+statement is ommitted transit files wouldn't be kept.
+Default is "off".
+
+File route possible with "Att" attribute in message header and file name
+in subject line.
+
+This statement cannot be repeated.
+
+@xref{RouteFile}.
+
+@node KeepTrsMail, KludgeAreaNetmail, KeepTrsFiles, Keywords
+@subsection KeepTrsMail
+@findex KeepTrsMail
+@table @asis
+@item Syntax:
+@code{keepTrsMail <bool>}
+@item Example:
+@code{keepTrsMail}
+@end table
+
+Save transit messages in NetmailArea. If this statement is ommitted
+transit messages wouldn't be kept in NetmailArea. Default is "off".
+
+This statement cannot be repeated.
+
+
+@node KludgeAreaNetmail, LinkWithImportLog, KeepTrsMail, Keywords
+@subsection KludgeAreaNetmail
+@findex KludgeAreaNetmail
+@table @asis
+@item Syntax:
+@code{kludgeAreaNetmail <kill | ignore | echomail>}
+@item Example:
+@code{kludgeAreaNetmail kill}
+@end table
+
+Default is "kill"
+
+If message started with "AREA:NETMAIL" we have three ways:
+
+1. kill this kludge. process message as netmail.
+2. ignore this kludge. process message as netmail.
+3. process message as echomail.
+
+This statement cannot be repeated.
+
+@node LinkWithImportLog, NetmailFlag, KludgeAreaNetmail, Keywords
+@subsection LinkWithImportLog
+@findex LinkWithImportLog
+@table @asis
+@item Syntax:
+@code{linkWithImportLog <yes | no | kill>}
+@item Example:
+@code{linkWithImportLog yes}
+@end table
+
+This statement specifies if the importlog-file should be used to determine
+which echomail areas need to be linked.
+
+@table @asis
+@item yes
+importlog-file will be read. areas which are in importlog, will be linked.
+the importlog-file will not be erased.
+@item kill
+like yes, but the importlog-file will be killed after using it.
+@item no
+DEFAULT. all areas will be linked.
+@end table
+
+This statement cannot be repeated.
+
+@node NetmailFlag, NoProcessBundles, LinkWithImportLog, Keywords
+@subsection NetmailFlag
+@findex NetmailFlag
+@table @asis
+@item Syntax:
+@code{netmailFlag <file>}
+@item Example:
+@code{netmailFlag /etc/ftn/flags/netmail}
+@end table
+
+Create file-flag after unpacking netmail msg. This feature can be used
+for execute netmail trackers after tossing.
+
+This file also created after scannig @code{NetmailArea} without route
+definition. Scanning is stopped but file-flag created for netmail
+tracker.
+
+This statement cannot be repeated.
+
+@node NoProcessBundles, Origin, NetmailFlag, Keywords
+@subsection NoProcessBundles
+@findex NoProcessBundles
+@table @asis
+@item Syntax:
+@code{noProcessBundles <bool>}
+@item Example:
+@code{noProcessBundles}
+@end table
+
+Don't unpack arcmail bundles.
+
+This statement cannot be repeated.
+
+@node Origin, PackNetMailOnScan, NoProcessBundles, Keywords
+@subsection Origin
+@findex Origin
+@table @asis
+@item Syntax:
+@code{origin <string>}
+@item Example:
+@code{origin mega cool station}
+@end table
+
+Add this Origin to hpt messages: post, reports about new areas created.
+
+This statement cannot be repeated.
+
+@node PackNetMailOnScan, ProcessPkt, Origin, Keywords
+@subsection PackNetMailOnScan
+@findex PackNetMailOnScan
+@table @asis
+@item Syntax:
+@code{PackNetMailOnScan <bool>}
+@item Example:
+@code{PackNetMailOnScan off}
+@end table
+
+When PackNetMailOnScan is "on" (default) hpt packs netmail when doing
+"hpt scan" and netmail area is found in EchoTossLog file. When it is
+"off" hpt leaves netmail area(s) in EchoTossLog file until "hpt pack" is
+invoked.
+
+This statement can be repeated (overrides old setting).
+
+@node ProcessPkt, RecodeMsgBase, PackNetMailOnScan, Keywords
+@subsection ProcessPkt
+@findex ProcessPkt
+@table @asis
+@item Syntax:
+@code{processPkt <string>}
+@item Example:
+@code{processPkt pktdate}
+@end table
+
+The <string> is executed before tossing each pkt file. You can
+fix your pkts using pktdate or any other tool before tossing them. Note that
+pkt file may be renamed depending of @code{tossingExt} token value.
+
+This statement cannot be repeated.
+
+@node RecodeMsgBase, Remap, ProcessPkt, Keywords
+@subsection RecodeMsgBase
+@findex RecodeMsgBase
+@table @asis
+@item Syntax:
+@code{recodeMsgBase <bool>}
+@item Example:
+@code{recodeMsgBase off}
+@item Defaults:
+@code{recodeMsgBase on}
+@end table
+
+This statement specifies if we should recode messages when put/get them
+to/from message base. So you can keep message base in transport charset and
+configs/other local files in local one.
+
+This statement cannot be repeated.
+
+@node Remap, Route, RecodeMsgBase, Keywords
+@subsection Remap
+@findex Remap
+@table @asis
+@item Syntax:
+@code{Remap <ToName>,<ToAddress>,<NewAddress>}
+@item Examples:
+@itemize
+@item @code{Remap Max Levenkov,2:5000/117,2:5000/117.1\n}
+@item @code{Remap *,2:5000/117,2:5000/117.1}
+@item @code{Remap Max Levenkov,*,2:5000/117.1}
+@end itemize
+@end table
+
+Remap mail to other address.
+ToName @strong{OR} ToAddress can be replaced with asterisk to match any
+value of ToName or ToAddress. Two asterisks can't be defined together.
+@strong{This statement does not touch TOPT & FMPT kludges.}
+
+This statement can be repeated.
+
+@node Route, RouteFile, Remap, Keywords
+@subsection Route
+@findex Route
+@table @asis
+@item Syntax:
+@code{route [<flavour>] <target> <linkWW> [<linkWW> ...]}
+@item Example:
+@code{route crash 2:2433/1245 2:2433/* 2:2432/*}
+@end table
+
+This statement defines a route.
+
+@strong{flavour:}
+@enumerate
+@item hold (.hut/.hlo)
+@item normal (.out/.flo)
+@item crash (.cut/.clo)
+@item direct (.dut./dlo)
+@item immediate (.iut/.ilo)
+@end enumerate
+
+Flavour can be omitted if target is a link defined by @code{Link} section.
+In this case the link's @code{netMailFlavour} is used as flavour.
+
+@strong{target:}
+@enumerate
+@item <addr> - mail is routed to this address
+@item host - mail is routed to zone:net/0.0 address
+@item hub - hub-routing, does not use the hubs defined in the nodelist
+but uses the nodes: addr - (addr.node %100). e.g.: a mail to node
+2:2433/1245 is send to 2:2433/1200, but a mail to node 2:2433/355 is
+send to 2:2433/300 which currently does not exist. BE CAREFUL!
+@item boss - mail is routed to zone:net/node.0 address
+@item no-route (noroute) - direct route according to current flavour
+@item no-pack (nopack) - don't process this mail
+@end enumerate
+
+linkWW is a DOS-style pattern with ? and *.
+
+Route statements are parsed in descending order:
+Pseudo-code:
+
+@example
+  1) actual = first statement
+
+  2) if linkWWW = msg-destination using pattern matching
+
+  2a) take this routing and return
+
+  2b) else actual = next statement
+
+  3) jump to 2)
+
+@end example
+
+NOTE! This statement must occur after "link" sections.
+
+This statement can be repeated.
+
+@node RouteFile, RouteMail, Route, Keywords
+@subsection RouteFile
+@findex RouteFile
+@table @asis
+@item Syntax:
+@code{routeFile <flavour> <target> <linkWW> [<linkWW> ...]}
+@item Example:
+@code{routeFile crash 2:2433/1245 2:2433/* 2:2432/*}
+@end table
+
+This statement is the same as the @code{Route} statement, but applies
+only to msgs with file attaches. Files are routed with netmail msgs. If
+no @code{RouteFile} defined, then files will be not routed at all!
+
+This statement can be repeated.
+
+@node RouteMail, SeparateBundles, RouteFile, Keywords
+@subsection RouteMail
+@findex RouteMail
+@table @asis
+@item Syntax:
+@code{routeMail <flavour> <target> <linkWW> [<linkWW> ...]}
+@item Example:
+@code{routeMail crash 2:2433/1245 2:2433/* 2:2432/*}
+@end table
+
+This statement is the same as the @code{Route} statement.
+
+This statement can be repeated.
+
+@node SeparateBundles, SetConsoleTitle, RouteMail, Keywords
+@subsection SeparateBundles
+@findex SeparateBundles
+@table @asis
+@item Syntax:
+@code{SeparateBundles <bool>}
+@item Example:
+@code{SeparateBundles}
+@end table
+
+Move echomail for all links to their own directories.
+
+This statement cannot be repeated.
+
+@node SetConsoleTitle, SortEchoList, SeparateBundles, Keywords
+@subsection SetConsoleTitle
+@findex SetConsoleTitle
+@table @asis
+@item Syntax:
+@code{SetConsoleTitle <bool>}
+@item Example:
+@code{SetConsoleTitle}
+@end table
+
+Set hpt console title while tossing. (@strong{WIN32 Only!})
+
+This statement cannot be repeated.
+
+@node SortEchoList, TearLine, SetConsoleTitle, Keywords
+@subsection SortEchoList
+@findex SortEchoList
+@table @asis
+@item Syntax:
+@code{SortEchoList none|name|group|group,name}
+@item Example:
+@code{SortEchoList name}
+@end table
+
+This keyword determines sorting mode for echolist (%LIST, %QUERY, etc):
+@table @asis
+@item @code{none}
+unsorted (order as presents in config file)
+@item @code{name}
+sort by name
+@item @code{group}
+sort by group (-g in echoArea) only
+@item @code{group,name}
+sort by group and name.
+@end table
+
+When sorting is carried out by group, group descriptions
+(see grpDesc keyword) are printed before groups' areas.
+
+By default echolist is sorted by name.
+
+This statement cannot be repeated.
+
+
+@node TearLine, TossingExt, SortEchoList, Keywords
+@subsection TearLine
+@findex TearLine
+@table @asis
+@item Syntax:
+@code{tearline <string>}
+@item Example:
+@code{tearline We Love HPT! :)}
+@end table
+
+Add this tearline to hpt messages (post, reports about new areas created)
+
+This statement cannot be repeated.
+
+@node TossingExt,  , TearLine, Keywords
+@subsection TossingExt
+@findex TossingExt
+@table @asis
+@item Syntax:
+@code{TossingExt [<string>]}
+@item Example:
+@code{TossingExt tos}
+@end table
+
+Extension of bundle & packet files will be changed to <string> before
+tossing (and before processPkt string executed if set). That may be used
+for preventing of permanent tossing fault because of bad file in inbound.
+Default extension: tos.
+@code{TossingExt} without parameter disables files renaming in tossing.
+
+This statement cannot be repeated.
+
+@node Files and Paths, Link Keywords, Keywords, Configuration Reference
+@section Files and Paths
+
+@value{HPT} is based on FIDOCONFIG library, so read documentation of
+FIDOCONFIG about location of config file, keywords ideology and about
+majority of the keywords,
+@xref{Top, Fidoconfig Manual, , fidoconfig, Fidoconfig manual}.
+
+@menu
+* AdvStatisticsFile::           binary statistic file
+* AreasMaxDupeAge::             max age for dupes in CommonDupeBase
+* DupeBaseType::                type of dupe base
+* DupeHistoryDir::              path for dupe files
+* EchoTossLog::                 file which contains the names of the areas to scan
+* FileBoxesDir::                directory where link fileBoxes are created
+* HptPerlFile::                 file which contains perl filter functions
+* ImportLog::                   file which contains the names of the areas tossed in
+* Intab::                       file for recoding incoming msgs
+* MinDiskFreeSpace::            minimum free space on the drive
+* MsgBaseDir::                  base directory of areas
+* NotValidFileNameChars::       chars that will be converted to hex values
+* Outtab::                      file for recoding outgoing msgs
+* RulesDir::                    directory with area rules
+* StatLog::                     file whith counter of personal net- and echo mails
+* TempInbound::                 temporary inbound path
+* TempOutbound::                temporary outbound path
+@end menu
+
+@node AdvStatisticsFile, AreasMaxDupeAge, Files and Paths, Files and Paths
+@subsection AdvStatisticsFile
+@findex AdvStatisticsFile
+@table @asis
+@item Syntax:
+@code{AdvStatisticsFile <filename>}
+@item Example:
+@code{AdvStatisticsFile /home/val/fido/log/hpt.sta}
+@end table
+
+Define binary statistic file for calculating links and echo traffic.
+Parsed by hpt/misc/adv-stat-hpt.pl
+
+@node AreasMaxDupeAge, DupeBaseType, AdvStatisticsFile, Files and Paths
+@subsection AreasMaxDupeAge
+@findex AreasMaxDupeAge
+@table @asis
+@item Syntax:
+@code{areasMaxDupeAge <integer>}
+@item Example:
+@code{areasMaxDupeAge 10}
+@end table
+
+Set maximum days for storing you hashes in CommonDupeBase.
+Default value is 5.
+
+For any other dupe base type please use @code{-DupeHistory}
+option in @ref{EchoArea,,,fidoconfig, fidoconfig} or
+@ref{EchoAreaDefaults,,,fidoconfig, fidoconfig}.
+
+This statement cannot be repeated.
+
+@node DupeBaseType, DupeHistoryDir, AreasMaxDupeAge, Files and Paths
+@subsection DupeBaseType
+@findex DupeBaseType
+@table @asis
+@item Syntax:
+@code{dupeBaseType <TextDupes | HashDupes | HashDupesWMsgId | CommonDupeBase>}
+@item Example:
+@code{dupeBaseType HashDupesWMsgId}
+@end table
+
+@table @asis
+@item TextDupes
+stores from, to, subj & msgid as text lines.
+@item HashDupes
+stores src32 of from + to + subj + msgid.
+@item HashDupesWMsgId
+same as HashDupes, but stores also msgid as text.
+@item CommonDupeBase
+stores hashes of from + to + subj + areatag + msgid in one file (hpt_base.dpa)
+@end table
+
+Default is @code{HashDupesWMsgId}.
+
+This statement cannot be repeated.
+
+@node DupeHistoryDir, EchoTossLog, DupeBaseType, Files and Paths
+@subsection DupeHistoryDir
+@findex DupeHistoryDir
+@table @asis
+@item Syntax:
+@code{dupeHistoryDir <path>}
+@item Example:
+@code{dupeHistoryDir /var/spool/fido/dupes}
+@end table
+
+This command specifies the path where the dupe history files are stored.
+The format and the names of the dupe-files are not standardized.
+
+This statement cannot be repeated.
+
+@node EchoTossLog, FileBoxesDir, DupeHistoryDir, Files and Paths
+@subsection EchoTossLog
+@findex EchoTossLog
+@table @asis
+@item Syntax:
+@code{echotosslog <file>}
+@item Example:
+@code{echotosslog /var/spool/fido/echotoss.log}
+@end table
+
+This statement specifies the file which is filled by a message editor
+or "hpt post" with the names of the areas where new netmails or echomails
+have been entered. Each line contains one areaname.
+When "hpt scan" is invoked, only echomail areas listed in this file will be
+scanned, when we start "hpt pack" - the same is for netmail areas.
+If area was processed, its name is removed from echotosslog file.
+When hpt has finished processing all listed areas and this file became
+empty, it is removed, otherwise kept for futher processing (maybe by other programs).
+If this file is not found - all areas will be scanned
+(depending on value of PackNetMailOnScan).
+@xref{PackNetMailOnScan}, but if '-f' command line flag specified, scanning
+will stop. Filename after -f is optional. If it is not set, value of
+EchoTossLogFile will be taken from config, and from command line otherwise.
+If scanning from EchoTossLogFile did not make any area scanning, all areas
+will be processed (depending on 'scan' or 'pack' mode)
+
+This statement cannot be repeated.
+
+@node FileBoxesDir, HptPerlFile, EchoTossLog, Files and Paths
+@subsection FileBoxesDir
+@findex FileBoxesDir
+@table @asis
+@item Syntax:
+@code{FileBoxesDir <directory>}
+@item Example:
+@code{FileBoxesDir ../boxes}
+@end table
+
+@xref{FileBoxesDir, , ,fidoconfig, FidoConfig Manual}, for full description.
+
+@node HptPerlFile, ImportLog, FileBoxesDir, Files and Paths
+@subsection HptPerlFile
+@findex HptPerlFile
+@table @asis
+@item Syntax:
+@code{hptperlfile <file>}
+@item Example:
+@code{hptperlfile /etc/ftn/filter.pl}
+@end table
+
+This statement specifies the file which contains perl filter functions.
+If not specified, perl support will be switched off.
+
+This statement cannot be repeated.
+
+@node ImportLog, Intab, HptPerlFile, Files and Paths
+@subsection ImportLog
+@findex ImportLog
+@table @asis
+@item Syntax:
+@code{importlog <file>}
+@item Example:
+@code{importlog /var/spool/fido/import.log}
+@end table
+
+This statement specifies the file which a tosser fills with the names
+of the areas where echomails has been tossed in.
+
+This statement cannot be repeated.
+
+@node Intab, MinDiskFreeSpace, ImportLog, Files and Paths
+@subsection Intab
+@findex Intab
+@table @asis
+@item Syntax:
+@code{intab <file>}
+@item Example:
+@code{intab /var/spool/fido/recode/outaltkoi8}
+@end table
+
+This statement specifies the file which should be used to recode the
+characters of the incoming messages from transport to internal
+charset. It is useful in russia.
+If you do not use this statement no recoding will be done.
+
+This statement cannot be repeated.
+
+@node MinDiskFreeSpace, MsgBaseDir, Intab, Files and Paths
+@subsection MinDiskFreeSpace
+@findex MinDiskFreeSpace
+@table @asis
+@item Syntax:
+@code{MinDiskFreeSpace <integer>}
+@item Example:
+@code{MinDiskFreeSpace 10}
+@end table
+
+This is the minimum disk free space in MB to run @value{HPT}.
+The following directories are checked: @code{TempInbound},
+@code{MsgBaseDir}, @code{LinkMsgBaseDir}s.
+
+The default value is 10.
+
+This statement cannot be repeated.
+
+@node MsgBaseDir, NotValidFileNameChars, MinDiskFreeSpace, Files and Paths
+@subsection MsgBaseDir
+@findex MsgBaseDir
+@table @asis
+@item Syntax:
+@code{msgBaseDir <path>}
+@item Example:
+@code{msgBaseDir /var/spool/fido/msgb}
+@end table
+
+This command specifies the path where msgBases of autocreated areas are
+stored. For example: if an area called @code{LINUX.GER} was autocreated
+and the msgBaseDir is @code{/var/spool/fido/msgb} the resulting
+msgBaseName is
+
+@example
+/var/spool/fido/msgb/linux.ger.sqd
+@end example
+
+If you specify the msgbasedir as PASSTHROUGH, the areas will be created
+as passthrough areas.
+
+This statement cannot be repeated.
+
+@xref{LinkMsgBaseDir}.
+
+@node NotValidFileNameChars, Outtab, MsgBaseDir, Files and Paths
+@subsection NotValidFileNameChars
+@findex NotValidFileNameChars
+@table @asis
+@item Syntax:
+@code{NotValidFileNameChars <string>}
+@item Example:
+@code{NotValidFileNameChars :;<>=*?\/}
+@end table
+
+This characters in message and dupebase filenames will be replaced
+with %hex analogs. If not defined, default string used: "*/:;<=>?\|%`'&+
+
+This statement cannot be repeated.
+
+@node Outtab, RulesDir, NotValidFileNameChars, Files and Paths
+@subsection Outtab
+@findex Outtab
+@table @asis
+@item Syntax:
+@code{outtab <file>}
+@item Example:
+@code{outtab /var/spool/fido/recode/outkoi8alt}
+@end table
+
+This statement specifies the file which should be used to recode the
+characters of the outgoing messages from internal to transport
+charset. It is useful in russia.
+If you do not use this statement no recoding will be done.
+
+This statement cannot be repeated.
+
+@node RulesDir, StatLog, Outtab, Files and Paths
+@subsection RulesDir
+@findex RulesDir
+@table @asis
+@item Syntax:
+@code{rulesdir <path>}
+@item Example:
+@code{rulesdir /home/ftn/rules}
+@end table
+
+This statement specifies where areafix searches for files with echoarea
+rules which are sent to link via netmail when link is subscribed to
+areas. File name is the same as message base file with trailing
+".rul" (and consistently .ru1-.ru9 files with additional information).
+Areaname is used when no message base file is set.
+See also @code{NoRules} statement to avoid areafix from sending rules to
+link.
+
+This statement cannot be repeated.
+
+@node StatLog, TempInbound, RulesDir, Files and Paths
+@subsection StatLog
+@findex StatLog
+@table @asis
+@item Syntax:
+@code{statlog <file>}
+@item Example:
+@code{statlog /var/spool/fido/stat.log}
+@end table
+
+After tossing (hpt toss), it is checked if there is new personal mail
+(netmail or personal echo mail). If that's true, it is checked if
+statlog is defined in config. If yes, then it is checked if the log file
+exists. If not, then it is created and the number of received netmails
+or/and personal echo mails is written to the log file. Otherwise, if the
+file exists, the old counter will be read, added to the new counter and
+written the actual counter.
+The log file looks like this:
+ netmail: x
+ CC: x
+Whereas x is the number of mails.
+If the log file exists, one of the two or both lines exist.
+
+This is for utils, which can show you how many personal mail you got.
+The log file is not removed by hpt, only by the util that uses it.
+Or you could write in your toss script something like this:
+ if exist stat.log type stat.log
+ if exist stat.log del stat.log>nul
+
+This statement cannot be repeated.
+
+@node TempInbound, TempOutbound, StatLog, Files and Paths
+@subsection TempInbound
+@findex TempInbound
+@table @asis
+@item Syntax:
+@code{tempinbound <path>}
+@item Example:
+@code{tempinbound /var/spool/fido/in.tmp}
+@end table
+
+This command specifies a path which is used while tossing. The incoming packets
+are unpacked there.
+
+This statement cannot be repeated.
+
+@node TempOutbound,  , TempInbound, Files and Paths
+@subsection TempOutbound
+@findex TempOutbound
+@table @asis
+@item Syntax:
+@code{tempoutbound <path>}
+@item Example:
+@code{tempoutbound /var/spool/fido/out.tmp}
+@end table
+
+This command specifies your temporary outbound path. It is used for
+storing outgoing pkt-files before packing.
+
+This statement cannot be repeated.
+
+
+@node Link Keywords, Carbon Copy, Files and Paths, Configuration Reference
+@section Link Keywords
+
+@menu
+* AdvancedAreafix::             advanced areafix
+* AllowEmptyPktPwd::            allow empty packet passwords
+* AllowPktAddrDiffer::          allow addresses in PKT and MSG differ for areafix req.
+* AllowRemoteControl::          allow remote control using areafix
+* ArcmailSize::                 size of arcmail bundle
+* ArcNetmail::                  pack netmail for this link into arcmail bundles
+* Areafix::                     areafix access for this link
+* AutoAreaCreateSubdirs::       create structured or flat message base?
+* AutoPause::                   stop export mail for this link after xx days
+* AvailList::                   specify variant for reply to %avail
+* DailyBundles::                start a new arcmail bundle for the link each day
+* DenyRescan::                  deny rescan of areas
+* EchoMailFlavour::             flavour for outgoing echomail
+* Flavour::                     flavour for netmail, echomail and fileechoes
+* ForwardPkts::                 shall we forward inbound packets for this node?
+* FileBox::                     filebox directory
+* FileBoxAlways::               pack to filebox even if link is not busy
+* LinkBundleNameStyle::         style of filenames of arcmail bundles for link
+* LinkGrp::                     main group for the link
+* LinkMsgBaseDir::              base directory of areas for link
+* NetMailFlavour::              flavour for outgoing netmail
+* NoRules::                     don't send area rules to link on subscription
+* PackAka::                     
+* PktSize::                     max size of pkt in arcmail bundle
+* ReducedSeenBY::               reduced seen-by mode (FSC-0093)
+* RescanGrp::                   groups that @code{denyRescan} token applies to
+* RescanLimit::                 limit max number of messages sent by rescan
+* SendNotifyMessages::          send messages about query changes, bad posts and so on
+* UnsubscribeOnAreaDelete::     send unsubscribe request when subscribed area is deleted
+@end menu
+  @ref{AreafixReportsAttr,,,fidoconfig,fidoconfig}::          set flags to areafix reports for the link
+
+@value{HPT} is based on FIDOCONFIG library, so read documentation of
+FIDOCONFIG about location of config file, keywords ideology and about
+majority of the keywords,
+@xref{Top, Fidoconfig Manual, , fidoconfig, Fidoconfig manual}.
+
+
+@node AdvancedAreafix, AllowEmptyPktPwd, Link Keywords, Link Keywords
+@subsection AdvancedAreafix
+@findex AdvancedAreafix
+@table @asis
+@item Syntax:
+@code{advancedareafix <bool>}
+@item Example:
+@code{advancedareafix on}
+@end table
+
+If this statement is "on" and our system wants to delete an area from
+remote config then unsubscribe messages to areafix robot of this link
+look like "~areaname". The area on the remote system will be deleted
+from config file, if our system is allowed to delete this area ("allow
+area delete" in FastEcho, and @ref{LinkGrp} must be the same as
+EchoArea's @code{-g <group>} in @value{HPT}).
+
+Our system sends deleting command only for systems with
+@code{AdvancedAreafix} and with @ref{UnsubscribeOnAreaDelete} set to "on" 
+and when default uplink (@code{-def}) unsubscribes from an EchoArea or 
+some link deletes this area by "~areaname" command. Of course if this 
+link has the rights to delete this area.
+
+You may also delete an area yourself by running the following command:@*@*
+@code{hpt afix <your main AKA> ~area}@*@*
+Here @code{<your main AKA>} is your main address. @xref{address,,,fidoconfig,FidoConfig Manual}.
+
+If @code{AdvancedAreafix} for the link is "off" (default), then unsubscribe 
+command "-areaname" is sent instead of delete command "~areaname".
+
+This statement can only be repeated for different links.
+
+@node AllowEmptyPktPwd, AllowPktAddrDiffer, AdvancedAreafix, Link Keywords
+@subsection AllowEmptyPktPwd
+@findex AllowEmptyPktPwd
+@table @asis
+@item Syntax:
+@code{allowEmptyPktPwd <off|secure|on>}
+@item Example:
+@code{allowEmptyPktPwd on}
+@end table
+
+This flag is useful if you want to generate packet passwords for this link,
+but do not want to check the packet passwords that your link sends to you.
+This is sometimes necessary as a workaraound if your link sends you netmail
+packets without packet passwords, for example.
+
+The default state is off. In this case the incoming packet password must
+match the packet password that you defined. This is the most secure option.
+
+If you set this switch to @code{secure}, packets that do not contain a
+packet password and are received in the protected inbound will be processed.
+You can use this if your uplink sometimes sends you packets without packet
+passwords, as a workaround until the uplink has fixed his system. Still, if
+you receive packets with @emph{wrong} packet passwords, they will be
+rejected.
+
+The setting @code{on} works like the @code{secure} setting, with the
+difference that packets without packet passwords are allowed even in the
+unprotected inbound directory. It is not recommended to use this setting.
+
+This statement can only be repeated for different links.
+
+@node AllowPktAddrDiffer, AllowRemoteControl, AllowEmptyPktPwd, Link Keywords
+@subsection AllowPktAddrDiffer
+@findex AllowPktAddrDiffer
+@table @asis
+@item Syntax:
+@code{allowPktAddrDiffer <bool>}
+@item Example:
+@code{allowPktAddrDiffer on}
+@end table
+
+This keyword is useful if your link has more than one addresses, and therefore
+the address in PKT header of his areafix request may be different from the
+address in MSG header.
+
+The default state if @code{off}: in this case such letters won't be processed
+by your areafix. The state @code{on} makes areafix ignore this error.
+
+This statement can only be repeated for different links.
+
+@node AllowRemoteControl, ArcmailSize, AllowPktAddrDiffer, Link Keywords
+@subsection AllowRemoteControl
+@findex AllowRemoteControl
+@table @asis
+@item Syntax:
+@code{allowRemoteControl <bool>}
+@item Example:
+@code{allowRemoteControl on}
+@end table
+
+If this keyword is @code{on} then link can do remote control using areafix.
+Sending command "%from <addr>" (where <addr> is the address of any link,
+defined in config) he makes areafix behave as if the message came from that link.
+
+You should enable this keyword only for yourself or cosysop, as it allows
+changing other links' subscription and settings without knowing their passwords.
+
+The default state if @code{off}: remote control is disabled.
+
+This statement can only be repeated for different links.
+
+@node ArcmailSize, ArcNetmail, AllowRemoteControl, Link Keywords
+@subsection ArcmailSize
+@findex ArcmailSize
+@table @asis
+@item Syntax:
+@code{arcmailsize <integer>}
+@item Example:
+@code{arcmailsize 300}
+@end table
+
+Maximum arcmail size in kb for this link. Default is 500kb.
+
+This statement can only be repeated for different links.
+
+@node ArcNetmail, Areafix, ArcmailSize, Link Keywords
+@subsection ArcNetmail
+@findex ArcNetmail
+@table @asis
+@item Syntax:
+@code{arcnetmail <bool>}
+@item Example:
+@code{arcnetmail on}
+@end table
+
+This keyword is useful if you want to compress netmail for this link and
+pack it into arcmail bundles or to filebox like echomail.
+A netmail message will be packed and compressed into a bundle only if
+ its flavour is equal to @code{EchoMailFlavour} for this link.
+
+The default state if @code{off}: in this case netmail will be written
+to ut-file (i.e. *.?ut) and will not compressed.
+
+This statement can only be repeated for different links.
+
+@node Areafix, AutoAreaCreateSubdirs, ArcNetmail, Link Keywords
+@subsection Areafix
+@findex Areafix
+@table @asis
+@item Syntax:
+@code{areafix <bool>}
+@item Example:
+@code{areafix off}
+@end table
+
+By default areafix is "on". You can turn off using of areafix by this link.
+
+This statement can only be repeated for different links.
+
+@node AutoAreaCreateSubdirs, AutoPause, Areafix, Link Keywords
+@subsection AutoAreaCreateSubdirs
+@findex AutoAreaCreateSubdirs
+@table @asis
+@item Syntax:
+@code{autoareacreatesubdirs <bool>}
+@item Example:
+@code{autoareacreatesubdirs on}
+@end table
+
+This switch is turned off by default. When turned off, hpt will create a flat
+message base. This means that a file echo @samp{FIDOSOFT.HUSKY} would be
+created in the message base directory with a base file name of
+@file{fidosoft.husky}, like in @file{/var/spool/msgbase/fidosoft.husky.sqd}
+and so on.
+
+When turned on, a structured message base will be created. Each dot in the
+echo name is treated as directory separator. Thus, @samp{FIDOSOFT.HUSKY}
+would be created with a base name of @file{husky} in the @file{fidosoft}
+directory, e.g. @file{/var/spool/msgbase/fidosoft/husky.sqd}.
+
+Please note that this option will @emph{not} currently work if the
+@code{-dosfile} option is used to create filenames in 8.3 convention.
+@xref{EchoArea,,EchoArea,fidoconfig,fidoconfig}, for more information on the @code{-dosfile} option.
+
+@node AutoPause, AvailList, AutoAreaCreateSubdirs, Link Keywords
+@subsection AutoPause
+@findex AutoPause
+@table @asis
+@item Syntax:
+@code{autopause <integer>}
+@item Example:
+@code{autopause 10}
+@end table
+
+AutoPause sets the number of days after which HPT will stop exporting echomail
+for the link if he has not fetched his echomail for this period of time.
+@ref{AutoPassive} should be defined for AutoPause to take effect.
+
+Technically, if you define "autopause 10" for a link then HPT looks for
+10 (or more) days old files that are listed to be sent for this link in
+the .?lo files with `#' or `^' prefixes and reside in the outbound directory.
+If at least one such file exists, exporting echomail for the link is paused.
+
+This statement can only be repeated for different links.
+
+See also @ref{AutoPassive} and @ref{Pause,,,fidoconfig,fidoconfig} sections.
+
+@node AvailList, DailyBundles, AutoPause, Link Keywords
+@subsection AvailList
+@findex AvailList
+@table @asis
+@item Syntax:
+@code{AvailList (Full|Unique|UniqueOne)}
+@item Example:
+@code{AvailList Full}
+@end table
+
+This statement specify variant for reply to %avail command for current link:
+
+@multitable {* UniqueOne}{aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
+@item * Full
+@tab produce full areas list for each uplink with avaiable forward subscribe for link
+@item * Unique
+@tab like @code{Full} but exclude dulicated areas for each next uplink
+@item * UniqueOne
+@tab produce one list: all areas from all uplinks without duplicates
+@end multitable
+
+Default value is @code{AvailList Full}.
+
+This statement can only be repeated for different links.
+
+@node DailyBundles, DenyRescan, AvailList, Link Keywords
+@subsection DailyBundles
+@findex DailyBundles
+@table @asis
+@item Syntax:
+@code{dailyBundles <bool>}
+@item Example:
+@code{dailyBundles}
+@end table
+
+If DailyBundles is off, hpt will use existing arcmail bundles to add packets
+for this link, even if they were created in the previous days. If
+DailyBundles is set, a new arcmail bundle for the link will be started when
+the new day begins.
+
+This statement can only be repeated for different links.
+
+@node DenyRescan, EchoMailFlavour, DailyBundles, Link Keywords
+@subsection DenyRescan
+@findex DenyRescan
+@table @asis
+@item Syntax:
+@code{denyRescan <bool>}
+@item Example:
+@code{denyRescan}
+@end table
+
+Don't allow to rescan areas (via areafix) to your links.
+
+This token can be applied to one or several area groups (see @code{RescanGrp}
+token for details).
+
+This statement can only be repeated for different links.
+
+@node EchoMailFlavour, Flavour, DenyRescan, Link Keywords
+@subsection EchoMailFlavour
+@findex EchoMailFlavour
+@table @asis
+@item Syntax:
+@code{echoMailFlavour <hold | normal | crash | direct | immediate>}
+@item Example:
+@code{echoMailFlavour hold}
+@end table
+
+This statement sets the flavour which outgoing echomails for this link get.
+For example set echomailFlavour for points to hold and for uplink crash.
+
+This statement can only be repeated for different links.
+
+@node Flavour, ForwardPkts, EchoMailFlavour, Link Keywords
+@subsection Flavour
+@findex Flavour
+@table @asis
+@item Syntax:
+@code{flavour <hold | normal | crash | direct | immediate>}
+@item Example:
+@code{flavour hold}
+@end table
+
+This statement sets the flavours for netmail, echomail and fileechoes
+simultaneously. Note that you can combine this with @code{netMailFlavour},
+@code{echoMailFlavour} or @code{fileEchoFlavour}; in this case the latest
+flavour is applied.
+
+This statement can only be repeated for different links.
+
+@node ForwardPkts, FileBox, Flavour, Link Keywords
+@subsection ForwardPkts
+@findex ForwardPkts
+@table @asis
+@item Syntax:
+@code{forwardPkts <off|secure|on>}
+@item Example:
+@code{forwardPkts yes}
+@end table
+
+If we receive a PKT file that is not addressed to our system, but to this
+link of us, this flag controls if the PKT file should be binary
+forwarded to this link. The default behaviour is not to forward the pkt
+file, but to remain it to @code{<filename>.ntu} and leave it in the
+inbound. If you specify @code{<yes>}, the file will instead be forwarded
+to the destination link (i.E. put into his arcmail bundle). If you
+specify @code{<secure>}, the file will only be forwarded if we have
+received it in the secure inbound. You should specify @code{secure} if
+the destination link does not check packet passwords.
+
+PKT forwarding can be useful for tunneling purposes, for
+instance. Another example is if you are running two nodes, one IP node
+at your company and one PSTN node at your home. If you want to show both
+node numbers at both mailers, the tossers at each node must forward PKT
+files that are addressed to the other node, because they themselves
+cannot process it (each tosser has a different node number, because the
+systems operate on distinct outbound structures and distinct message
+base areas).
+
+This statement can only be repeated for different links.
+
+WARNING! This statement also enables file forwarding in htick!
+
+@node FileBox, FileBoxAlways, ForwardPkts, Link Keywords
+@subsection FileBox
+@findex FileBox
+@table @asis
+@item Syntax:
+@code{FileBox <directory>}
+@item Example:
+@code{FileBox boxes/2.5021.19.1}
+@end table
+
+This statement defines directory where outgoing files for link would be
+putten instead of putting them in @code{Outbound} tree. See also
+@code{FileBoxAlways} for details.
+
+Currently hpt can put only echomail into fileBoxes.
+
+This statement can only be repeated for different links.
+
+@node FileBoxAlways, LinkBundleNameStyle, FileBox, Link Keywords
+@subsection FileBoxAlways
+@findex FileBoxAlways
+@table @asis
+@item Syntax:
+@code{FileBoxAlways <bool>}
+@item Example:
+@code{FileBoxAlways}
+@end table
+
+Pack to link @code{FileBox} even if link is not busy. By default
+outbound is used when link is not busy.
+
+This statement can only be repeated for different links. Works only for
+links which have @code{FileBox} or when @code{FileBoxesDir} is set.
+
+@xref{FileBox}, @xref{FileBoxesDir}.
+
+@node LinkBundleNameStyle, LinkGrp, FileBoxAlways, Link Keywords
+@subsection LinkBundleNameStyle
+@findex LinkBundleNameStyle
+@table @asis
+@item Syntax:
+@code{linkBundleNameStyle <timeStamp | addrDiff | addrDiffAlways | addrsCRC32 | addrsCRC32Always | Amiga>}
+@item Example:
+@code{linkbundleNameStyle addrDiff}
+@end table
+
+This statement sets rule for creating names of arcmail bundles for link.
+It is similar @code{BundleNameStyle} keyword.
+
+@xref{BundleNameStyle}.
+
+This statement can only be repeated for different links.
+
+@node LinkGrp, LinkMsgBaseDir, LinkBundleNameStyle, Link Keywords
+@subsection LinkGrp
+@findex LinkGrp
+@table @asis
+@item Syntax:
+@code{LinkGrp <Group name>}
+@item Example:
+@code{LinkGrp INTERNATIONAL}
+@end table
+
+   Specifies a group to use for areas auto-created from this link. Also
+link can delete echo areas in his @code{LinkGrp} group.
+
+   In this exmaple:
+
+   1) string @code{INTERNATIONAL} will be added to a new area record unless
+@code{AutoCreateDefaults} defines implicit group;
+
+   2) links that have no access to group @code{INTERNATIONAL} can't forward requests to uplink with @code{LinkGrp INTERNATIONAL};
+
+   3) this link can delete echo areas with @code{-g INTERNATIONAL} group if @code{AdvancedAreafix} is enabled for this link.
+
+@xref{AdvancedAreafix}.
+
+This statement can only be repeated for different links.
+
+@node LinkMsgBaseDir, NetMailFlavour, LinkGrp, Link Keywords
+@subsection LinkMsgBaseDir
+@findex LinkMsgBaseDir
+@table @asis
+@item Syntax:
+@code{linkMsgBaseDir <path>}
+@item Example:
+@code{linkMsgBaseDir /var/spool/fido/msgb}
+@end table
+
+Same as @code{MsgBaseDir}, but you can set it for different links.
+@strong{Do not use it with} @code{LinkDefaults}!
+
+This statement can only be repeated for different links.
+
+@xref{MsgBaseDir}.
+
+@node NetMailFlavour, NoRules, LinkMsgBaseDir, Link Keywords
+@subsection NetMailFlavour
+@findex NetMailFlavour
+@table @asis
+@item Syntax:
+@code{netMailFlavour <hold | normal | crash | direct | immediate>}
+@item Example:
+@code{netMailFlavour crash}
+@end table
+
+This statement sets the flavour for outgoing netmail routed via this link.
+
+This statement can only be repeated for different links.
+
+@node NoRules, PackAka, NetMailFlavour, Link Keywords
+@subsection NoRules
+@findex NoRules
+@table @asis
+@item Syntax:
+@code{norules <bool>}
+@item Example:
+@code{norules on}
+@end table
+
+By default "norules off" i.e. send rules.
+
+This statement points to areafix to not send area rules to link when
+link is subscribed to area and corresponding file is found in
+@code{RulesDir}.
+
+This statement can only be repeated for different links.
+
+@node PackAka, PktSize, NoRules, Link Keywords
+@subsection PackAka
+@findex PackAka
+@table @asis
+@item Syntax:
+@code{PackAka <addr>}
+@item Example:
+@code{PackAka 2:4600/220}
+@end table
+
+This statement sets the aka to which the echomail and fileechos will be sent
+(Pack echomail and fileechos via third link). The PackAka link used only in
+BSO, fileboxes and arcmail filename creation, therefore the PackAka link may
+not present in config.
+
+This feature may be used for simple echomail routing.
+
+This statement can only be repeated for different links.
+
+
+@node PktSize, ReducedSeenBY, PackAka, Link Keywords
+@subsection PktSize
+@findex PktSize
+@table @asis
+@item Syntax:
+@code{pktsize <integer>}
+@item Example:
+@code{pktsize 300}
+@end table
+
+Maximum pkt size in kb for this link. Default - unlimited.
+
+This statement can only be repeated for different links.
+
+@node ReducedSeenBY, RescanGrp, PktSize, Link Keywords
+@subsection ReducedSeenBY
+@findex ReducedSeenBY
+@table @asis
+@item Syntax:
+@code{ReducedSeenBY <bool>}
+@item Example:
+@code{ReducedSeenBY on}
+@end table
+
+This statement turns on/off reduced seen-by algorithm (FSC-0093)
+
+@example
+RSB algorithm
+-------------
+1) add own system to the PATH.
+2) all area links not contained in the RSB qualify as recipients.
+3) strip RSB addresses not matching an address in the PATH, then
+   add own address(es) to the RSB set if not already contained.
+4) add recipients to RSB, sort RSB and forward mail to recipients.
+@end example
+
+This statement can only be repeated for different links.
+
+@node RescanGrp, RescanLimit, ReducedSeenBY, Link Keywords
+@subsection RescanGrp
+@findex RescanGrp
+@table @asis
+@item Syntax:
+@code{RescanGrp <string>[,<string>...]}
+@item Example:
+@code{RescanGrp A,B,C,Local}
+@end table
+
+If defined, @code{denyRescan} token applies to specified area groups only,
+while other area groups are applied with the opposite value.
+
+Example:
+
+There are areas with the groups A, B, C and D in config. The following table
+demonstrates how combination of options allows you to specify different
+rights for link.
+
+@table @asis
+@item denyRescan off
+All area groups are allowed to rescan.
+@item denyRescan on
+All area groups are denied to rescan.
+@item denyRescan off, rescanGrp A,B
+Area groups A and B are allowed to rescan, while C and D are denied.
+@item denyRescan on, rescanGrp A,B
+Area groups A and B are denied to rescan, while C and D are allowed.
+@end table
+
+This statement can only be repeated for different links.
+
+@node RescanLimit, SendNotifyMessages, RescanGrp, Link Keywords
+@subsection RescanLimit
+@findex RescanLimit
+@table @asis
+@item Syntax:
+@code{RescanLimit <number>}
+@item Example:
+@code{RescanGrp 100}
+@end table
+
+This keyword is used to limit max number of messages sent by %rescan command.
+If it's set to 0 (default), the link is not limited.
+
+This statement can only be repeated for different links.
+
+@node SendNotifyMessages, UnsubscribeOnAreaDelete, RescanLimit, Link Keywords
+@subsection SendNotifyMessages
+@findex SendNotifyMessages
+@table @asis
+@item Syntax:
+@code{sendNotifyMessages <bool>}
+@item Example:
+@code{sendNotifyMessages on}
+@end table
+
+If sendNotifyMessages is true, link will receive notification messages from
+areafix about link's requests status, bad posts or deletion of subscribed area.
+
+By default is off, i.e. do not send any notification messages.
+
+This statement can only be repeated for different links.
+
+@node UnsubscribeOnAreaDelete,  , SendNotifyMessages, Link Keywords
+@subsection UnsubscribeOnAreaDelete
+@findex UnsubscribeOnAreaDelete
+@table @asis
+@item Syntax:
+@code{unsubscribeOnAreaDelete <bool>}
+@item Example:
+@code{unsubscribeOnAreaDelete yes}
+@end table
+
+If unsubscribeOnAreaDelete is true, link will receive unsubscribe request
+("-area" if @ref{AdvancedAreafix} is off for the link and "~area" if it is on) 
+to his areafix when subscribed area is deleted. An area may be deleted when 
+default uplink (@code{-def}) unsubscribes from the area or some link deletes 
+this area by "~area" command (@ref{LinkGrp} for the link that deletes an area 
+must be the same as EchoArea's @code{-g <group>}). You may also delete an area 
+yourself by running the following command:@*@*
+@code{hpt afix <your main AKA> ~area}@*@*
+Here @code{<your main AKA>} is your main address. @xref{address,,,fidoconfig,FidoConfig Manual}.
+
+By default is off, i.e. do not send unsubscribe request.
+
+This statement can only be repeated for different links.
+
+
+@node Carbon Copy,  , Link Keywords, Configuration Reference
+@section Carbon Copy
+
+@menu
+* CarbonAddr::                  make carbonCopy using from address of msg
+* CarbonAndQuit::               carbon message only one time
+* CarbonCopy::                  specify the area where the carbon copies go into
+* CarbonDelete::                specify that the carbon msg should be deleted
+* CarbonExcludeFwdFrom::        exclude " * Forward from area " string
+* CarbonExtern::                specify the external program to pass msg text to
+* CarbonFrom::                  make carbonCopy using from-field of msg
+* CarbonFromArea::              carbon messages from area
+* CarbonGroups::                make carbonbonCopy from this groups
+* CarbonKeepSb::                keep seen-by's and path
+* CarbonKludge::                make carbonCopy using kludge lines of msg
+* CarbonMove::                  specify the area where the carbon msg get moved into
+* CarbonOut::                   carbon outgoing messages
+* CarbonReason::                string of carbon copy reason
+* CarbonRule::                  how to combine Carbon expressions
+* CarbonSubj::                  make carbonCopy using subject-field of msg
+* CarbonText::                  make carbonCopy using text-field of msg
+* CarbonTo::                    make carbonCopy using to-field of msg
+* ExcludePassthroughCarbon::    don't carbon in passthrough areas
+* NetmailExtern::               specify the external Program to pass netmail msgs to
+
+@end menu
+
+@value{HPT} is based on FIDOCONFIG library, so read documentation of
+FIDOCONFIG about location of config file, keywords ideology and about
+majority of the keywords,
+@xref{Top, Fidoconfig Manual, , fidoconfig, Fidoconfig manual}.
+
+
+@node CarbonAddr, CarbonAndQuit, Carbon Copy, Carbon Copy
+@subsection  CarbonAddr
+@findex CarbonAddr
+@table @asis
+@item Syntax:
+@code{carbonAddr <addr>}
+@item Example:
+@code{carbonAddr 2:5000/100}@*
+@code{carbonCopy mail.from.100}
+@end table
+
+If an echomail is tossed whose from address field is the same as <addr>,
+the echomail is copied to the area specified by the @code{carbonCopy}
+keyword.
+
+This statement can be repeated.
+
+@node CarbonAndQuit, CarbonCopy, CarbonAddr, Carbon Copy
+@subsection CarbonAndQuit
+@findex CarbonAndQuit
+@table @asis
+@item Syntax:
+@code{carbonAndQuit <bool>}
+@item Example:
+@code{carbonAndQuit}
+@end table
+
+By default one message can be processed by Carbon Copy several times.
+For example: you set CarbonTo "max" to echoarea MY.MAIL and CarbonSubj
+"beer" to echoarea MY.PLEASURE :-) And message to "max" with this
+subject line carbons to each @code{EchoArea}.
+
+If you turn on @code{CarbonAndQuit} message will be copyed to MY.MAIL
+only.
+
+It is however possible to override this setting, by putting an '*'
+before the action:
+@example
+     CarbonCopy *my.mail
+     CarbonMove *my.mail
+     CarbonExtern *<command line>
+@end example
+
+This '*' does not work for CarbonDelete of course.
+
+This statement cannot be repeated.
+
+@node CarbonCopy, CarbonDelete, CarbonAndQuit, Carbon Copy
+@subsection CarbonCopy
+@findex CarbonCopy
+@table @asis
+@item Syntax:
+@code{carbonCopy <area-tag>}
+@item Example:
+@code{carbonCopy written.from.points}
+@end table
+
+This statement sets the area for the previous
+carbon@{Addr|To|From|Kludge|Subj|Text@} statement.
+
+If no @code{EchoArea} defined to copy, the carbon msgs goes to the
+@code{BadArea}.
+
+Note: You cannot carbonCopy a message from EchoArea to NetmailArea
+and vice versa.
+
+This statement can be placed after different
+carbon@{Addr|To|From|Kludge|Subj|Text@} statements.
+
+@xref{CarbonMove}.
+
+@node CarbonDelete, CarbonExcludeFwdFrom, CarbonCopy, Carbon Copy
+@subsection CarbonDelete
+@findex CarbonDelete
+@table @asis
+@item Syntax:
+@code{carbonDelete}
+@item Example:
+@code{carbonDelete}
+@end table
+
+This statement specifies that selected by previous
+carbon@{Addr|To|From|Kludge|Subj|Text@} statement msgs should not be
+stored into @code{EchoArea}.
+
+This statement can be repeated for each different
+carbon@{Addr|To|From|Kludge|Subj|Text@} statement.
+
+@node CarbonExcludeFwdFrom, CarbonExtern, CarbonDelete, Carbon Copy
+@subsection CarbonExcludeFwdFrom
+@findex CarbonExcludeFwdFrom
+@table @asis
+@item Syntax:
+@code{CarbonExcludeFwdFrom <bool>}
+@item Example:
+@code{CarbonExcludeFwdFrom}
+@end table
+
+Don't add to begin of carbon msg text " * Forward from area <areatag>"
+
+This statement cannot be repeated.
+
+@node CarbonExtern, CarbonFrom, CarbonExcludeFwdFrom, Carbon Copy
+@subsection CarbonExtern
+@findex CarbonExtern
+@table @asis
+@item Syntax:
+@code{carbonExtern <program name>}
+@item Example:
+@code{carbonExtern douuedecode}
+@end table
+
+This statement specifies external program to run for the previous
+carbon@{Addr|To|From|Kludge|Subj|Text@} statement.
+
+If this statement is ommitted and no @code{EchoArea} defined for move or
+copy, the carbon msgs gets copyed to the @code{BadArea}.
+
+If program name is prepended with '|' sign, hpt tries to pass data thru
+the pipe, not temporary file.
+
+This statement can be repeated for each different
+carbon@{Addr|To|From|Kludge|Subj|Text@} statement.
+
+@node CarbonFrom, CarbonFromArea, CarbonExtern, Carbon Copy
+@subsection CarbonFrom
+@findex CarbonFrom
+@table @asis
+@item Syntax:
+@code{carbonFrom <pattern>}
+@item Example:
+@example
+carbonFrom Matthias Tichy
+carbonCopy my.echomail
+@end example
+@end table
+
+If an echomail is tossed whose from-field matched the pattern <pattern>,
+the echomail is copied to the area specified by the @code{CarbonCopy}
+keyword or moved to the area specified by the @code{CarbonMove} keyword.
+The names must be an exact match.
+
+You can enclose <string> into quotes ("<string>").
+
+This statement can be repeated.
+
+@node CarbonFromArea, CarbonGroups, CarbonFrom, Carbon Copy
+@subsection CarbonFromArea
+@findex CarbonFromArea
+@table @asis
+@item Syntax:
+@code{CarbonFromArea <pattern>}
+@item Example:
+@code{CarbonFromArea Interuser}
+@end table
+
+Only messages that are written in this areas will be copied. Use it in
+combination with CarbonRule to prevent that all messages from an area
+are copied.
+
+@xref{CarbonRule}.
+
+Another example:
+@example
+CarbonFromArea Interuser
+CarbonRule NOT
+CarbonText " Israel "
+CarbonCopy my.news
+@end example
+
+<pattern> is the mask for area name, defined after EchoArea or NetMailArea.
+
+This statement can be repeated.
+
+@node CarbonGroups, CarbonKeepSb, CarbonFromArea, Carbon Copy
+@subsection CarbonGroups
+@findex CarbonGroups
+@table @asis
+@item Syntax:
+@code{carbonGroups <string> [,<string>...]}
+@item Example:
+@code{carbonGroups Fido, LifeNet}@*
+@code{carbonCopy my.echomail}
+@end table
+
+With this keyword you can define from which groups messages should be copied.
+It is wise when you use this keyword together with other selection criteria
+or else the result will give many messages.
+
+@xref{CarbonRule}.
+
+This statement can be repeated.
+
+@node CarbonKeepSb, CarbonKludge, CarbonGroups, Carbon Copy
+@subsection CarbonKeepSb
+@findex CarbonKeepSb
+@table @asis
+@item Syntax:
+@code{carbonKeepSb <bool>}
+@item Example:
+@code{carbonKeepSb}
+@end table
+
+For each CC message SEEN-BY's and PATH fields are killed. If you set up
+@code{CarbonKeepSb} then all kludges will be saved. But you may also
+set up @code{-keepsb} in options of @code{EchoArea} where you carbon
+messages.
+
+This statement cannot be repeated.
+
+@node CarbonKludge, CarbonMove, CarbonKeepSb, Carbon Copy
+@subsection CarbonKludge
+@findex CarbonKludge
+@table @asis
+@item Syntax:
+@code{carbonKludge <pattern>}
+@item Example:
+@code{carbonKludge MSGID: 2:5000/117.}@*
+@code{carbonCopy written.by.points}
+@end table
+
+If an echomail is tossed which has a kludge line which includes the
+substring matches <pattern>, the echomail is copied to the area
+specified by the @code{CarbonCopy} keyword.
+
+You can enclose <pattern> into quotes ("<pattern>").
+@example
+carbonKludge "REPLY: 2:5000/117 "
+@end example
+
+This statement can be repeated.
+
+@node CarbonMove, CarbonOut, CarbonKludge, Carbon Copy
+@subsection CarbonMove
+@findex CarbonMove
+@table @asis
+@item Syntax:
+@code{carbonMove <area-tag>}
+@item Example:
+@code{carbonMove my.echomail}
+@end table
+
+This statement sets the area for the previous
+carbon@{Addr|To|From|Kludge|Subj|Text@} statement.
+
+If no @code{EchoArea} defined to copy (or move), the carbon msgs goes to
+the @code{BadArea}.
+
+Note: You cannot carbonMove a message from EchoArea to NetmailArea
+and vice versa.
+
+Unlike @code{CarbonCopy} msg gets moved, not copied into this area.
+
+This statement can be placed after different
+carbon@{Addr|To|From|Kludge|Subj|Text@} statements.
+
+@xref{CarbonCopy}.
+
+@node CarbonOut, CarbonReason, CarbonMove, Carbon Copy
+@subsection CarbonOut
+@findex CarbonOut
+@table @asis
+@item Syntax:
+@code{carbonOut <bool>}
+@item Example:
+@code{carbonOut}
+@end table
+
+This statement makes possible carbon your outgoing mail (scanned &
+packed). Don't forget to set carbon rules.
+
+This statement cannot be repeated.
+
+@node CarbonReason, CarbonRule, CarbonOut, Carbon Copy
+@subsection CarbonReason
+@findex CarbonReason
+@table @asis
+@item Syntax:
+@code{carbonReason <string>}
+@item Example:
+@code{carbonText msged}@*
+@code{carbonReason Found 'msged' in message}@*
+@code{carbonCopy my.searches.echo}
+@end table
+
+This statement sets the 'reason string' for the previous
+carbon@{Addr|To|From|Kludge|Subj|Text@} statement.
+
+This string would be printed after ' * Forwarded ...' line in message
+begining. That's useful when many carbons are made to single area.
+No reason string is printed if this statement is ommitted.
+
+This statement can be repeated for each different
+carbon@{Addr|To|From|Kludge|Subj|Text@} statement.
+
+@node CarbonRule, CarbonSubj, CarbonReason, Carbon Copy
+@subsection CarbonRule
+@findex CarbonRule
+@table @asis
+@item Syntax:
+@code{carbonRule AND|NOT|OR}
+@item Example:
+@example
+carbonGroups fido
+carbonRule AND
+carbonText programming
+carbonCopy my.echomail
+@end example
+@end table
+
+With this keyword you can make it possible to have more than 1 selection
+criteria for a message. The default rule is AND. So without using CarbonRule,
+all expressions will be AND-ed.
+With Carbonrule AND, the two expressions above and below the AND must be
+true or else a message will not be copied.
+With Carbonrule you can define how the expressions are joined together.
+
+CarbonRule NOT, is in fact AND NOT. So
+
+@example
+        CarbonText beatles
+        CarbonRule NOT
+        CarbonText bugs
+        CarbonCopy my.mail
+@end example
+
+...will only copy messages when 'beatles' is in the text AND NOT 'bugs'
+in the text.
+
+In general, it is possible to define more than one set of rules for
+1 single carbonArea.
+For example:
+@example
+        CarbonText female
+        CarbonRule NOT
+        CarbonText connector
+        CarbonRule OR
+        CarbonSubj beer
+        CarbonRule AND
+        CarbonText drink
+        CarbonText holliday
+        CarbonCopy my.mail
+@end example
+Here are two sets of criteria and for all of them there is only 1 carbonarea
+defined. After an OR, a new set of expressions start.
+The above example can also be written as:
+@example
+        CarbonRule NOT
+        CarbonText connector
+        CarbonRule AND
+        CarbonText female
+        CarbonRule OR
+        CarbonRule AND
+        CarbonSubj beer
+        CarbonText drink
+        CarbonText holliday
+        CarbonCopy my.mail
+@end example
+
+Messages that have 'female' in the text, but not the word 'connector',
+will be copied to the my.mail area.
+
+Also messages with 'beer' in the text AND 'drink' in the text AND 'holliday'
+in the text, will be copied to the my.mail area.
+
+A set of expressions is true when they are OR-ed and at least one
+of them is true.
+
+A set of expressions is true when they are AND-ed and ALL of them are true.
+Expressions are evaluated from top to bottom.
+
+This statement can be repeated.
+
+A CarbonRule is valid until a next rule is defined of until an action.
+After an action (CarbonCopy, CarbonMove, etc), the CarbonRule is AND again
+and new set of expressions starts.
+
+@node CarbonSubj, CarbonText, CarbonRule, Carbon Copy
+@subsection CarbonSubj
+@findex CarbonSubj
+@table @asis
+@item Syntax:
+@code{carbonSubj <pattern>}
+@item Example:
+@code{carbonSubj beer}@*
+@code{carbonCopy cc.beer}
+@end table
+
+If an echomail is tossed which has a subject line matched <pattern>,
+this echomail is copied to the area specified by the @code{CarbonCopy}
+keyword or moved to the area specified by the @code{CarbonMove} keyword.
+You can enclose <pattern> into quotes ("<pattern>").
+
+This statement can be repeated.
+
+@node CarbonText, CarbonTo, CarbonSubj, Carbon Copy
+@subsection CarbonText
+@findex CarbonText
+@table @asis
+@item Syntax:
+@code{carbonText <pattern>}
+@item Example:
+@code{carbonText cool beer}@*
+@code{carbonCopy cc.beer}
+@end table
+
+If an echomail is tossed which has a kludge line which includes the
+substring matches <pattern>, the echomail is copied to the area
+specified by the @code{CarbonCopy} keyword or moved to the area
+specified by the @code{CarbonMove} keyword.
+
+You can enclose <pattern> into quotes ("<pattern>").
+
+This statement can be repeated.
+
+@node CarbonTo, ExcludePassthroughCarbon, CarbonText, Carbon Copy
+@subsection CarbonTo
+@findex CarbonTo
+@table @asis
+@item Syntax:
+@code{carbonTo <pattern>}
+@item Example:
+@code{carbonTo Max Levenkov}@*
+@code{carbonCopy my.echomail}
+@end table
+
+If an echomail is tossed whose to-field matched <pattern>, the
+echomail is copied to the area specified by the @code{CarbonCopy}
+keyword or moved to the area specified by the @code{CarbonMove}
+keyword. The names must be an exact match.
+
+You can enclose <pattern> into quotes ("<pattern>").
+
+This statement can be repeated.
+
+@node ExcludePassthroughCarbon, NetmailExtern, CarbonTo, Carbon Copy
+@subsection ExcludePassthroughCarbon
+@findex ExcludePassthroughCarbon
+@table @asis
+@item Syntax:
+@code{excludePassthroughCarbon <bool>}
+@item Example:
+@code{excludePassthroughCarbon}
+@end table
+
+Don't carbon from passthrough areas.
+
+This statement cannot be repeated.
+
+@node NetmailExtern,  , ExcludePassthroughCarbon, Carbon Copy
+@subsection NetmailExtern
+@findex NetmailExtern
+@table @asis
+@item Syntax:
+@code{netmailExtern <program name>}
+@item Example:
+@code{netmailExtern douuedecode}
+@end table
+
+This statement specifies external program to run for the previous
+carbon@{Addr|To|From|Kludge|Subj|Text@} statement for netmail
+messages...
+
+If this statement is ommitted and no @code{NetMailArea} defined for move or
+copy, the carbon msgs gets copyed to the @code{BadArea}.
+
+If program name is prepended with '|' sign, hpt tries to pass data thru the
+pipe, not temporary file.
+
+This statement can be repeated for each different
+carbon@{Addr|To|From|Kludge|Subj|Text@} statement.
+
+
+@node Advanced Concepts, Keyword Index, Configuration Reference, Top
+@chapter Advanced Concepts in @value{HPT}
+
+This chapter describes how to use some features...
+After you have managed to perform basic functions with @value{HPT}, like
+defining paths & areas, this chapter will introduce you into some
+advanced concepts in @value{HPT} that deserve special attention, like
+how to use several netmail areas and similar.
+
+@menu
+* Exit::            hpt exit codes
+* Suffixes::        renaming suffixes for pkt files
+* Netmail::         defining several netmail areas for several users
+* ZoneGating::      how zonegating works for echomail
+* Perl support::    Perl support in HPT
+* Remote control::  how remote control using Areafix works
+@end menu
+
+@node Exit, Suffixes, Advanced Concepts, Advanced Concepts
+@section HPT Exit Codes
+
+@table @asis
+@item 0 - successful termination
+@item 64 - command line usage error
+@item 66 - cannot open input (file)
+@item 69 - service unavailable [config file not found]
+@item 70 - internal software error [not enough memory, etc.]
+@item 73 - can't create (user) output file [lockfile]
+@item 74 - input/output error
+@item 75 - temp failure; user is invited to retry [lockfile used by second copy of hpt]
+@item 78 - configuration error
+@end table
+
+@node Suffixes, Netmail, Exit, Advanced Concepts
+@section Renaming Suffixes For Pkt Files
+
+@table @asis
+@item .tos - hpt crashes on this pkt, report to developers!
+@item .sec - a) pktpwd problem or link not found; b) bundles in unsecure inbound
+@item .acs - could not open pkt
+@item .bad - a) not/wrong pkt; b) bundle unpacking problems
+@item .ntu - not to us
+@item .err - msg tossing problem (couldn't open badArea/couldn't write msg)
+@item .flt - perl filter (process_pkt()) returns bad retcode
+@end table
+
+@node Netmail, ZoneGating, Suffixes, Advanced Concepts
+@section Defining Several Netmail Areas For Several Users
+
+If you want receive netmail for one address in first netmail area, and
+for second address in second netmail area respectively, you must add
+@code{-a <ourAka>} to netmail area, like this:
+
+@table @asis
+@item Address 2:5000/117
+@item Address 2:90/190
+@item NetmailArea NetMail /home/ml/fido/msgb/netmail -b squish -a 2:5000/117
+@item NetmailArea OtherNetMail /home/ml/fido/msgb/othernetmail -b squish -a 2:90/190
+@end table
+
+@node ZoneGating, Perl support, Netmail, Advanced Concepts
+@section How Zone Gating works for echomail and what seen-bys is stripped
+
+We have EchoArea with links from zone1 & zone2. Echo->useAka with
+zone2. Defined by "-a <addr>" or the by the first Echo->address from
+config if not defined in EchoArea line.
+
+Program algorythm:
+
+@table @asis
+@item 1.
+check pkt zone address
+@item 2.
+split links in to groups: with (pktaddr.zone == linkaddr.zone) and
+(pktaddr.zone != linkaddr.zone)
+@item 3.
+send msg to first group of links (their aka adding to seen-bys and
+echo->useAka too if not in seen-bys yet)
+@item 4.
+if (pktaddr.zone != echo->useAka.zone) seen-bys cleaned.
+@item 5.
+send msg to second group of links (their aka adding to seen-bys and
+echo->useAka too if not in seen-bys yet)
+@item 6.
+store msg in msgbase
+@end table
+
+Examples:
+
+a) msg comes from z1. for z1 links we sending seen-bys with z2
+   nodes. but z1 links must clean seen-bys by themselves (this is z2
+   echo) or download this echo from z1 link. after that seen-bys cleaned
+   and msg forwarded to z2 links. in the msgbase seen-bys from z2 links
+   only.
+
+b) msg comes from z2. forward it to z2 links. then forward to z1
+   links. seen-bys not cleaned: this is z2 echo and z1 links must clean
+   it by themselves or receive echo from z1 link. store in msgbase with
+   all seen-bys from z1 & z2 nodes.
+
+c) scan works the same: first sending to z2 links, adding to seen-by's
+   z1 links and export to them.
+
+@node Perl support, Remote control, ZoneGating, Advanced Concepts
+@section Perl support in HPT
+HPT may be compiled with support for calling Perl subs in some parts of its
+work. In this case it also provides API for such subs (Perl hooks).
+Perl subs are located in file filter.pl, which usually located
+in same directory as HPT's executable file but it's name and location
+may changed via @code{HptPerlFile} configuration option.
+The following Perl hooks are supported:
+@table @asis
+@item 1.
+ after_unpack - called after unpacking an echomail bundle to @code{TempInbound}
+@item 2.
+ before_pack - called before packing echomail bundle to one of links
+@item 3.
+ process_pkt - called before processing pkt, the following variables available:
+@table @asis
+@item $pktname - name of pkt,
+@item $secure - defined if this pkt from secure link
+@end table
+ hook must return "" for normal pkt processing or other string to rename pkt to .flt
+@item 4.
+ pkt_done - called after pkt processing, the following variables available:
+@table @asis
+@item $pktname - name of pkt,
+@item $rc - exit code(0-ok),
+@item $res - reason(exit code in text form):
+@table @asis
+@item 0 - OK ($res undefined),
+@item 1 - Security violation,
+@item 2 - Can't open pkt,
+@item 3 - Bad pkt format,
+@item 4 - Not to us,
+@item 5 - Msg tossing problem
+@end table
+@end table
+@item 5.
+  hpt_exit - called before hpt completely exit if any other Perl hook was called
+  during this session.
+@item 6.
+  route - called just before routing netmail message, the following variables
+  availble:
+@table @asis
+@item $addr - message destination address,
+@item $from - message originating address,
+@item $toname - destination user name,
+@item $fromname - originating user name,
+@item $subject - message subject line,
+@item $date - message date and time,
+@item $text - message text,
+@item $attr - message attributes,
+@item $route - default route for this message (derermined
+  via @code{Route} statements in config file (may be empty, this means
+  that either no route at all for this message or it will be routed via
+  one-to-multi routing(Route normal noroute 2:5004/73.*)).
+@end table
+
+  Before return you can set $flavour - to hold|normal|crash|direct|immediate
+  for required flavour of message.
+  return "" for default routing or address via which this message should be sent.
+  example:
+
+@example
+  sub route @{
+    if ($from eq "2:5004/75.73") return "2:5004/75.0";
+    else return "";
+  @}
+@end example
+
+  if source address of message is 2:5004/75.73 then route it via 2:5004/75,
+  otherwise route it using default routing
+@item 7.
+ scan - called while scanning messages (hpt scan or hpt pack). The following
+ variables available:
+@table @asis
+@item $fromname - originating user name,
+@item $fromaddr - message originating address,
+@item $toname - destination user name,
+@item $toaddr - message destination address (for netmail),
+@item $area - message area (for echomail),
+@item $subject - message subject line,
+@item $date - message date and time,
+@item $text - message text,
+@item $attr - message attributes.
+@end table
+  Set $change to update $text, $subject, $fromaddr, $toaddr, $fromname,
+$toname, $attr.
+  If returns non-empty string (reason), the message will not pack to downlinks.
+@item 8.
+ filter - called for processing every message while tossing.
+The following variables available:
+@table @asis
+@item $fromname - originating user name,
+@item $fromaddr - message originating address,
+@item $toname - destination user name,
+@item $toaddr - message destination address (for netmail),
+@item $area - message area (for echomail),
+@item $subject - message subject line,
+@item $date - message date and time,
+@item $text - message text,
+@item $attr - message attributes,
+@item $pktfrom - address of originating pkt,
+@item $secure - defined if the message received from secure link.
+@end table
+  Set $change to update $text, $subject, $fromaddr, $toaddr, $fromname,
+$toname, $attr.
+  Set $kill for kill message.
+  If returns non-empty string (reason), the message will be moved to badarea.
+@item 9.
+ tossbad - called when message will be put in badArea.
+The following variables available:
+@table @asis
+@item $fromname - originating user name,
+@item $fromaddr - message originating address,
+@item $toname - destination user name,
+@item $toaddr - message destination address (for netmail),
+@item $area - message area (for echomail),
+@item $subject - message subject line,
+@item $date - message date and time,
+@item $text - message text,
+@item $attr - message attributes,
+@item $pktfrom - address of originating pkt,
+@item $reason - reason, why badarea (text string).
+@end table
+  Set $change to update $text, $subject, $fromaddr, $toaddr, $fromname,
+$toname, $attr.
+  If returns non-empty string (reason) for kill the message.
+
+@end table
+
+@node Remote control,  , Perl support, Advanced Concepts
+@section How remote control using Areafix works
+
+You can remotely control and change other links' subscription and options
+using Areafix. Remote control will not give you full access on your system,
+but will help you (or your cosysop) with some most common tasks.
+
+Some terms first.
+
+Controlling link is a link that exercise remote control. He should be defined
+in config and should have allowRemoteControl token set to "on".
+
+Controlled link is a link whose subscription and options are controlled. He should
+be defined in config too.
+
+Controlling link is allowed to send "%from <addr>" command to Areafix, where
+<addr> is an address of controlled link. All the next commands till the end of
+message or till the next "%from" command will be executed as if the message came
+from controlled link. All the reports will be sent to controlling link. There can
+be as much "%from" commands in message as you like. If there was an error while
+processing "%from" command (for example, address was not specified in "%from"
+command), message processing will be stopped and controlling link will receive
+notification message.
+
+Example of Areafix message:
+
+@example
+%from 2:450/210.1       <-- all next actions will be made with 2:450/210.1
++ru.husky               <-- subscribe to ru.husky
+%areafixpwd testpwd     <-- change areafix password to 'testpwd'
+%from 2:450/210.5       <-- all next actions will be made with 2:450/210.5
+-bel.sysop              <-- unsubscribe from bel.sysop
+%linked                 <-- send list of linked areas
+@end example
+
+As this function allows remote control of other links' subscription and options
+without knowing their areafix passwords, you should enable allowRemoteControl
+token only for yourself or your cosysop.
+
+@node Keyword Index,  , Advanced Concepts, Top
+
+@value{HPT} is based on FIDOCONFIG library, so read documentation of
+FIDOCONFIG about location of config file, keywords ideology and about
+majority of the keywords,
+@xref{Top, Fidoconfig Manual, , fidoconfig, Fidoconfig manual}.
+
+@appendix Configuration File Keyword Index
+@printindex fn
+
+@bye

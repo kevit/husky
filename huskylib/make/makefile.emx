@@ -1,0 +1,43 @@
+# $Id: makefile.emx,v 1.7 2010/05/13 07:16:25 stas_degteff Exp $
+# Makefile to build HUSKYLIB/OS2 with gcc 3.x.x from EMX v0.9d.
+# No support for the Husky build environment.
+
+# include Husky-Makefile-Config,
+# copy this file from ../../huskybse/huskymak.cfg.emx
+include ../../huskymak.cfg
+
+include makefile.inc
+
+# includes directories
+CINCL	= -I$(H_DIR)
+
+READMEFILES= ../COPYING ../INSTALL ../License ../HISTORY ../ChangeLog ../VERSION
+
+## make rules ##
+
+default:
+	@echo Run 'make programs' to build static version of programs ($(PROGRAMS))
+	@echo Run 'make all' to build all above
+
+all:	static dll programs
+
+static: $(TARGETLIB)
+dll:	$(TARGETDLL)
+programs: $(TARGETLIB) $(PROGRAMS)
+dllprograms: $(TARGETLIB) $(TARGETDLL) $(PROGRAMS)
+
+%$(_EXE): $(SRC_DIR)%$(_C) $(TARGETLIB)
+	@echo Create $(PROGRAMS)
+	@$(CC) $(CFLAGS) $(CDEFS) $(CINCL) $(EXENAMEFLAG) $@ $^
+
+%$(_OBJ): $(SRC_DIR)%$(_C)
+	@echo Compiling $<
+	@$(CC) $(CFLAGS) $(CDEFS) $(CINCL) $(OPTCFLAGS) $<
+
+$(TARGETLIB):	$(OBJS)
+	@echo Create $(TARGETLIB)
+	@$(AR) $(AR_R) $@ $?
+
+$(TARGETDLL):	$(OBJS)
+	@echo Create $(TARGETDLL)
+	@$(CC) $(DLLOPT) $(CFLAGS) $(EXENAMEFLAG) $@ $^

@@ -1,0 +1,34 @@
+# $Id: makefile.wcw,v 1.3 2003/04/08 03:39:46 andr_lukyanov Exp $
+#
+# Makefile for Building hptsqfix with Watcom C++ for Windows.
+# No support for Husky build environment.
+#
+# Predefines: __WATCOMC__,
+# __NT__ (-bt=nt)
+
+CC      = wcc386
+LINK    = WLINK
+SRC     = ..\src
+
+CFLAGS  = -zq -wx -bt=nt -oneatx -5
+CINCL	= -i..\h;..\..\fidocon;..\..\smapi;..\..\huskylib
+LFLAGS  =
+LIBS	= Library ..\..\huskylib\make\huskywcw.lib, ..\..\smapi\make\smapiwcw.lib, ..\..\fidoconf\fconfwcw.lib
+
+OBJS = hptsqfix.obj
+
+all: $(OBJS) hptsqfix.exe
+
+$(OBJS): $(SRC)\*.c
+  @echo compiling $*.c
+  $(CC) $(CFLAGS) $(CINCL) $(SRC)\$*.c
+
+hptsqfix.exe: $(OBJS)
+  @echo linking hptsqfix
+  $(LINK) $(LFLAGS) FILE hptsqfix.obj $(LIBS) NAME hptsqfix.exe
+
+clean:
+	-DEL *.OBJ
+	-DEL *.err
+	-DEL hptsqfix.exe
+

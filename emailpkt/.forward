@@ -1,0 +1,7 @@
+# $Id: .forward,v 1.3 2002/10/28 08:41:26 stas_degteff Exp $
+#
+# Sample file for use emailpkt/hereceive with dedicated email account on unix
+# clone OS
+#
+
+"|/usr/local/bin/hereceive -q"

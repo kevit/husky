@@ -1,0 +1,42 @@
+# $Id: makefile.lnx,v 1.13 2011/11/15 21:55:46 stas_degteff Exp $
+# Legacy makefile for building on Linux with gcc
+# No support for the Husky build environment
+
+CC      = gcc
+DEBUG   = 0
+
+OBJS    = add_desc.o clean.o fcommon.o filecase.o filelist.o global.o hatch.o htickafix.o \
+          report.o scan.o seenby.o toss.o htick.o
+
+SRC_DIR = ../src/
+
+ifeq ($(DEBUG), 1)
+  CFLAGS  = -c -I../h -I../.. -I../../huskylib -I../../smapi -I../../fidoconf -I../../areafix -Wall -ggdb -O2 -DUNIX
+else
+  CFLAGS  = -c -I../h -I../.. -I../../huskylib -I../../smapi -I../../fidoconf -I../../areafix -Wall -O3 -s -DUNIX
+endif
+
+#LFLAGS  = -L../../huskylib/make -L../../smapi/make -L../../fidoconf/make -L../../areafix/make
+#LIBS    =  -lsmapilnx -lareafixlnx -lfidoconfiglnx
+# Order of libraries are mandatory!
+LIBS= ../../smapi/make/libsmapilnx.a ../../areafix/make/libareafixlnx.a ../../fidoconf/make/libfidoconfiglnx.a ../../huskylib/make/libhuskylnx.a
+
+all: $(OBJS) \
+     htick
+
+%.o: $(SRC_DIR)%.c
+	$(CC) $(CFLAGS) $(SRC_DIR)$*.c
+
+htick: $(OBJS)
+	$(CC) $(LFLAGS) -o htick $(OBJS) $(LIBS)
+
+clean:
+	-rm -f *.o
+	-rm *~
+	-rm core
+	-rm htick
+
+distclean: clean
+	-rm htick
+	-rm *.1.gz
+	-rm *.log

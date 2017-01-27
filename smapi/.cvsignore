@@ -1,0 +1,10 @@
+build-stamp
+configure-stamp
+libsmapi.so.2.?.*
+*.lib
+*.dll
+*.exp
+*.o
+*.obj
+*.dsw
+

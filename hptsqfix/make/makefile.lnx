@@ -1,0 +1,29 @@
+# $Id: makefile.lnx,v 1.3 2003/04/08 03:39:46 andr_lukyanov Exp $
+#
+# Legacy makefile for building on Linux with gcc
+# No support for the Husky build environment
+
+CC	= gcc
+CFLAGS	= -c -g -O2 -DUNIX
+CINCL	= -I../h -I../../fidoconf -I../../smapi -I../../huskylib
+LFLAGS	= -s -L../../fidoconf -L../../smapi/make -L../../huskylib/make
+
+OBJS    = hptsqfix.o
+LIBS	= -lhuskylnx -lsmapilnx -lfidoconfiglnx
+SRC_DIR = ../src/
+
+
+all: $(OBJS) \
+	hptsqfix
+
+%.o: $(SRC_DIR)%.c
+	$(CC) $(CFLAGS) $(CINCL) $(SRC_DIR)$*.c
+
+hptsqfix: $(OBJS)
+	$(CC) $(LFLAGS) -o hptsqfix $(OBJS) $(LIBS)
+
+clean:
+	-rm -f *.o
+	-rm -f *~
+	-rm -f hptutil
+	-rm -f core

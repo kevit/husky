@@ -1,0 +1,21 @@
+# the mingw compiler for windows 32
+# as CROSS prefix, use i386-mingw32- for the crtdll.dll crosscompiler,
+# i386-mingwmsvc- for the mcvcrt.dll crosscompiler, etc.
+
+TARGET=mpostnt.exe
+
+CC=$(CROSS)gcc 
+COPT=-D__NT__ -O2
+
+default: $(TARGET)
+
+clean:
+	-rm mpostp.o
+
+distclean: clean
+	-rm $(TARGET)
+
+$(TARGET): mpostp.c
+	$(CC) $(COPT) -I.. -o $(TARGET) mpostp.c ../smapi/libsmapimgw.a
+
+

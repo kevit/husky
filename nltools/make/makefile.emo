@@ -1,0 +1,29 @@
+# This builds a standalone OS/2 executable with EMX GCC (OMF linkage)
+
+.PHONY: default
+
+CC=gcc
+OBJ=.obj
+RM=del
+EXE=.exe
+CFLAGS=-Zomf -O3 -I../h -I../.. -DUNIX
+LFLAGS=-Zomf -O3 -L../../fidoconf -L../../smapi
+LIBS= -lfconfemo -lsmapiemo
+SRC_DIR=../src/
+
+.SUFFIXES:
+.SUFFIXES: .c .obj .exe
+
+%$(OBJ): $(SRC_DIR)%.c
+	$(CC) $(CFLAGS) -c $<
+
+include makefile.inc
+
+all: commonprogs
+
+default: all
+
+clean:
+	$(RM) *$(OBJ)
+
+distclean: clean commondistclean

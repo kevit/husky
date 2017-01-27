@@ -1,0 +1,22 @@
+HPTSQFIX 1.9 current
+Changes after hptsqfix 1.4
+
+1. MAJOR feature improvements:
+
+2. CONFIG changes:
+
+3. IMPORTANT bugfixes:
+
+
+HPTSQFIX 1.4 stable
+Changes after hptsqfix 1.2
+
+1. MAJOR feature improvements:
+   - remove sorting msgbase
+
+2. CONFIG changes:
+
+3. IMPORTANT bugfixes:
+
+
+$Id: HISTORY,v 1.2 2003/02/20 09:19:48 sfpavel Exp $

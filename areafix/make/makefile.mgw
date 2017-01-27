@@ -1,0 +1,58 @@
+# $Id: makefile.mgw,v 1.3 2010/12/07 21:04:00 stas_degteff Exp $
+# Makefile to build AREAFIX with cross-compiler Mingw32 on unix
+# No support for the Husky build environment.
+
+## include common makefiles part ##
+include ../../huskybse/huskymak.mgw
+include makefile.inc
+
+## make directives ##
+
+.PHONY: distclean clean all static dll programs default doc package
+
+## Default make rule ##
+
+default:
+	@echo Run 'make dll' to build dll version ($(TARGETDLL))
+	@echo Run 'make static' to build static version ($(TARGETLIB))
+	@echo Run 'make all' to build all above
+
+all:	static dll
+
+# libraries need to build binary file
+LIBS	+= ../../fidoconf/make/$(LIBPREFIX)fidoconfig$(LIBSUFFIX)$(_LIB) \
+	   ../../smapi/make/$(LIBPREFIX)smapi$(LIBSUFFIX)$(_LIB) \
+	   ../../huskylib/make/$(LIBPREFIX)husky$(LIBSUFFIX)$(_LIB)
+
+## Additions (add into end of strings) ##
+CFLAGS	+= -I$(H_DIR) -I../../huskylib -I../../smapi -I../../fidoconf
+
+## make rules ##
+
+static: $(TARGETLIB)
+dll:	$(TARGETDLL)
+
+
+%$(_OBJ): $(_SRC_DIR)%$(_C)
+	@echo Compiling $<
+	@$(CC) $(CFLAGS) $(CDEFS) $(OBJOPT) $<
+
+$(TARGETLIB):	$(OBJS)
+	@echo Creating $(TARGETLIB)
+	@$(AR) $(ARFLAGS) $@ $?
+	@$(RANLIB) $@
+
+$(TARGETDLL):	$(OBJS) $(LIBS)
+	@echo Creating $(TARGETDLL)
+	@$(CC) $(DLLOPT) $(CFLAGS) $(EXENAMEFLAG)$@ $^
+
+
+clean:
+	@echo Deleting *$(_OBJ)
+	@-$(RM) $(RMOPT) *$(_OBJ)
+
+distclean: clean
+	@echo Deleting $(TARGETDLL)
+	@-$(RM) $(RMOPT) $(TARGETDLL)
+	@echo Deleting $(TARGETLIB)
+	@-$(RM) $(RMOPT) $(TARGETLIB)

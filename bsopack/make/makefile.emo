@@ -1,0 +1,44 @@
+# $Id: makefile.emo,v 1.11 2003/08/05 00:41:03 andr_lukyanov Exp $
+# Makefile for EMX on OS/2 with OMF-Style linkage
+# No support for the Husky build environment
+
+.SUFFIXES:
+.SUFFIXES: .c .obj
+
+CC      = gcc
+RM	= cmd /c del
+
+DEBUG	= -s
+# set to -g for debugging
+
+CFLAGS  = -Zomf -c -O3 $(DEBUG) 
+CINCL	= -I../h -I../../fidoconf -I../../smapi -I../../huskylib
+LFLAGS  = -Zomf -Zsys -Zlinker /PM:VIO $(DEBUG)
+OSTYPE	= OS2
+
+
+CDEFS	= -D$(OSTYPE) -DUNAME=\"$(OSTYPE)\"
+LIBS	= ../../fidoconf/fconfemo.lib ../../huskylib/make/huskyemo.lib
+SRC_DIR	= ../src/
+
+EXE	=.exe
+OBJ	=.obj
+
+EXENAMEFLAG=-o 
+
+all: bsopack$(EXE)
+
+%$(OBJ): $(SRC_DIR)%.c
+	$(CC) $(CFLAGS) $(CINCL) $(CDEFS) $(SRC_DIR)$*.c
+
+
+bsopack$(EXE): config$(OBJ) bsoutil$(OBJ) bsopack$(OBJ)
+	$(CC) $(LFLAGS) $(EXENAMEFLAG)bsopack$(EXE) bsopack$(OBJ) config$(OBJ) bsoutil$(OBJ) $(LIBS)
+
+clean:
+	$(RM) *$(OBJ)
+	$(RM) *~
+
+distclean: clean
+	$(RM) bsopack$(EXE)
+

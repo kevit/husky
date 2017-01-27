@@ -1,0 +1,25 @@
+# Microsoft Visual C++ Makefile
+
+CC=     cl
+CFLAGS= -nologo -Zp1 -Ih -I..\huskylib -I..\smapi -I..\fidoconf
+CDEFS=  -D__NT__ -DNT -DWINNT -D_CONSOLE
+COPT=   -O2
+TLIB=   lib -nologo
+
+LIBS = ..\fidoconf\make\fconfmvc.lib ..\smapi\make\smapimvc.lib ..\huskylib\make\huskymvc.lib
+
+OBJS    = sortarea.obj purgearea.obj packarea.obj linkarea.obj fixarea.obj undelete.obj
+
+{src}.c.obj:
+	$(CC) $(CFLAGS) $(CDEFS) $(COPT) -c $<
+
+all: hptutil.exe
+
+hptutil.exe: $(OBJS) hptutil.obj
+        $(CC) $(CFLAGS) $(COPT) $(CDEFS) -Fe$@ src\hptutil.c $(OBJS) $(LIBS)
+
+clean:
+	-del *.obj
+
+distclean: clean
+	-del *.exe

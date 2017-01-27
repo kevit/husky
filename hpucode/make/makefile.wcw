@@ -1,0 +1,32 @@
+# $Id: makefile.wcw,v 1.4 2003/04/08 08:03:43 andr_lukyanov Exp $
+# Legacy makefile for Watcom C, win32 executable
+#
+
+CC      = wcc386
+LINK    = WLINK
+
+CFLAGS  = -zq -wx -bt=nt -i..\h;..\.. -oneatx -5
+CINCL	= -i..\h, ..\..\fidoconf, -i..\h, ..\..\smapi, -i..\h;..\..\huskylib
+LFLAGS  = system nt
+
+OBJS    = uuecode.obj uuefile.obj scanmsg.obj dupe.obj
+SRC_DIR = ..\src
+LIBS	= Library ..\..\huskylib\make\huskywcw.lib, ..\..\smapi\make\smapiwcw.lib, ..\..\fidoconf\fconfwcw.lib 
+
+all: hpucode.exe
+
+$(OBJS): $(SRC_DIR)\*.c
+  @echo compiling $(SRC_DIR)\$*.c
+  $(CC) $(CFLAGS) $(SRC_DIR)\$*.c
+
+hptucode.exe: $(OBJS)
+  @echo linking hpucode
+  $(LINK) $(LFLAGS) FILE uuecode.obj, uuefile.obj, scanmsg.obj, dupe.obj $(LIBS) NAME hpucode.exe
+
+clean:
+	-DEL *.OBJ
+	-DEL *.err
+
+distclean: clean
+	-DEL hpucode.exe
+

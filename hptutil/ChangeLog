@@ -1,0 +1,93 @@
+hptutil 1.02
+---------------
+
+----- cvs ci ------
+Tue Dec  5 03:17:40 UTC 2000
+sms:
+! using enum for linkWithImportLog instead of strings
+
+----- cvs ci ------
+Wed Oct  4 09:30:26 MSD 2000
+Fedor:
+* fixed size of fixing file
+
+----- cvs ci ------
+Tue Oct  3 17:11:31 MSD 2000
+Fedor:
+* added fixing bad squish areas (jam in the future)
+
+----- cvs ci ------
+Thu Sep 28 18:40:47 MSD 2000
+Fedor:
+* adapted sort and purge for multiuser mode (jam, squish)
+* optimization link
+* add quiet mode
+* work informations more
+* alternative 'import.log' file
+
+
+hptutil 1.01
+---------------
+
+----- cvs ci ------
+Tue Aug 23 22:59:03 NOVST 2000
+max:
+* return back from yesterday patch
+
+----- cvs ci ------
+Tue Aug 22 22:50:31 NOVST 2000
+max (patch from Serguei Revtov):
+* pack fixing (headers reads correctly)
+
+----- cvs ci ------
+Tue Jul 25 22:09:07 NOVST 2000
+max (patch from Pavel Gulchouk):
+* module=hptutil
+
+----- cvs ci ------
+Sat Jun  3 15:35:08 NOVST 2000
+max:
+* nopack support - don't purge & pack
+
+----- cvs ci ------
+Fri May 26 18:31:45 MSD 2000
+Fedor:
+* bagfix in packarea.c - free() used two times.
+
+----- cvs ci ------
+Mon May  8 17:40:14 NOVST 2000
+max (patch from Alex Bronin):
+* MS Visual C porting
+
+----- cvs ci ------
+Mon May  1 17:06:15 NOVST 2000
+max(patch from Alex Bronin):
+* -nolink option disables reply linking for area
+
+----- cvs ci ------
+Fri Mar 24 00:44:00 NOVT 2000
+max(patch from Alex Bronin):
+* print statistic while purging
+
+----- cvs ci ------
+Mon Mar 20 08:56:28 MSK 2000
+max (patch from Serguei Revtov):
+* change legacy SUN & Win makefiles to compile with new includes, simplifying
+
+----- cvs ci ------
+Fri Feb 11 22:17:03 NOVT 2000
+max:
+* add makefile.sun (patch from Serguei Revtov)
+* change OpenFile to Open_File for compiling under win32
+* del 0x0A in files
+
+----- cvs ci ------
+Sat Feb  5 02:36:03 NOVT 2000
+max:
+* added -zp=1 to makefile.wcw
+
+----- cvs ci ------
+Sat Jan 29 00:32:51 NOVT 2000
+max:
+* started ChangeLog
+* added makefile.wcw

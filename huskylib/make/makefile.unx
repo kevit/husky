@@ -1,0 +1,247 @@
+# $Id: makefile.unx,v 1.8 2003/03/25 08:38:43 stas_degteff Exp $
+#
+# Generic makefile for building huskylib (static library) on unix-like OS
+# using GNU C
+# No support for the Husky build environment (huskymak.cfg)
+# Use GNU version of make utility with this file.
+#
+
+prefix=	/usr/local
+
+# Uncomment this for compile info for gdb and display more compiler warnings
+DEBUG	= -g -pedantic -Wno-long-long 
+
+# Uncomment this for strip all simbols from binaries to reduce file sizes
+#STRIP	= -s
+
+
+## Directories & permissions ##
+
+BINDIR	= $(prefix)/bin/
+LIBDIR	= $(prefix)/lib/
+INCDIR	= $(prefix)/include/huskylib/
+IBOPT	= -m 555 -c
+ILOPT	= -m 444 -c
+IIOPT	= -m 444 -c
+IDOPT	= -d -m 755
+
+
+## programs ##
+
+# compiler
+CC	= gcc
+# library tool
+AR	= ar
+# library indexer
+RANLIB	= ranlib
+# linker program
+LINK	= ld
+# archiver program
+ARCHIVER= tar
+# file removing command
+RM	= rm
+# create directory command
+MKDIR	= mkdir
+# remove directory command
+RMDIR	= rm
+# install command
+INSTALL	= install
+# copy command
+CP	= cp
+# move command
+MV	= mv
+# groff program (man pages formatter, possible use man2html perl script)
+GROFF	= /usr/bin/groff
+
+
+## file suffixes ##
+
+# source file
+_C	= .c
+# object file
+_OBJ	= .o
+# binary (executable) file
+_EXE	=
+# static library
+_LIB	= .a
+# shared library
+_DLL	= .dll
+# shared library definitions file (export/import lists & etc.)
+_DEF	= .def
+# shared library exported list
+_EXP	= .exp
+# archive (package) file
+_ARC	= .tar.gz
+# documentation file (".info", ".html", ".div", ...)
+_HTML	= .html
+# text file
+_TXT	= .txt
+
+
+## program options ##
+
+# compiler defines
+CDEFS	=
+# common compiler options
+CFLAGS	= -Wall
+# linker options
+LFLAGS	=
+# options for compile only (link is off)
+OBJOPT	= -c
+# options for build static library
+LIBOPT	= -static
+# options for build dll
+DLLOPT  = -shared
+# option for specify output file name
+NAMEOPT	= -o
+# options for $(AR) program
+ARFLAGS	= r
+# options for $(RM) program
+RMFLAGS	= -f
+# options for archiver
+ARCFLAGS= -c -z -f
+# create directory command options
+MKDIROPT= -p
+# remove directory command options
+RMDIROPT= -rf
+# copy command options
+CPOPT	=
+# move command options
+MVOPT	=
+# install command options
+INSTOPT	= -c
+# groff program option (this example doing format man page to html page)
+GROFFOPT= -mman -Thtml
+
+
+## Library filename elements ##
+
+# Prefix to construct static library name
+LIBPREFIX=lib
+# Prefix to construct dll name
+DLLPREFIX=lib
+# Suffix to construct library name
+LIBSUFFIX=unx
+# Suffix to construct dll name
+DLLSUFFIX=
+
+
+## Binary package name ##
+PACKAGEBASE=$(LIBNAME)$(LIBPREFIX)-$(LIBSUFFIX)-$(VERH)
+PACKAGENAME=$(LIBNAME)$(LIBPREFIX)-$(LIBSUFFIX)-$(VERH)$(_ARC)
+
+
+## make directives ##
+
+# rules without dependencies and (possible) actions - prevent warnings
+.PHONY:	distclean clean all static programs dllprograms default \
+	install hinstall linstall pinstall dinstall \
+	uninstall-progs uninstall-lib uninstall-h
+
+
+## Default make rule ##
+
+default: all
+#	@echo Run 'make dll' to build dll version \($(TARGETDLL)\)
+#	@echo Run 'make static' to build static version of library \($(TARGETLIB)\)
+#	@echo Run 'make dllprograms' to build dll version of programs \($(PROGRAMS)\)
+#	@echo Run 'make programs' to build static version of programs \($(PROGRAMS)\)
+#	@echo Run 'make all' to build all above
+
+## include common makefiles part ##
+
+include makefile.inc
+
+# libraries need to build binary file
+LIBS	+=
+
+## other, usualy not modify below ##
+
+## Additions (add into end of strings) ##
+CFLAGS	+= -I$(H_DIR)
+
+## make rules ##
+
+all:	static programs
+
+static:	$(TARGETLIB)
+dll:	$(TARGETDLL)
+programs: $(TARGETLIB) $(PROGRAMS)
+dllprograms: $(TARGETDLL) $(PROGRAMS)
+
+$(PROGRAMS): $(TARGETLIB)
+	$(CC) $(STRIP) $(DEBUG) $(CFLAGS) $(CDEFS) $(NAMEOPT)$@ $(SRC_DIR)$@$(_C) $(TARGETLIB) $(LIBS)
+
+%$(_OBJ): $(SRC_DIR)%$(_C)
+	$(CC) $(CFLAGS) $(DEBUG) $(CDEFS) $(OBJOPT) $<
+
+$(TARGETLIB):	$(OBJS)
+	$(AR) $(ARFLAGS) $@ $?
+	$(RANLIB) $@
+	
+$(TARGETDLL):	$(OBJS)
+	$(CC) $(DLLOPT) $(DEBUG) $(CFLAGS) $(NAMEOPT)$@ $^
+
+
+clean:
+	-$(RM) $(RMOPT) *$(_OBJ)
+
+distclean: clean pkgclean
+	-$(RM) $(RMOPT) $(TARGETDLL)
+	-$(RM) $(RMOPT) $(TARGETLIB)
+	-$(RM) $(RMOPT) $(PROGRAMS)
+
+doc:
+	cd ../doc ; make html
+
+pkg-doc-dir:
+	-$(MKDIR) $(MKDIROPT) $(PACKAGEBASE)/doc
+
+pkg-doc: doc pkg-doc-dir
+	$(CP) $(CPOPT) ../doc/*$(_HTML) $(PACKAGEBASE)/doc
+
+pkg-man: pkg-doc-dir
+	for f in ../man/*.1 ; \
+	 do $(GROFF) $(GROFFOPT) $$f > $(PACKAGEBASE)/doc/`basename $$f`$(_HTML) ; done
+
+pkg-man-alt:
+	-$(MKDIR) $(MKDIROPT) $(PACKAGEBASE)/man/man1
+	$(CP) $(CPOPT) ../man/*.1 $(PACKAGEBASE)/man/man1
+	-$(MKDIR) $(MKDIROPT) $(PACKAGEBASE)/man/man5
+	$(CP) $(CPOPT) ../man/*.5 $(PACKAGEBASE)/man/man5
+	-$(MKDIR) $(MKDIROPT) $(PACKAGEBASE)/man/man8
+	$(CP) $(CPOPT) ../man/*.8 $(PACKAGEBASE)/man/man8
+	
+pkg-dir:
+	-$(MKDIR) $(MKDIROPT) $(PACKAGEBASE)
+
+pkg-h-dir:
+	-$(MKDIR) $(MKDIROPT) $(PACKAGEBASE)/huskylib
+
+$(HEADERS): pkg-h-dir
+	$(CP) $(CPOPT) $(H_DIR)$@ $(PACKAGEBASE)/huskylib/$@
+
+pkg-h: $(HEADERS)
+
+pkg-readme: pkg-dir
+	@echo XXXXX library v.$(VER) for `uname -s` platform > $(PACKAGEBASE)/file_id.diz
+	@echo "(Part of HUSKY Fidonet Software Project)" >> $(PACKAGEBASE)/file_id.diz
+	@echo See http://husky.sourceforge.net and/or >> $(PACKAGEBASE)/file_id.diz
+	@echo http://sourceforge.net/projects/husky >> $(PACKAGEBASE)/file_id.diz
+	$(CP) $(CPOPT) ../COPYING ../cvsdate.h ../INSTALL ../License $(PACKAGEBASE)
+	$(CP) $(CPOPT) ../HISTORY ../ChangeLog ../VERSION $(PACKAGEBASE)
+
+pkg-bin-dir:
+	-$(MKDIR) $(MKDIROPT) $(PACKAGEBASE)/bin
+
+pkg-bin: static programs pkg-bin-dir
+	$(CP) $(CPOPT) $(TARGETLIB) $(PROGRAMS) $(PACKAGEBASE)/bin
+
+package: pkg-dir pkg-h pkg-man pkg-readme pkg-bin
+	$(ARCHIVER) $(ARCFLAGS) $(PACKAGENAME) $(PACKAGEBASE)
+
+pkgclean:
+	-$(RMDIR) $(RMDIROPT) $(PACKAGEBASE)
+
+pkgdistclean: pkgclean
+	-$(RM) $(RMOPT) $(PACKAGENAME)

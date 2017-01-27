@@ -1,0 +1,78 @@
+# $Id: makefile.mgw,v 1.8 2010/12/07 21:04:01 stas_degteff Exp $
+# Makefile to build HUSKYLIB with cross-compiler Mingw32 on unix
+# No support for the Husky build environment.
+
+## include common makefiles part ##
+include ../../huskybse/huskymak.mgw
+include makefile.inc
+
+# additional compiler options to build DLL
+DLCFLAGS= -D_MAKE_DLL
+
+## Binary package name ##
+PACKAGENAME=$(LIBNAME)$(LIBSUFFIX)
+
+## make directives ##
+
+.PHONY: distclean clean all static dll programs default doc package
+
+## Default make rule ##
+
+default:
+	@echo Run 'make dll' to build dll version \($(TARGETDLL), $(PROGRAMS)\)
+	@echo Run 'make static' to build static version \($(TARGETLIB), $(PROGRAMS)\)
+	@echo (Recommended) Run 'make dllprograms' to build dll version of programs \($(PROGRAMS)\)
+	@echo Run 'make programs' to build static version of programs \($(PROGRAMS)\)
+	@echo Run 'make all' to build all above
+
+# libraries need to build binary file
+LIBS	+= ../../huskylib/make/$(LIBPREFIX)husky$(LIBSUFFIX)$(_LIB)
+
+## other, usualy not modify below ##
+
+## Additions (add into end of strings) ##
+CFLAGS	+= -I$(H_DIR)
+
+## make rules ##
+
+all:	static dll programs dllprograms
+
+static: $(TARGETLIB)
+dll:	$(TARGETDLL)
+programs: $(TARGETLIB) $(PROGRAMS)
+dllprograms: $(TARGETDLL) $(PROGRAMS)
+
+%$(_EXE): $(SRC_DIR)%$(_C) $(TARGETLIB)
+	@$(CC) $(CFLAGS) $(CDEFS) $(EXENAMEFLAG)$@ $^
+
+%$(_OBJ): $(SRC_DIR)%$(_C)
+	@echo Compiling $<
+	@$(CC) $(CFLAGS) $(CDEFS) $(OBJOPT) $<
+
+$(TARGETLIB):	$(OBJS)
+	@$(AR) $(ARFLAGS) $@ $?
+	@$(RANLIB) $@
+
+$(TARGETDLL):
+	@$(MAKE) -f makefile.mgw CFLAGS="$(CFLAGS) $(DLCFLAGS)" $(OBJS)
+	@$(CC) $(DLLOPT) $(CFLAGS) $(EXENAMEFLAG)$@ $(OBJS)
+
+
+clean:
+	-$(RM) $(RMOPT) *$(_OBJ)
+
+distclean: clean
+	-$(RM) $(RMOPT) $(TARGETDLL)
+	-$(RM) $(RMOPT) $(TARGETLIB)
+	-$(RM) $(RMOPT) $(PROGRAMS)
+
+
+package: static programs
+	@echo husky library v.$(VER) for Win32 platform (Mingw32 compiler)> file_id.diz
+	@echo (Part of HUSKY Fidonet Software Project) >> file_id.diz
+	$(ARCHIVER) $(ARCFLAGS) $(PACKAGENAME) $(TARGETLIB) $(PROGRAMS)
+	$(ARCHIVER) $(ARCFLAGS) $(PACKAGENAME) ../VERSION ../README ../License
+	$(ARCHIVER) $(ARCFLAGS) $(PACKAGENAME) ../COPYING ../cvsdate.h
+	$(ARCHIVER) $(ARCFLAGS) $(PACKAGENAME) ../INSTALL ../HISTORY
+	$(ARCHIVER) $(ARCFLAGS) $(PACKAGENAME) file_id.diz
+	-$(ARCHIVER) $(ARCFLAGS) $(PACKAGENAME) ../README

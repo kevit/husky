@@ -1,0 +1,9 @@
+fidoconf:
+  new keywords in s_link: filefixReportsAttr, filefixReportsFlags
+  new keywords in s_config: newFileAreaRefuseFile, filefixQueueFile
+
+
+areafix.c:
+  distinguish areafix and filefix in info_link() and below
+
+? change area's group to new link's group when resubscribing

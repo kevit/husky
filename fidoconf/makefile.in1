@@ -1,0 +1,10 @@
+# $Id: makefile.in1,v 1.5 2003/05/15 09:47:25 val_khokhlov Exp $
+#
+# Object files lists for all platforms
+# include into makefile.inc (and other makefiles)
+
+LOBJS = common$(_OBJ) fidoconf$(_OBJ) line$(_OBJ) cfg$(_OBJ) findtok$(_OBJ) areatree$(_OBJ) afixcmd$(_OBJ) afixcmn$(_OBJ) arealist$(_OBJ) version$(_OBJ) grptree$(_OBJ) stat$(_OBJ)
+
+OBJS = $(LOBJS) fc2binkd$(_OBJ) fc2msged$(_OBJ) fc2ged$(_OBJ) fc2aed$(_OBJ) fc2fgate$(_OBJ) fc2sq$(_OBJ) fc2tor$(_OBJ) fecfg146$(_OBJ) fecfg2fc$(_OBJ) linked$(_OBJ)
+
+PROGRAMS= tparser$(_EXE) linked$(_EXE) $(FCONF2BINKD)$(_EXE) $(FCONF2MSGED)$(_EXE) $(FCONF2AQUAED)$(_EXE) $(FCONF2FIDOGATE)$(_EXE) $(FCONF2GOLDED)$(_EXE) $(FCONF2SQUISH)$(_EXE) $(FCONF2TORNADO)$(_EXE) $(FECFG2FCONF)$(_EXE)

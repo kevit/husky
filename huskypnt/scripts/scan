@@ -1,0 +1,11 @@
+#!/bin/sh
+
+function main()
+{
+  hpt scan
+  hpt pack
+  if [ -f $WORKDIR$/echotoss.log ] ; then rm $WORKDIR$/echotoss.log ; fi
+}
+
+main >> $logdir$/husky.log 2>&1
+

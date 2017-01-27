@@ -1,0 +1,86 @@
+# $Id: makefile.mvc,v 1.20 2011/03/09 21:03:23 stas_degteff Exp $
+#
+# Microsoft Visual C++ Makefile for build htick executable
+
+MAKEFILE_MVC = makefile.mvc
+!if "$(MAKEFILE_HUSKYMAK)" == ""
+MAKEFILE_HUSKYMAK = ../../huskybse/huskymak.cfg.mvc
+!endif
+MAKEFILE_INC = ../makefile.inc
+
+## include common makefiles part ##
+!include $(MAKEFILE_INC)
+!include $(MAKEFILE_HUSKYMAK)
+
+MAKEFILES = $(MAKEFILE_MVC) $(MAKEFILE_HUSKYMAK) $(MAKEFILE_INC)
+
+## program options ##
+
+## options for compiler ##
+CINCL	= -I$(H_DIR) -I..\..\huskylib -I..\..\fidoconf -I..\..\smapi -I..\..\areafix $(HPTZIPI)
+
+CFLAGS	= $(CFLAGS) $(CINCL)
+
+## options for linker ##
+LFLAGS=$(LFLAGS) $(LINKPDBOPT)$(BINOUT)
+
+# List of HUSKY libraries required to build binary file(s)
+# for executables -- $(LIBSL)
+# for dynamic libraries -- $(DLLS)
+LIBS = $(LIBS) user32.lib $(HPTZIPL)
+
+# List of HUSKY libraries required to build binary file(s)
+!if $(DYNLIBS)==1
+LIBSL	= $(LIBS) \
+	  $(IMPLIBPREFIX)husky$(DLLSUFFIX)$(_LIB) \
+	  $(IMPLIBPREFIX)smapi$(DLLSUFFIX)$(_LIB) \
+	  $(IMPLIBPREFIX)fidoconfig$(DLLSUFFIX)$(_LIB) \
+	  $(IMPLIBPREFIX)areafix$(DLLSUFFIX)$(_LIB) \
+
+!else
+LIBSL	= $(LIBS) $(ZLIBL) \
+	  $(LIBPREFIX)husky$(LIBSUFFIX)$(_LIB) \
+	  $(LIBPREFIX)smapi$(LIBSUFFIX)$(_LIB) \
+	  $(LIBPREFIX)fidoconfig$(LIBSUFFIX)$(_LIB) \
+	  $(LIBPREFIX)areafix$(LIBSUFFIX)$(_LIB) \
+
+!endif
+
+default:
+	@echo Specify a parameter DYNLIBS=1 in the command line to build with dynamic version
+	@echo of the library
+	@echo "Specify a parameter MAKEFILE_HUSKYMAK=/path/to/your.huskymak.cfg to build"
+	@echo "using your own parameters"
+	@echo Run 'make all' or 'make programs' to build programs ($(PROGRAMS))
+
+all: programs
+programs: $(PROGRAMS) $(MAKEFILES)
+
+$(OBJS) $(PRGOBJS) : $(HEADERS) $(MAKEFILES)
+
+{$(_SRC_DIR)}$(_C){$(O)}$(_OBJ)::
+	@$(CC) $(CFLAGS) $(OBJOPT) $(OBJNAMEOPT)$(O) @<<
+$<
+<<
+
+
+$(PROGRAMS): $(PRGOBJS)
+	@echo Create $(PROGRAMS)...
+	@$(LINK) $(LFLAGS) $(LINKNAMEOPT)$@ $** $(LIBSL)
+
+man:
+
+doc: man
+	man2html$(_EXE) <..\$(LIBNAME).1 >$(LIBNAME).html
+
+clean:
+	-$(RM) $(RMOPT) $(PRGOBJS:/=\)
+	-$(RM) $(RMOPT) VC*$(_PDB)
+	-$(RM) $(RMOPT) $(PROGRAMSILK:/=\)
+
+distclean: clean
+	-$(RM) $(RMOPT) $(PROGRAMSPDB:/=\)
+	-$(RM) $(RMOPT) $(PROGRAMS:/=\)
+	-$(RM) $(RMOPT) $(LIBNAME).html
+
+

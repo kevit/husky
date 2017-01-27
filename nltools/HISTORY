@@ -1,0 +1,13 @@
+NLTOOLS 1.9 current
+Changes after nltools 1.4
+
+1. MAJOR feature improvements:
+
+2. CONFIG changes:
+
+3. IMPORTANT bugfixes:
+   nlupdate.exe renamed to nlupd.exe: all executables named like mask
+   *update*.exe are restricted by ULC (Windows 7). Also nlupdate renamed
+   for the all other OS
+
+$Id: HISTORY,v 1.3 2012/04/18 18:08:10 stas_degteff Exp $

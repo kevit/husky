@@ -1,0 +1,55 @@
+# $Id: makefile.cyg,v 1.4 2003/10/17 07:11:19 andr_lukyanov Exp $
+# Makefile to build SMAPI/win32 with Mingw32 from Cygwin.
+# No support for the Husky build environment.
+
+# include Husky-Makefile-Config,
+# copy this file from ../../huskybse/huskymak.cfg.cyg
+include ../../huskymak.cfg
+
+include makefile.inc
+
+# libraries need to build binary file
+CINCL	= -I$(H_DIR) -I../../huskylib
+
+# libraries need to build binary file
+LIBS	= ../../huskylib/make/$(LIBPREFIX)husky$(LIBSUFFIX)$(_LIB)
+
+READMEFILES= ../BEOS.TXT ../BUGS ../ChangeLog ../COPYING ../HISTORY ../INSTALL ../LICENSE ../readme.txt ../TODO ../VERSION
+
+## make rules ##
+
+default:
+	@echo
+	@echo Run \'make dll\' to build dll version \($(TARGETDLL)\)
+	@echo
+	@echo Run \'make static\' to build static version \($(TARGETLIB)\)
+	@echo
+	@echo Run \'make dllprograms\' to build dll version of programs \($(TARGETDLL)\)
+	@echo
+	@echo Run \'make programs\' to build static version of programs \($(TARGETLIB)\)
+	@echo
+	@echo Run \'make all\' to build all above
+
+all:	static dll programs
+
+static:	$(TARGETLIB)
+dll:	$(TARGETDLL)
+programs: $(TARGETLIB) $(PROGRAMS)
+dllprograms: $(TARGETLIB) $(TARGETDLL) $(PROGRAMS)
+
+%$(_EXE): $(SRC_DIR)%$(_C) $(TARGETLIB)
+	@echo Create $(PROGRAMS)
+	@$(CC) $(STRIP) $(CFLAGS) $(CDEFS) $(CINCL) $(EXENAMEFLAG)$@ $^
+
+%$(_OBJ): $(SRC_DIR)%$(_C)
+	@echo Compiling $<
+	@$(CC) $(CFLAGS) $(CDEFS) $(CINCL) $(OPTCFLAGS) $<
+
+$(TARGETLIB):	$(OBJS)
+	@echo Create $(TARGETLIB)
+	@$(AR) $(AR_R) $@ $?
+
+$(TARGETDLL):	$(OBJS)
+	@echo Create $(TARGETDLL)
+	@$(CC) $(DLLOPT) $(CFLAGS) $(EXENAMEFLAG)$@ $^ $(LIBS)
+

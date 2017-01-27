@@ -1,0 +1,34 @@
+### Make file for CFRoute for BeOS
+### Compiler: gcc (2.7 or 2.8)
+### Requires gmake or another make that can cope with VPATH !!!
+
+### Directory options
+SRCDIR=../src
+SMAPIDIR=../../smapi
+FCDIR=../../fidoconf
+BINDIR=/boot/home/config/bin
+
+### Compiler flags
+CFLAGS = -O2 -DUNIX -DSQUISHCFS -I$(SMAPIDIR) -I../..
+
+### Linker flag
+LFLAGS = -s -L$(SMAPIDIR) -L$(FCDIR)
+LIBS=-lsmapibe
+LIBS2=-lfidoconfigbe
+
+### Platform specifics
+DEL      = rm
+CXX      = g++
+CC       = g++
+OBJ      = .o
+EXE      = 
+
+### List of object files
+cfrobjs = cfroute$(OBJ) dirute$(OBJ) buffer$(OBJ) structs$(OBJ) fecfg146$(OBJ) inbounds$(OBJ)
+
+
+### include the build rules that are common for all unix systems
+include common.mak
+
+install:
+	install -s cfroute $(BINDIR)

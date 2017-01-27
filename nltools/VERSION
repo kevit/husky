@@ -1,0 +1,3 @@
+nltools 1.9-current
+cvs tag: HEAD
+required: fidoconfig 1.9-current, huskylib 0.1-current

@@ -1,0 +1,1154 @@
+2005-02-03 Thursday 18:53  val_khokhlov
+
+	* huskylib/cvtdate.h (1.10), src/cvtdate.c (1.12): move gettz()
+	function to huskylib
+
+2005-01-13 Thursday 20:08  val_khokhlov
+
+	* huskylib/fexist.h (1.6), src/fexist.c (1.10), src/genmsgid.c
+	(1.11): use FindFInfo instead of FindFOpen; add new function
+	fmtime()
+
+2004-06-06 Sunday 16:16  andrew_ladutsko
+
+	* huskylib/huskyext.h (1.5), make/makefile.mgw (1.6),
+	src/genverst.c (1.6): fixed building of dll version using mingw
+	(tested with gcc 3.3.1)
+
+2004-05-14 Friday 18:48  andrew_ladutsko
+
+	* src/log.c (1.8): gcc 2.95.2 doesn't know about
+	EXCEPTION_INVALID_HANDLE
+
+2004-03-15 Monday 13:01  stas_degteff
+
+	* huskylib/crc.h (1.4): Fix MS VC 7.0 build
+
+2004-03-13 Saturday 15:50  stas_degteff
+
+	* src/crc.c (1.5): Fix CRC16 routines for big endian and little
+	endian platforms
+
+2004-02-07 Saturday 23:30  d_sergienko
+
+	* huskylib/typesize.h (1.5): NetBSD support added
+
+2004-01-31 Saturday 20:34  mche
+
+	* src/patmat.c (1.12): added ability of usin '#' mask for matchin
+	digit in pattern matching now xpatmat has full compability with VB
+	"Like" operator
+
+2004-01-21 Wednesday 03:51  andr_lukyanov
+
+	* make/makefile.mvc (1.13): Fix MSVC compilation
+
+2004-01-21 Wednesday 03:45  andr_lukyanov
+
+	* make/makefile.mvc (1.12): Fix MSVC compilation
+
+2004-01-05 Monday 04:58  d_sergienko
+
+	* src/tests/move_file.c (1.1): new test for move_file()
+
+2004-01-05 Monday 02:24  d_sergienko
+
+	* src/tests/stripRoundingChars.c (1.1): new test for strip*Chars()
+
+2004-01-05 Monday 02:06  d_sergienko
+
+	* src/strext.c (1.16): CRLF->LF translation
+
+2003-12-29 Monday 10:51  val_khokhlov
+
+	* huskylib/huskylib.h (1.21), src/patmat.c (1.11): patmat() and
+	patimat() combined into a single function
+
+2003-12-02 Tuesday 19:12  mche
+
+	* src/strext.c (1.15): new design for stripLeadingChars
+
+2003-12-01 Monday 20:31  mche
+
+	* src/strext.c (1.14): function stripLeadingChars fix garbage
+	return when whole string is striped
+
+2003-10-24 Friday 11:39  stas_degteff
+
+	* huskylib/compiler.h (1.20): Fix a re-definition of R_OK, X_OK,
+	W_OK, F_OK
+
+2003-10-23 Thursday 08:58  stas_degteff
+
+	* make/makefile.cyg (1.14): Remove duplicated entry (first
+	declaration see in huskybse/huskymak.cfg.cyg)
+
+2003-10-20 Monday 01:03  andr_lukyanov
+
+	* src/tdelay.c (1.18): Fixed MSVC compilation
+
+2003-10-17 Friday 09:31  stas_degteff
+
+	* src/tdelay.c (1.17): Fix preprocesor directives
+
+2003-10-17 Friday 09:31  stas_degteff
+
+	* src/mapfile.c (1.10): Fix open() usage
+
+2003-10-17 Friday 09:28  stas_degteff
+
+	* make/makefile.cyg (1.13): Add a 'clean' tag
+
+2003-10-17 Friday 09:26  stas_degteff
+
+	* huskylib/compiler.h (1.19): Fix open() usage
+
+2003-10-17 Friday 08:45  stas_degteff
+
+	* src/ffind.c (1.18): Remove duplicated #include
+
+2003-10-17 Friday 07:09  andr_lukyanov
+
+	* make/: makefile.cyg (1.12), makefile.djg (1.10), makefile.emx
+	(1.6): Fix compilation with huskymak.cfg.*
+
+2003-10-17 Friday 04:36  andr_lukyanov
+
+	* src/: ffind.c (1.17), getfree.c (1.9), ioutil.c (1.11), mapfile.c
+	(1.9), tdelay.c (1.16): Fixed OS/2 EMX compilation
+
+2003-10-16 Thursday 16:56  stas_degteff
+
+	* huskylib/EMX.h (1.11), src/ffind.c (1.16), src/ioutil.c (1.10),
+	src/mapfile.c (1.8): Fix OS/2 build. Thanks to Andy Luk'yanov
+
+2003-10-13 Monday 10:00  stas_degteff
+
+	* src/ioutil.c (1.9): Fix mingw compiler warning (incompatible
+	pointer type)
+
+2003-09-30 Tuesday 19:17  i_zkh
+
+	* huskylib/huskylib.h (1.20): Minor spelling fix
+
+2003-09-28 Sunday 16:21  d_sergienko
+
+	* src/tdelay.c (1.15): added husky_*Timer() for other platforms
+
+2003-09-23 Tuesday 07:25  andr_lukyanov
+
+	* src/ioutil.c (1.8): Fix cygwin/MinGW32 compiler warning
+
+2003-09-19 Friday 09:21  andr_lukyanov
+
+	* make/makefile.mgw (1.5): Fixed mingw32 compilations
+
+2003-09-19 Friday 09:17  andr_lukyanov
+
+	* src/tdelay.c (1.14): Create husky_*Timer for DPMI, cygwin,
+	mingw32 compilations
+
+2003-09-19 Friday 06:17  stas_degteff
+
+	* src/log.c (1.7): dos2unix (part of file)
+
+2003-09-19 Friday 06:14  stas_degteff
+
+	* src/log.c (1.6): Remove unused var
+
+2003-09-19 Friday 06:14  stas_degteff
+
+	* src/tdelay.c (1.13): Fix return value in VOID function
+
+2003-09-19 Friday 06:09  stas_degteff
+
+	* huskylib/ffind.h (1.10): fix macros redefinition
+
+2003-09-18 Thursday 20:04  d_sergienko
+
+	* src/tests/timer.c (1.1): add test for tdelay()+husky_*Timer()
+	functions
+
+2003-09-18 Thursday 20:01  d_sergienko
+
+	* huskylib/huskylib.h (1.19), src/tdelay.c (1.12): changed
+	husky_*Timer() to conform real life and make them available under
+	UNIX.
+
+2003-09-17 Wednesday 15:41  mche
+
+	* huskylib/huskylib.h (1.18), src/tdelay.c (1.11): timing functions
+	added
+
+2003-09-16 Tuesday 21:24  d_sergienko
+
+	* HISTORY (1.2), src/log.c (1.5): changed time separator in log
+	files from '.' to ':'
+
+2003-08-24 Sunday 08:33  d_sergienko
+
+	* huskylib/huskylib.h (1.17), src/ioutil.c (1.7):
+	fillCmdStatement() moved to huskylib
+
+2003-08-17 Sunday 06:05  d_sergienko
+
+	* huskylib/UNIX.h (1.15): fix FreeBSD compatibility
+
+2003-08-16 Saturday 13:38  d_sergienko
+
+	* huskylib/UNIX.h (1.14): added FreeBSD 5.x support for getfree.c
+
+2003-07-23 Wednesday 05:32  mche
+
+	* src/ffind.c (1.15):	    Fix check hidden file attributes in
+	win32 for not first
+	      directory record. (Kostya Falkov)
+
+2003-07-16 Wednesday 16:08  mche
+
+	* huskylib/log.h (1.4), src/log.c (1.4): alternative exception
+	handling for win32
+
+2003-06-26 Thursday 04:58  andr_lukyanov
+
+	* huskylib/ffind.h (1.9): Fixed MSVC static compilation
+
+2003-06-25 Wednesday 14:44  mche
+
+	* src/ffind.c (1.14): check hidden file attributes in win32
+
+2003-06-18 Wednesday 03:37  andr_lukyanov
+
+	* make/makefile.emx (1.5): Fixed compilation.
+
+2003-06-18 Wednesday 03:34  andr_lukyanov
+
+	* huskylib/: EMX.h (1.10), ffind.h (1.8): Fixed declaration for
+	EMX.
+
+2003-05-25 Sunday 12:33  lmike
+
+	* huskylib/: UNIX.h (1.13), compiler.h (1.18): Added more QNX
+	specific stuff: no SYSEXITS and SYSLOG header file placement
+
+2003-05-25 Sunday 12:31  lmike
+
+	* make/makefile.qnx (1.3): Fixed bug with link to .so creation.
+
+2003-05-23 Friday 04:31  lmike
+
+	* huskylib.qpg (1.2): Previous commit was bad, fixed file contents.
+
+2003-05-20 Tuesday 14:39  d_sergienko
+
+	* huskylib.qpg (1.1), make/makefile.inc (1.30), make/makefile.qnx
+	(1.2): 
+	QNX fixes; added huskylib.qpg
+
+2003-05-15 Thursday 08:16  d_sergienko
+
+	* make/makefile.qnx (1.1): makefile.qnx added
+
+2003-05-15 Thursday 08:10  d_sergienko
+
+	* huskylib/UNIX.h (1.12), huskylib/compiler.h (1.17),
+	huskylib/typesize.h (1.4), src/adcase.c (1.7), src/cvtdate.c
+	(1.11), src/genmsgid.c (1.10), src/gnmsgid.c (1.13), src/strext.c
+	(1.13): 
+	QNX 6.x support
+
+2003-05-06 Tuesday 17:30  mche
+
+	* src/: tree.c (1.5), tree.c (1.6): fix bug with counting tree
+	nodes
+
+2003-04-28 Monday 19:25  d_sergienko
+
+	* src/mapfile.c (1.7): dos2unix
+
+2003-04-28 Monday 15:04  mche
+
+	* src/mapfile.c (1.6): prevent macro redefinition
+
+2003-04-27 Sunday 16:34  d_sergienko
+
+	* src/adcase.c (1.6): CRLF->LF conversion
+
+2003-04-27 Sunday 16:02  mche
+
+	* src/adcase.c (1.5): do not change filecase under win32 fix htick
+	filename case conversion
+
+2003-04-25 Friday 04:36  andr_lukyanov
+
+	* make/: makefile.cyg (1.11), makefile.djg (1.9): Fixed
+	compilation. Remark DEBUG mode.
+
+2003-04-19 Saturday 11:17  mche
+
+	* src/tree.c (1.4): fix some memory leaks
+
+2003-04-12 Saturday 13:54  mche
+
+	* make/HuskylibDll.vcproj (1.1), HuskylibDll.vcproj (1.7): change
+	location
+
+2003-04-11 Friday 07:11  mche
+
+	* HuskylibDll.vcproj (1.6): fix GUIDs of projects
+
+2003-04-02 Wednesday 18:09  mche
+
+	* src/adcase.c (1.4): fix MSVC compilation
+
+2003-04-02 Wednesday 17:51  mche
+
+	* huskylib/compiler.h (1.16): fix MSVC compilation
+
+2003-04-02 Wednesday 16:34  mche
+
+	* HuskylibDll.vcproj (1.5), src/memory.c (1.12): hotfix for MSVC 7
+	Do not use /O2 optimization (by speed) for huskylib.  Because of
+	strange optimization of (**p) pointers in functions like xstralloc
+	xscatprintf
+
+2003-04-02 Wednesday 15:39  mche
+
+	* src/version.c (1.3): fix MSVC compilation
+
+2003-04-02 Wednesday 15:15  mche
+
+	* src/adcase.c (1.3), src/cmpfname.c (1.2), src/crc.c (1.4),
+	src/cvtdate.c (1.10), src/dirlayer.c (1.4), src/fexist.c (1.9),
+	src/ffind.c (1.13), src/flush.c (1.8), src/genmsgid.c (1.9),
+	src/genverst.c (1.5), src/getfree.c (1.8), src/ioutil.c (1.6),
+	src/locking.c (1.7), src/log.c (1.3), src/mapfile.c (1.5),
+	src/memory.c (1.11), src/parsenn.c (1.8), src/patmat.c (1.10),
+	src/qksort.c (1.3), src/recode.c (1.8), src/setfsize.c (1.8),
+	src/strext.c (1.12), src/strftime.c (1.10), src/tdelay.c (1.10),
+	src/temp.c (1.5), src/tree.c (1.3), src/version.c (1.2), src/xstr.c
+	(1.3), HuskylibDll.vcproj (1.4): fix MSVC compilation
+
+2003-04-01 Tuesday 07:28  stas_degteff
+
+	* huskylib/MSVC.h (1.12): Remove duplicated line
+
+2003-03-31 Monday 18:49  mche
+
+	* HuskylibDll.vcproj (1.3): vcproj Project File added for building
+	dynamyc smapi library in Microsoft Visual Studio .NET
+
+2003-03-31 Monday 18:39  mche
+
+	* HuskylibDll.vcproj (1.2), huskylib/MSVC.h (1.11): fix function
+	redefinition
+
+2003-03-31 Monday 17:11  mche
+
+	* huskylib/MSVC.h (1.10): fix function redefinition
+
+2003-03-31 Monday 17:09  mche
+
+	* HuskylibDll.vcproj (1.1): vcproj Project File added for building
+	dynamyc huskylib library in Microsoft Visual Studio .NET
+
+2003-03-31 Monday 06:52  stas_degteff
+
+	* src/strftime.c (1.9): Remove useless assignment statement
+
+2003-03-31 Monday 06:48  stas_degteff
+
+	* huskylib/strext.h (1.11), src/strext.c (1.11): Prevent memory
+	faults (check pointers)
+
+2003-03-29 Saturday 20:32  d_sergienko
+
+	* src/strftime.c (1.8): use strUpper() instead of strupr()
+
+2003-03-28 Friday 11:08  stas_degteff
+
+	* src/ioutil.c (1.5): Fix return code value for cmdcall(): divide
+	spawnvp() code to signal and program return code
+
+2003-03-27 Thursday 08:55  stas_degteff
+
+	* src/strext.c (1.10), huskylib/strext.h (1.10): Move copyString()
+	& copyStringUntilSep() from fidoconfig to huskylib
+
+2003-03-26 Wednesday 19:32  stas_degteff
+
+	* src/genverst.c (1.4): fix win32 platforms representation in
+	version strings
+
+2003-03-26 Wednesday 19:30  stas_degteff
+
+	* huskylib/MSVC.h (1.9): Fix 64-bit integer types definitions; use
+	MS Visual C specific types for8bit, 16bit and 32bit integer types
+
+2003-03-26 Wednesday 12:26  stas_degteff
+
+	* src/genverst.c (1.3): Display warning about unknown platform
+
+2003-03-26 Wednesday 12:22  stas_degteff
+
+	* make/makefile.cyg (1.10): Remove path to groff
+
+2003-03-26 Wednesday 11:36  val_khokhlov
+
+	* src/qksort.c (1.2): fix for compiling with msvc
+
+2003-03-26 Wednesday 04:31  stas_degteff
+
+	* src/cmpfname.c (1.1): Move cmpfnames() from fidoconfig/cfg.c
+
+2003-03-26 Wednesday 03:44  andr_lukyanov
+
+	* huskylib/MSVC.h (1.8): Fixed MSVC compilation
+
+2003-03-26 Wednesday 03:41  andr_lukyanov
+
+	* src/genverst.c (1.2): Fixed cmpfnames() error
+
+2003-03-25 Tuesday 19:26  stas_degteff
+
+	* huskylib/huskylib.h (1.16), make/makefile.inc (1.29),
+	src/genverst.c (1.1), src/version.c (1.1): Move GenVersionStr from
+	fidoconfig; New function: CheckHuskylibVersion()
+
+2003-03-25 Tuesday 13:52  stas_degteff
+
+	* huskylib/huskylib.h (1.15), make/makefile.inc (1.28): Move
+	cmpfnames() from fidoconfig/cfg.c
+
+2003-03-25 Tuesday 09:33  stas_degteff
+
+	* huskylib/compiler.h (1.15), huskylib/huskylib.h (1.14),
+	huskylib/recode.h (1.6), src/crc.c (1.3), src/ffind.c (1.12),
+	src/getfree.c (1.7), src/ioutil.c (1.4), src/recode.c (1.7),
+	src/setfsize.c (1.7), src/tdelay.c (1.9): Remove old types (ULONG,
+	CHAR, UCHAR)
+
+2003-03-25 Tuesday 08:38  stas_degteff
+
+	* huskylib/BEOS5.h (1.7), huskylib/BORLANDC.h (1.3),
+	huskylib/DJGPP.h (1.7), huskylib/EMX.h (1.9), huskylib/HIGHC.h
+	(1.5), huskylib/IBMC_OS2.h (1.4), huskylib/MINGW32.h (1.7),
+	huskylib/MSC.h (1.6), huskylib/MSVC.h (1.7), huskylib/SASC.h (1.6),
+	huskylib/UNIX.h (1.11), huskylib/WATCOMC.h (1.6),
+	huskylib/compiler.h (1.14), make/makefile.bsd (1.7),
+	make/makefile.cyg (1.9), make/makefile.djg (1.8), make/makefile.emo
+	(1.4), make/makefile.emx (1.4), make/makefile.lnx (1.6),
+	make/makefile.mgw (1.4), make/makefile.rxw (1.4), make/makefile.sun
+	(1.4), make/makefile.unx (1.8): Define compiler-independent types
+	for HUSKY: hSCHAR, hUCHAR, hSINT8, hUINT8, hSINT16, hUINT16,
+	hINT32, hUINT32, hINT64, hUINT64 (64-bit defined only if awayable)
+
+2003-03-24 Monday 22:36  stas_degteff
+
+	* src/getfree.c (1.6): Remove debugging define
+
+2003-03-24 Monday 22:35  stas_degteff
+
+	* src/getfree.c (1.5): get disk free space: implementation for MS
+	DOS
+
+2003-03-24 Monday 21:02  stas_degteff
+
+	* src/flush.c (1.7): Use Microsoft C (MS DOS) specific code
+
+2003-03-24 Monday 20:57  stas_degteff
+
+	* huskylib/: MSC.h (1.5), compiler.h (1.13): Update Microsoft C (MS
+	DOS) specific declarations
+
+2003-03-24 Monday 12:56  stas_degteff
+
+	* huskylib/memory.h (1.5), src/ioutil.c (1.3): Fix compuler
+	warnings (include required header files)
+
+2003-03-24 Monday 12:55  stas_degteff
+
+	* huskylib/compiler.h (1.12): MAX and MIN values for types
+
+2003-03-24 Monday 12:54  stas_degteff
+
+	* huskylib/DJGPP.h (1.6), huskylib/EMX.h (1.8), make/makefile.djg
+	(1.7): declare 64-bit integer types
+
+2003-03-21 Friday 06:34  stas_degteff
+
+	* huskylib/huskylib.h (1.13): include huskylib/dirlayer.h
+
+2003-03-21 Friday 05:26  sfpavel
+
+	* src/getfree.c (1.4): Export fc_GetDiskFreeSpace() from MSVC dll
+
+2003-03-19 Wednesday 09:39  stas_degteff
+
+	* src/: flush.c (1.6), locking.c (1.6): Replace assembler code with
+	C code (DOS functions calls)
+
+2003-03-19 Wednesday 09:38  sfpavel
+
+	* huskylib/huskylib.h (1.12), make/makefile.inc (1.27),
+	src/qksort.c (1.1): Move qksort.c from smapi
+
+2003-03-19 Wednesday 08:26  sfpavel
+
+	* make/: makefile.bcd (1.7), makefile.bco (1.3), makefile.bcw
+	(1.3): Unify makefiles for Borland C
+
+2003-03-19 Wednesday 07:55  sfpavel
+
+	* make/makefile.bcd (1.6), src/flushasm.asm (1.1), src/sqasm.asm
+	(1.1): Move asm sources from smapi
+
+2003-03-18 Tuesday 13:03  stas_degteff
+
+	* huskylib/dirlayer.h (1.4), src/dirlayer.c (1.3): New
+	implementation for directory entries operations: husky_opendir(),
+	husky_readdir(), husky_closedir(), husky_rewinddir()
+
+2003-03-18 Tuesday 13:02  stas_degteff
+
+	* huskylib/ffind.h (1.7): Replace define to typedef: FFIND
+
+2003-03-18 Tuesday 13:01  stas_degteff
+
+	* src/ffind.c (1.11): Fix function name: FindInfo() to FFindInfo()
+
+2003-03-17 Monday 19:46  stas_degteff
+
+	* make/makefile.wcx (1.2): Try to build using Watcom C
+
+2003-03-17 Monday 19:02  stas_degteff
+
+	* make/makefile.unx (1.7): create 'make pkgdistclean'
+
+2003-03-17 Monday 18:59  stas_degteff
+
+	* make/: makefile.cyg (1.8), makefile.unx (1.6): update 'make
+	package'
+
+2003-03-17 Monday 13:08  stas_degteff
+
+	* huskylib/recode.h (1.5), huskylib/strext.h (1.9), src/recode.c
+	(1.6), src/strext.c (1.9): Hide getctab() and arrays intab, outtab:
+	new function getctabs()
+
+2003-03-17 Monday 08:12  sfpavel
+
+	* Makefile (1.19), debian/libhusky1.files (1.2), debian/rules
+	(1.2), man/Makefile (1.1), man/gnmsgid.1 (1.1), src/gnmsgid.c
+	(1.12): Write man page for gnmsgid program
+
+2003-03-17 Monday 07:44  stas_degteff
+
+	* huskylib/BCD.h (1.2), huskylib/BCO.h (1.2), huskylib/BCW.h (1.2),
+	huskylib/BEOS5.h (1.6), huskylib/BORLANDC.h (1.2), huskylib/DJGPP.h
+	(1.5), huskylib/EMX.h (1.7), huskylib/HIGHC.h (1.4),
+	huskylib/IBMC_OS2.h (1.3), huskylib/MINGW32.h (1.6), huskylib/MSC.h
+	(1.4), huskylib/MSVC.h (1.6), huskylib/SASC.h (1.5),
+	huskylib/UNIX.h (1.10), huskylib/WATCOMC.h (1.5), huskylib/WCD.h
+	(1.3), huskylib/WCO.h (1.3), huskylib/WCW.h (1.3), huskylib/WCX.h
+	(1.3), huskylib/calendar.h (1.6), huskylib/compiler.h (1.11),
+	huskylib/crc.h (1.3), huskylib/cvtdate.h (1.9), huskylib/fexist.h
+	(1.5), huskylib/ffind.h (1.6), huskylib/locking.h (1.7),
+	huskylib/log.h (1.3), huskylib/memory.h (1.4), huskylib/parsenn.h
+	(1.7), huskylib/recode.h (1.4), huskylib/strext.h (1.8),
+	huskylib/temp.h (1.4), huskylib/tree.h (1.4), huskylib/unused.h
+	(1.5), huskylib/vixie.h (1.3), huskylib/xstr.h (1.3), src/cvtdate.c
+	(1.9), src/gnmsgid.c (1.11), src/patmat.c (1.9), src/temp.c (1.4):
+	Update header files
+
+2003-03-17 Monday 07:43  stas_degteff
+
+	* src/recode.c (1.5): Make compilable on MS VC; prevent compiler
+	warnings on Watcom, BSD-like, DJGPP (partially reverts previous
+	patch
+
+2003-03-17 Monday 07:10  sfpavel
+
+	* debian/: changelog (1.4), control (1.3), libhusky-dev.links
+	(1.2), libhusky0.docs (1.2), libhusky0.files (1.2),
+	libhusky0.shlibs (1.2), libhusky1.docs (1.1), libhusky1.files
+	(1.1), libhusky1.shlibs (1.1): New debian package
+
+2003-03-17 Monday 06:55  sfpavel
+
+	* src/recode.c (1.4): Fix compiler warnings
+
+2003-03-17 Monday 06:27  d_sergienko
+
+	* huskylib/recode.h (1.3), huskylib/unused.h (1.4), src/recode.c
+	(1.3): declare intab/outtab as external
+
+2003-03-16 Sunday 20:55  d_sergienko
+
+	* Makefile (1.18), make/makefile.inc (1.26), src/getfree.c (1.3):
+	remove installation of adcase.h; fix compiling getfree.c on
+	Linux/glibc; fix uninstall in Makefile
+
+2003-03-16 Sunday 18:53  stas_degteff
+
+	* make/makefile.unx (1.5): Tune make package
+
+2003-03-16 Sunday 18:03  stas_degteff
+
+	* makefile.unx (1.5), make/makefile.unx (1.4): Update makefile for
+	unixes; remove obsolete makefile
+
+2003-03-16 Sunday 17:19  stas_degteff
+
+	* Makefile (1.17): Generic makefile tuning
+
+2003-03-16 Sunday 13:31  stas_degteff
+
+	* Makefile (1.16), huskylib/DJGPP.h (1.4), huskylib/UNIX.h (1.9),
+	huskylib/WATCOMC.h (1.4), huskylib/adcase.h (1.2),
+	huskylib/calendar.h (1.5), huskylib/compiler.h (1.10),
+	huskylib/crc.h (1.2), huskylib/cvtdate.h (1.8), huskylib/dirlayer.h
+	(1.3), huskylib/fexist.h (1.4), huskylib/ffind.h (1.5),
+	huskylib/huskylib.h (1.11), huskylib/locking.h (1.6),
+	huskylib/log.h (1.2), huskylib/memory.h (1.3), huskylib/parsenn.h
+	(1.6), huskylib/recode.h (1.2), huskylib/strext.h (1.7),
+	huskylib/temp.h (1.3), huskylib/tree.h (1.3), huskylib/typesize.h
+	(1.3), huskylib/unused.h (1.3), huskylib/vixie.h (1.2),
+	huskylib/xstr.h (1.2), make/makefile.bsd (1.6), make/makefile.inc
+	(1.25), make/makefile.unx (1.3), src/adcase.c (1.2), src/calendar.c
+	(1.7), src/crc.c (1.2), src/cvtdate.c (1.8), src/dirlayer.c (1.2),
+	src/fexist.c (1.8), src/ffind.c (1.10), src/flush.c (1.5),
+	src/genmsgid.c (1.8), src/getfree.c (1.2), src/gnmsgid.c (1.10),
+	src/ioutil.c (1.2), src/locking.c (1.5), src/log.c (1.2),
+	src/mapfile.c (1.4), src/memory.c (1.10), src/parsenn.c (1.7),
+	src/patmat.c (1.8), src/recode.c (1.2), src/setfsize.c (1.6),
+	src/strext.c (1.8), src/strftime.c (1.7), src/tdelay.c (1.8),
+	src/temp.c (1.3), src/tree.c (1.2), src/xstr.c (1.2): Fix build for
+	: unixes (GCC), MS Visual C, Cygwin, DJGPP
+
+2003-03-16 Sunday 06:42  stas_degteff
+
+	* make/makefile.bsd (1.5): Fix makefile for BSD-like OS
+
+2003-03-15 Saturday 19:17  d_sergienko
+
+	* huskylib/dirlayer.h (1.2), huskylib/huskylib.h (1.10),
+	huskylib/memory.h (1.2), huskylib/strext.h (1.6), huskylib/temp.h
+	(1.2), huskylib/tree.h (1.2), huskylib/typesize.h (1.2),
+	src/ffind.c (1.9), src/memory.c (1.9), src/patmat.c (1.7),
+	src/temp.c (1.2): fix after merge
+
+2003-03-15 Saturday 18:42  d_sergienko
+
+	* huskylib/adcase.h (1.1), huskylib/compiler.h (1.9),
+	huskylib/crc.h (1.1), huskylib/dirlayer.h (1.1),
+	huskylib/huskylib.h (1.9), huskylib/log.h (1.1), huskylib/memory.h
+	(1.1), huskylib/recode.h (1.1), huskylib/strext.h (1.5),
+	huskylib/temp.h (1.1), huskylib/tree.h (1.1), huskylib/typesize.h
+	(1.1), huskylib/xstr.h (1.1), make/makefile.inc (1.24),
+	src/adcase.c (1.1), src/crc.c (1.1), src/dirlayer.c (1.1),
+	src/getfree.c (1.1), src/ioutil.c (1.1), src/log.c (1.1),
+	src/memory.c (1.8), src/patmat.c (1.6), src/recode.c (1.1),
+	src/strext.c (1.7), src/temp.c (1.1), src/tlog.c (1.1), src/tree.c
+	(1.1), src/xstr.c (1.1): move code from fidoconfig
+
+2003-03-15 Saturday 15:25  stas_degteff
+
+	* make/: makefile.aix (1.5), makefile.bcd (1.5), makefile.be (1.5),
+	makefile.bsd (1.4), makefile.cyg (1.7), makefile.djg (1.6),
+	makefile.emo (1.3), makefile.emx (1.3), makefile.hco (1.2),
+	makefile.ibo (1.2), makefile.lnx (1.5), makefile.mgw (1.3),
+	makefile.mvc (1.11), makefile.rxw (1.3), makefile.sun (1.3):
+	Include clean to distclean
+
+2003-03-15 Saturday 15:24  stas_degteff
+
+	* huskylib/patmat.h (1.4), make/makefile.inc (1.23): Remove
+	obsolete h-file
+
+2003-03-15 Saturday 13:57  stas_degteff
+
+	* huskylib/calendar.h (1.4), huskylib/compiler.h (1.8),
+	huskylib/cvtdate.h (1.7), huskylib/fexist.h (1.3), huskylib/ffind.h
+	(1.4), huskylib/huskyext.h (1.4), huskylib/huskylib.h (1.8),
+	huskylib/locking.h (1.5), huskylib/parsenn.h (1.5),
+	huskylib/patmat.h (1.3), huskylib/strext.h (1.4), make/makefile.inc
+	(1.22), src/calendar.c (1.6), src/cvtdate.c (1.7), src/fexist.c
+	(1.7), src/ffind.c (1.8), src/flush.c (1.4), src/genmsgid.c (1.7),
+	src/gnmsgid.c (1.9), src/locking.c (1.4), src/mapfile.c (1.3),
+	src/memory.c (1.7), src/parsenn.c (1.6), src/patmat.c (1.5),
+	src/setfsize.c (1.5), src/strext.c (1.6), src/strftime.c (1.6),
+	src/tdelay.c (1.7): Fix HUSKYEXT and includes usage
+
+2003-03-15 Saturday 11:52  d_sergienko
+
+	* makefile.unx (1.4): return file
+
+2003-03-15 Saturday 11:29  d_sergienko
+
+	* huskylib/: calendar.h (1.3), cvtdate.h (1.6), fexist.h (1.2),
+	ffind.h (1.3), huskylib.h (1.7), locking.h (1.4), parsenn.h (1.4),
+	patmat.h (1.2), strext.h (1.3), unused.h (1.2): we *can't* use
+	relative paths in #include in headers which will be installed.
+
+2003-03-15 Saturday 11:00  d_sergienko
+
+	* huskylib/cvtdate.h (1.5): add huskyext.h into include list
+
+2003-03-15 Saturday 10:55  d_sergienko
+
+	* huskylib/locking.h (1.3): fix exporting sopen
+
+2003-03-15 Saturday 10:50  d_sergienko
+
+	* make/makefile.inc (1.21): install huskyext.h
+
+2003-03-15 Saturday 10:48  d_sergienko
+
+	* huskylib/huskyext.h (1.3): fix spelling
+
+2003-03-14 Friday 22:36  stas_degteff
+
+	* make/makefile.mvc (1.10): More accuracy build huskymvc.dll
+
+2003-03-14 Friday 22:21  stas_degteff
+
+	* make/: makefile.mvc (1.9), makefile.mvcdll (1.9): Unify
+	makefiles: MS Visual C/C++; Use one makefile for static library and
+	DLL
+
+2003-03-14 Friday 19:58  stas_degteff
+
+	* huskylib/: MSVC.h (1.5), compiler.h (1.7): Update MS Visual C
+	related defines
+
+2003-03-14 Friday 13:49  stas_degteff
+
+	* make/: makefile.lnx (1.4), makefile.sun (1.2): Unify makefiles
+
+2003-03-14 Friday 13:49  stas_degteff
+
+	* huskylib/UNIX.h (1.8), huskylib/huskyext.h (1.2), src/tdelay.c
+	(1.6): Fix SUN SparcStation build
+
+2003-03-14 Friday 12:32  stas_degteff
+
+	* make/makefile.rxw (1.2): Unify makefile for RSXNT build
+
+2003-03-14 Friday 12:31  stas_degteff
+
+	* make/makefile.lnx (1.3): Cosmetics
+
+2003-03-14 Friday 12:20  stas_degteff
+
+	* huskylib/: UNIX.h (1.7), compiler.h (1.6): Tune defines for Sun
+	SparcStation
+
+2003-03-14 Friday 10:56  stas_degteff
+
+	* VERSION (1.3), make/makefile.inc (1.20): Change version number to
+	1.9
+
+2003-03-13 Thursday 19:53  stas_degteff
+
+	* huskylib/huskyext.h (1.1), huskylib/huskylib.h (1.6),
+	make/makefile.mvcdll (1.8), src/calendar.c (1.5), src/cvtdate.c
+	(1.6), src/fexist.c (1.6), src/ffind.c (1.7), src/genmsgid.c (1.6),
+	src/gnmsgid.c (1.8), src/locking.c (1.3), src/mapfile.c (1.2),
+	src/memory.c (1.6), src/parsenn.c (1.5), src/patmat.c (1.4),
+	src/setfsize.c (1.4), src/strext.c (1.5), src/strftime.c (1.5),
+	src/tdelay.c (1.5): Extract HUSKYEXT define into huskyext.h; use
+	DLLEXPORT to specify export/import dll functions
+
+2003-03-13 Thursday 08:46  stas_degteff
+
+	* huskylib/huskylib.h (1.5), make/makefile.inc (1.19),
+	src/mapfile.c (1.1): Add MapFile() by Alexander Lelyakin
+	2:5020/969.115: Mapping file to memory implementation
+
+2003-03-12 Wednesday 11:08  sfpavel
+
+	* huskylib/calendar.h (1.2), huskylib/huskylib.h (1.4),
+	src/calendar.c (1.4), src/cvtdate.c (1.5), src/ffind.c (1.6),
+	src/gnmsgid.c (1.7), src/memory.c (1.5), src/strext.c (1.4),
+	src/strftime.c (1.4), src/tdelay.c (1.4): Fix export of functions
+	names for msvc/dll build
+
+2003-03-12 Wednesday 10:24  sfpavel
+
+	* make/makefile.inc (1.18): Install fexist.h header
+
+2003-03-12 Wednesday 09:55  sfpavel
+
+	* huskylib/BEOS5.h (1.5), huskylib/DJGPP.h (1.3), huskylib/EMX.h
+	(1.6), huskylib/MINGW32.h (1.5), huskylib/MSVC.h (1.4),
+	huskylib/UNIX.h (1.6), huskylib/WATCOMC.h (1.3),
+	huskylib/compiler.h (1.5), huskylib/cvtdate.h (1.4),
+	huskylib/fexist.h (1.1), huskylib/ffind.h (1.2),
+	huskylib/huskylib.h (1.3), huskylib/locking.h (1.2),
+	huskylib/parsenn.h (1.3), huskylib/strext.h (1.2), src/cvtdate.c
+	(1.4), src/fexist.c (1.5), src/ffind.c (1.5), src/genmsgid.c (1.5),
+	src/gnmsgid.c (1.6), src/locking.c (1.2), src/parsenn.c (1.4),
+	src/patmat.c (1.3), src/setfsize.c (1.3): Reorganize headers for
+	successful build with MSVC/DLL
+
+2003-03-12 Wednesday 06:35  stas_degteff
+
+	* huskylib/cvtdate.h (1.3): publish Get_Dos_Date() (set HUSKYEXT)
+
+2003-03-11 Tuesday 22:27  d_sergienko
+
+	* make/makefile.inc (1.17): install locking.h
+
+2003-03-11 Tuesday 14:00  sfpavel
+
+	* src/flush.c (1.3): Fix MSVC build
+
+2003-03-11 Tuesday 13:45  stas_degteff
+
+	* src/: calendar.c (1.3), cvtdate.c (1.3), fexist.c (1.4), ffind.c
+	(1.4), flush.c (1.2), genmsgid.c (1.4), gnmsgid.c (1.5), memory.c
+	(1.4), parsenn.c (1.3), patmat.c (1.2), setfsize.c (1.2), strext.c
+	(1.3), strftime.c (1.3), tdelay.c (1.3): Use direct path to C
+	header files
+
+2003-03-11 Tuesday 13:20  stas_degteff
+
+	* make/makefile.lnx (1.2): Unify makefile for linux
+
+2003-03-11 Tuesday 13:12  sfpavel
+
+	* make/makefile.inc (1.16), src/flush.c (1.1): Move flush.c from
+	smapi
+
+2003-03-11 Tuesday 11:28  stas_degteff
+
+	* huskylib/BEOS5.h (1.4), huskylib/EMX.h (1.5), huskylib/HIGHC.h
+	(1.3), huskylib/MINGW32.h (1.4), huskylib/MSC.h (1.3),
+	huskylib/MSVC.h (1.3), huskylib/SASC.h (1.4), huskylib/UNIX.h
+	(1.5), huskylib/locking.h (1.1), make/makefile.inc (1.15),
+	src/locking.c (1.1): move locking.c from smapi
+
+2003-03-11 Tuesday 09:33  sfpavel
+
+	* make/makefile.mvc (1.8): Fix build for gnmsgid.exe with
+	makefile.mvc
+
+2003-03-11 Tuesday 09:23  sfpavel
+
+	* Makefile (1.15), debian/changelog (1.3): Fix build for 'gnmsgid'
+	with Makefile
+
+2003-03-10 Monday 17:51  stas_degteff
+
+	* make/makefile.mgw (1.2): Unify makefiles
+
+2003-03-09 Sunday 19:36  stas_degteff
+
+	* make/: makefile.emo (1.2), makefile.emx (1.2): EMX makefiles:
+	unify form
+
+2003-03-09 Sunday 19:35  stas_degteff
+
+	* make/: makefile.cyg (1.6), makefile.djg (1.5): cosmetics
+
+2003-03-09 Sunday 19:00  stas_degteff
+
+	* make/: makefile.be (1.4), makefile.bsd (1.3), makefile.cyg (1.5),
+	makefile.djg (1.4): fix makefiles (cosmetics)
+
+2003-03-09 Sunday 18:56  stas_degteff
+
+	* make/: makefile.bco (1.2), makefile.bcw (1.2): Update Borland C
+	makefiles
+
+2003-03-09 Sunday 18:54  os2tobi
+
+	* makefile.unx (1.2), huskylib/compiler.h (1.4): added __UNIX__
+	autodetect for Mac OS X
+
+2003-03-09 Sunday 18:51  stas_degteff
+
+	* make/makefile.bsd4 (1.2): Update native FreeBSD 4.x makefile
+
+2003-03-09 Sunday 18:21  stas_degteff
+
+	* make/makefile.mvcdll (1.7): Fix MS VC build: use  macro instead
+
+2003-03-09 Sunday 18:19  stas_degteff
+
+	* make/makefile.inc (1.14): Revert LIBNAME to husky; remove illegal
+	libraries list
+
+2003-03-09 Sunday 18:09  os2tobi
+
+	* makefile.unx (1.1): added makefile.unx
+
+2003-03-09 Sunday 17:04  os2tobi
+
+	* Makefile (1.14), huskylib/UNIX.h (1.4): Fixes for Mac OS X
+
+2003-03-09 Sunday 04:37  nssoft
+
+	* License (1.3), VERSION (1.2), huskylib/BEOS5.h (1.3),
+	huskylib/EMX.h (1.4), huskylib/HIGHC.h (1.2), huskylib/IBMC_OS2.h
+	(1.2), huskylib/MINGW32.h (1.3), huskylib/MSC.h (1.2),
+	huskylib/MSVC.h (1.2), huskylib/SASC.h (1.3), huskylib/UNIX.h
+	(1.3), huskylib/WATCOMC.h (1.2): Remove "CR" from files
+
+2003-03-09 Sunday 03:57  nssoft
+
+	* make/makefile.inc (1.13): Change LIBNAME to huskylib
+
+2003-03-07 Friday 20:18  stas_degteff
+
+	* huskylib/: EMX.h (1.3), compiler.h (1.3): Fix non-unix builds
+
+2003-03-07 Friday 19:08  stas_degteff
+
+	* src/gnmsgid.c (1.4): Fix EMX warnings
+
+2003-03-07 Friday 19:05  stas_degteff
+
+	* make/makefile.djg (1.3): Fix DJGPP build after makefile.inc
+	r.1.10
+
+2003-03-07 Friday 19:03  stas_degteff
+
+	* make/makefile.inc (1.12): Fix non-unix GCC builds
+
+2003-03-07 Friday 19:01  stas_degteff
+
+	* huskylib/: BEOS5.h (1.2), DJGPP.h (1.2), EMX.h (1.2), MINGW32.h
+	(1.2), SASC.h (1.2), UNIX.h (1.2), WCD.h (1.2), WCO.h (1.2), WCW.h
+	(1.2), WCX.h (1.2), compiler.h (1.2): Fix sopen usage
+
+2003-03-07 Friday 18:36  stas_degteff
+
+	* src/gnmsgid.c (1.3): Fix locaion of include-file cvsdate.h
+
+2003-03-07 Friday 09:43  stas_degteff
+
+	* License (1.2): Fix spell. Thanks to Val Khokhlov 2:550/180
+
+2003-03-06 Thursday 12:41  sfpavel
+
+	* make/makefile.mvc (1.7), make/makefile.mvcdll (1.6),
+	src/gnmsgid.c (1.2): Rewrite building binary (gnmsgid.exe) under MS
+	VC
+
+2003-03-06 Thursday 12:11  sfpavel
+
+	* Makefile (1.13): Allow 'clean' static build
+
+2003-03-06 Thursday 12:07  sfpavel
+
+	* Makefile (1.12), make/makefile.inc (1.11): Rewrite rules for
+	building binary with Makefile
+
+2003-03-06 Thursday 11:24  sfpavel
+
+	* Makefile (1.11): Fix install/uninstall rules at Makefile
+
+2003-03-06 Thursday 10:23  sfpavel
+
+	* Makefile (1.10), make/makefile.mvc (1.6), make/makefile.mvcdll
+	(1.5): Correct makefiles
+
+2003-03-06 Thursday 09:25  sfpavel
+
+	* Makefile (1.9), huskylib/huskylib.h (1.2), make/makefile.inc
+	(1.10), make/makefile.mvc (1.5), make/makefile.mvcdll (1.4),
+	src/gnmsgid.c (1.1): Add gnmsgid program
+
+2003-03-05 Wednesday 16:28  sfpavel
+
+	* Makefile (1.8), debian/changelog (1.2), make/makefile.inc (1.9):
+	Install new include files by 'make install'
+
+2003-03-05 Wednesday 15:44  sfpavel
+
+	* .cvsignore (1.3), debian/control (1.2): Update depends for debian
+	packages
+
+2003-03-05 Wednesday 14:12  stas_degteff
+
+	* huskylib/BCD.h (1.1), huskylib/BCO.h (1.1), huskylib/BCW.h (1.1),
+	huskylib/BEOS5.h (1.1), huskylib/BORLANDC.h (1.1), huskylib/DJGPP.h
+	(1.1), huskylib/EMX.h (1.1), huskylib/HIGHC.h (1.1),
+	huskylib/IBMC_OS2.h (1.1), huskylib/MINGW32.h (1.1), huskylib/MSC.h
+	(1.1), huskylib/MSVC.h (1.1), huskylib/SASC.h (1.1),
+	huskylib/UNIX.h (1.1), huskylib/WATCOMC.h (1.1), huskylib/WCD.h
+	(1.1), huskylib/WCO.h (1.1), huskylib/WCW.h (1.1), huskylib/WCX.h
+	(1.1), huskylib/compiler.h (1.1), huskylib/cvtdate.h (1.2),
+	huskylib/parsenn.h (1.2), make/makefile.inc (1.8), src/fexist.c
+	(1.3), src/genmsgid.c (1.3), src/memory.c (1.3), src/tdelay.c
+	(1.2): split compiler.h to plaform files; move types definitions
+	from typedefs/h into these files
+
+2003-03-05 Wednesday 12:24  sfpavel
+
+	* Makefile (1.7), huskylib/calendar.h (1.1), huskylib/cvtdate.h
+	(1.1), huskylib/ffind.h (1.1), huskylib/huskylib.h (1.1),
+	huskylib/parsenn.h (1.1), huskylib/patmat.h (1.1),
+	huskylib/strext.h (1.1), huskylib/unused.h (1.1), huskylib/vixie.h
+	(1.1): Move headers from h/ to huskylib/ for better compiling
+
+2003-03-05 Wednesday 10:46  stas_degteff
+
+	* make/: makefile.aix (1.4), makefile.bcd (1.4), makefile.be (1.3),
+	makefile.bsd (1.2), makefile.cyg (1.4), makefile.djg (1.2),
+	makefile.inc (1.7), makefile.unx (1.2): Unify makefiles
+
+2003-03-05 Wednesday 07:56  sfpavel
+
+	* make/makefile.mvc (1.4): Drop obsolete macros
+
+2003-03-05 Wednesday 06:49  sfpavel
+
+	* make/: makefile.mvc (1.3), makefile.mvcdll (1.3): Use new defines
+	from makefile.inc for MSVC building
+
+2003-03-05 Wednesday 06:20  sfpavel
+
+	* Makefile (1.6), make/makefile.inc (1.6): Use defines from common
+	makefile.inc at Makefile
+
+2003-03-04 Tuesday 19:20  stas_degteff
+
+	* make/makefile.be (1.2): unify makefiles
+
+2003-03-04 Tuesday 13:53  stas_degteff
+
+	* make/: makefile.aix (1.3), makefile.bcd (1.3), makefile.cyg
+	(1.3), makefile.inc (1.5): Unify makefiles
+
+2003-03-04 Tuesday 09:26  sfpavel
+
+	* make/: makefile.inc (1.4), makefile.mvc (1.2), makefile.mvcdll
+	(1.2): Build with makefile.mvc*
+
+2003-03-04 Tuesday 07:39  sfpavel
+
+	* debian/: docs (1.2), libhusky0.docs (1.1): Fix documentation for
+	debian package
+
+2003-03-04 Tuesday 07:36  sfpavel
+
+	* debian/changelog (1.1), debian/control (1.1), debian/copyright
+	(1.1), debian/docs (1.1), debian/libhusky-dev.files (1.1),
+	debian/libhusky-dev.links (1.1), debian/libhusky0.files (1.1),
+	debian/libhusky0.shlibs (1.1), debian/rules (1.1),
+	make/makefile.inc (1.3): Create debian packages
+
+2003-03-04 Tuesday 06:39  sfpavel
+
+	* src/: calendar.c (1.2), cvtdate.c (1.2), fexist.c (1.2), ffind.c
+	(1.3), genmsgid.c (1.2), memory.c (1.2), parsenn.c (1.2), strext.c
+	(1.2), strftime.c (1.2): Update license information
+
+2003-03-03 Monday 20:34  stas_degteff
+
+	* make/: makefile.aix (1.2), makefile.bcd (1.2), makefile.cyg
+	(1.2), makefile.inc (1.2): Adopt makefiles to huskylib
+
+2003-03-03 Monday 20:21  stas_degteff
+
+	* HISTORY (1.1), INSTALL (1.2): Adopt documentation to huskylib
+
+2003-03-03 Monday 19:13  stas_degteff
+
+	* COPYING (1.2), License (1.1): Update license information
+
+2003-03-03 Monday 18:36  stas_degteff
+
+	* Makefile (1.5): Prevent remove all files
+
+2003-03-03 Monday 13:23  stas_degteff
+
+	* src/ffind.c (1.2): Use macros defined in compiler.h: bugfix for
+	BeOS
+
+2003-03-03 Monday 07:26  d_sergienko
+
+	* COPYING (1.1), INSTALL (1.1), Makefile (1.4), VERSION (1.1),
+	afixcmd.c (1.3), afixcmd.h (1.4), afixcmn.c (1.4), arealist.c
+	(1.2), arealist.h (1.2), crc.c (1.2), crc.h (1.2), fscmn.c (1.4),
+	fscmn.h (1.2), log.c (1.2), log.h (1.2), makefile.cyg (1.2),
+	makefile.inc (1.2), makefile.lnx (1.2), makefile.mvc (1.2),
+	makefile.mvcdll (1.5), recode.c (1.2), recode.h (1.2), version.inc
+	(1.2), make/makefile.aix (1.1), make/makefile.bcd (1.1),
+	make/makefile.bco (1.1), make/makefile.bcw (1.1), make/makefile.be
+	(1.1), make/makefile.bsd (1.1), make/makefile.bsd4 (1.1),
+	make/makefile.cyg (1.1), make/makefile.djg (1.1), make/makefile.emo
+	(1.1), make/makefile.emx (1.1), make/makefile.hco (1.1),
+	make/makefile.ibo (1.1), make/makefile.inc (1.1), make/makefile.lnx
+	(1.1), make/makefile.mgw (1.1), make/makefile.mvc (1.1),
+	make/makefile.mvcdll (1.1), make/makefile.qcd (1.1),
+	make/makefile.rxw (1.1), make/makefile.sun (1.1), make/makefile.unx
+	(1.1), make/makefile.wcd (1.1), make/makefile.wco (1.1),
+	make/makefile.wcw (1.1), make/makefile.wcx (1.1), src/calendar.c
+	(1.1), src/cvtdate.c (1.1), src/fexist.c (1.1), src/ffind.c (1.1),
+	src/genmsgid.c (1.1), src/memory.c (1.1), src/parsenn.c (1.1),
+	src/patmat.c (1.1), src/setfsize.c (1.1), src/strext.c (1.1),
+	src/strftime.c (1.1), src/tdelay.c (1.1): 
+	new huskylib
+
+2002-11-27 Wednesday 00:08  nssoft
+
+	* afixcmd.c (1.2), afixcmd.h (1.3), afixcmn.c (1.3), fscmn.c (1.3):
+	s_addr --> hs_addr
+
+2002-10-28 Monday 23:37  pgul
+
+	* afixcmd.h (1.2), afixcmn.c (1.2): Change createKludges() args
+
+2002-09-21 Saturday 12:57  pgul
+
+	* fscmn.c (1.2): cosmetic fix
+
+2002-06-14 Friday 17:32  d.sergienko
+
+	* .cvsignore (1.2), Makefile (1.3), makefile.lnx (1.1), version.inc
+	(1.1): added makefiles for linux and huskymak.cfg
+
+2002-06-14 Friday 16:27  mche
+
+	* makefile.cyg (1.1): cygwin makefile added
+
+2002-06-14 Friday 16:11  mche
+
+	* makefile.mvc (1.1), makefile.mvcdll (1.4): msvc makefiles added
+
+2002-06-14 Friday 16:01  mche
+
+	* makefile.inc (1.1), makefile.mvcdll (1.3): makefiles structure
+	changed
+
+2002-06-14 Friday 15:53  mche
+
+	* .cvs2cl (1.1), .cvsignore (1.1): no message
+
+2002-06-14 Friday 09:40  mche
+
+	* fscmn.c (1.1), fscmn.h (1.1), makefile.mvcdll (1.2): fscmn.*
+	contain some functions works with files,directories  and their
+	names.	taken from fidoconf/common.h
+
+2002-06-14 Friday 09:03  mche
+
+	* afixcmd.c (1.1), afixcmd.h (1.1), afixcmn.c (1.1), arealist.c
+	(1.1), arealist.h (1.1), crc.c (1.1), crc.h (1.1), log.c (1.1),
+	log.h (1.1), makefile.mvcdll (1.1), recode.c (1.1), recode.h (1.1):
+	there are som files that need to move from fidoconfig
+
+2001-03-18 Sunday 08:36  oliver.grimm
+
+	* Makefile (1.2), compiler.h (1.2), locking.c (1.2), locking.h
+	(1.2): OG: Removed huskylib repository
+
+2001-03-12 Monday 17:43  oliver.grimm
+
+	* Makefile (1.1), compiler.h (1.1), locking.c (1.1), locking.h
+	(1.1): Initial revision
+

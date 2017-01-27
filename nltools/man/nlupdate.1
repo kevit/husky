@@ -1,0 +1,112 @@
+.TH NLUPD 1 "nltools" "18 April 2012" "Husky - Portable Fidonet Software"
+.SH NAME
+nlupd \- Manages your Nodelists and keeps them up to date.
+.SH SYNOPSIS
+.B nlupd [-hvq] [-c configfile]
+.SH "DESCRIPTION"
+.B nlupd
+are main utility in the nltools package. It
+manages your nodelists and keeps them up to date. For each
+nodelist that you have configured with a "Nodelist" statement,
+it will search the latest nodelist in the "NodelistDir", then
+calculate the day number of the difference file that is needed to
+update this nodelist, then search the difference file, unpack
+it if necessary, and apply it to the nodelist using
+.B nldiff
+utility.
+.B nlupd
+can also find full
+replacement files if you configure this, and just unpack them and copy
+them over the old nodelist. This is useful for othernets that do not have
+nodediff files. With only a few keywords, nlupd manages the whole
+process of updating your nodelist files for you.
+.sp 1
+.B nlupd
+is a part of the Husky Project (nltools module) and it shares config file
+(named fidoconfig) with other Husky programs. All configuration statements are
+described in the Fidoconfig Manual.
+.SH OPTIONS
+.TP 10
+.B -c configfile
+Specify alternate config file. See also section
+.B ENVIRONMENT.
+.TP 10
+.B -h
+Display version and usage information and exit.
+.TP 10
+.B -v
+Display version information and exit.
+.TP 10
+.B -q
+Quiet mode: supress normal screen output, only error messages may be displayed.
+.SH EXIT STATUS
+.TP 5
+.B 0
+new nodelists is generated
+.TP 5
+.B 8
+nlupd didn't make new nodelist because of some reason
+.SH USAGE
+.B nlupd
+uses following fidoconfig statements:
+.RS
+ LogFileDir
+ NodelistDir
+ Unpack
+ NodeList
+ DiffUpdate
+ FullUpdate
+ Defaultzone
+ Nodelistformat
+.RE
+See The Fidoconfig Manual for detailed description of these statements.
+.SS SAMPLE CONFIG
+The following lines show a nlupd-related part of sample configuration file.
+If you are only interested in the nodelist tools, you can just copy those
+commands into a text file, modify them according to your needs (OS/2, Win and
+DOS users may of course use backslashes instead of forward slashes, and drive
+letters), and point the FIDOCONFIG variable to this file. Don't forget to run
+.B tparser
+utility after any change of fidoconfig file (see The Fidoconfig Manual).
+.sp 1
+.RS
+   NodelistDir /var/spool/fido/nodelist
+.sp 1
+   Nodelist nodelist
+.br
+   DiffUpdate /var/spool/fido/filebase/nodediff/nodediff
+.br
+   NodelistFormat Standard
+.sp 1
+   Nodelist pointlst
+.br
+   DiffUpdate /var/spool/fido/filebase/24000/pr24diff
+.br
+   DefaultZone 2
+.br
+   NodelistFormat Points4D
+.RE
+.SH FILES
+.HP
+.I /etc/fido/config
+ default Fidoconfig.
+.SH ENVIRONMENT
+.HP
+.B FIDOCONFIG
+ pathname of the config file
+.SH "SEE ALSO"
+ulc(1), nldiff(1), nlcrc(1), info fidoconfig
+.SH BUGS
+1st line with nodelist date and CRC is required for full-updated nodelists.
+This restriction is discourages to use nlupd for (local) network segments
+of the nodelist.
+.SH CONFORMING TO
+.B nlupd
+is conformed with FTS-5000.001, (obsoleted) FTS-0005 and FTS-5002.001
+.SH NOTES
+All Husky-Software is written by various developers. For detailed information
+about the Husky-Team take a look at
+http://husky.sourceforge.net/team.html.
+.SH AUTHOR
+This manual page was written initially by Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>,
+and modified by other Husky developers.

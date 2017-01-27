@@ -1,0 +1,39 @@
+# $Id: makefile.djg,v 1.12 2010/12/07 21:36:59 stas_degteff Exp $
+# Makefile to build HUSKYLIB/dpmi with gcc 3.x.x from DJGPP v2.03.
+# No support for the Husky build environment.
+
+# include Husky-Makefile-Config,
+# copy this file from ../../huskybse/huskymak.cfg.djg
+include ../../huskybse/huskymak.cfg.djg
+
+include makefile.inc
+
+# includes directories
+CINCL	= -I$(H_DIR)
+
+READMEFILES= ../COPYING ../INSTALL ../License ../HISTORY ../ChangeLog ../VERSION
+
+## make rules ##
+
+default:
+	@echo
+	@echo Run \'make programs\' to build static version of programs ($(PROGRAMS))
+	@echo
+	@echo Run \'make all\' to build all above
+
+all:	static programs
+
+static:	$(TARGETLIB)
+programs: $(TARGETLIB) $(PROGRAMS)
+
+%$(_EXE): $(SRC_DIR)%$(_C) $(TARGETLIB)
+	@echo Create $(PROGRAMS)
+	@$(CC) $(CFLAGS) $(CDEFS) $(CINCL) $(EXENAMEFLAG)$@ $^
+
+%$(_OBJ): $(SRC_DIR)%$(_C)
+	@echo Compiling $<
+	@$(CC) $(CFLAGS) $(CDEFS) $(CINCL) $(OPTCFLAGS) $<
+
+$(TARGETLIB):	$(OBJS)
+	@echo Create $(TARGETLIB)
+	@$(AR) $(AR_R) $@ $?

@@ -1,0 +1,95 @@
+Msgidd - a Message ID daemon.
+
+This is a part of the HUSKY portable fidonet software project.
+Msgidd don't supported after 2005 year, but you may develop this.
+
+I. Introduction.
+
+
+A Msgidd package provides independent support for the generation of the MSGID
+for any FTN software. Message ID daemon listens a TCP port 16890 and generate
+new MSGID number for each request. Daemon also store last generated MSGID
+number into disk file to prevent drops of MSGID sequence if daemon is aborted.
+
+Msgidd is tested on GNU/Linux, FreeBSD and Windows.
+
+
+II. Package contents.
+
+
+The Msgidd package contains:
+- msgidd
+- msgidclient
+- MsgIdClient.class
+- README
+
+
+III. Package components descriptions.
+
+
+1. msgidd
+
+This is a simple msgid server. It is based on the tserver code from the
+book "Linux Application Development".
+
+Msgidd waits for a connection on port 16890/TCP. Once a connection has been
+established, get commands and return appropriate return message, and then
+wait for another connection to the socket.
+
+Now Msgidd recognizes only command "getMsgId": generate and return new MSGID.
+
+To informational purposes please add following line into /etc/services:
+
+msgid		16890/tcp	# husky MSGID daemon
+
+After this you may get the new MSGID using command:
+
+telnet localhost msgid
+(put string "getMsgId")
+(read generated MSGID)
+
+
+2. msgidclient
+
+This is a simple msgidd client. It is based on the tclient code from the
+book "Linux Application Development".
+
+Msgidclient connects to the server whose hostname or IP address is given as
+an command line argument, at port 16980/TCP (msgidd port). Once connected,
+write a string "getMsgId" to the socket, read the data from socket and
+print this data to stdout until server closes a connection. If connection
+can't be established then Msgidclient generates MSGID using internally
+implemented algorithm.
+
+
+3. MsgIdClient.class
+
+This is a JAVA msgidd client.
+
+MsgIdClient.class connects to the server whose hostname or IP address is
+given as an command line argument, at port 16980/TCP (msgidd port). Once
+connected, write a string "getMsgId" to the socket, read the data from
+socket and print this data to stdout until server closes a connection.
+Internal MSGID generator isn't implemented.
+
+
+4. README
+
+This file.
+
+
+IV. Build from sources.
+
+
+To compile programs the GNU C compiler package is needed. This compiler is
+included into base FreeBSD distribution and into many Linux distributions.
+For compile on Windows a Cygwin or MINGW32+MSYS is needed.
+
+To compile programs please run these commands from your shell:
+
+cd <to directory with unpacked sources>
+make
+
+
+
+$Id: README,v 1.5 2010/12/06 22:09:36 stas_degteff Exp $

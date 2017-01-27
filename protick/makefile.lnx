@@ -1,0 +1,33 @@
+#!/usr/bin/make -f
+
+DEBUG=1
+INCDIR=/usr/local/include
+BINDIR=/usr/local/bin
+IBOPT=
+
+
+ifeq ($(DEBUG), 1)
+  POPT = -dUNIX -Fu$(INCDIR) -dDEBUG
+else
+  POPT = -dUNIX -Fu$(INCDIR) -dRELEASE
+endif
+
+all: protick
+
+PASFILES= protick.pas mkglobt.pas mkmisc.pas mkmsgabs.pas mkmsgfid.pas \
+ mkmsgezy.pas mkmsgjam.pas mkmsghud.pas mkmsgsqu.pas types.pas generalp.pas \
+ crc.pas log.pas inifile.pas ptregkey.pas tickcons.pas ticktype.pas \
+ ptprocs.pas ptvar.pas ptmsg.pas ptcfg.pas ptout.pas
+
+protick: $(PASFILES)
+	ppc386 $(POPT) protick.pas
+
+clean:
+	-rm *.o *.ppu *.a *~
+
+distclean: clean
+	-rm protick genkey
+
+install:
+	install $(IBOPT) protick $(BINDIR)
+

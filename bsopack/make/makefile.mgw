@@ -1,0 +1,29 @@
+# $Id: makefile.mgw,v 1.5 2010/12/07 21:04:00 stas_degteff Exp $
+# Makefile for bilnd static program with with cross-compiler Mingw32
+# No support for the Husky build environment.
+
+## include common makefiles part ##
+include ../../huskybse/huskymak.mgw
+include makefile.inc
+
+CINCL	+= -I$(H_DIR) -I../../fidoconf -I../../smapi -I../../huskylib
+LIBS	+= ../../fidoconf/make/$(LIBPREFIX)fidoconfig$(LIBSUFFIX)$(_LIB) \
+	   ../../huskylib/make/$(LIBPREFIX)husky$(LIBSUFFIX)$(_LIB)
+
+
+all: bsopack
+
+bsopack: $(OBJS)
+	@$(CC) $(OBJS) $(CINCL) $(CFLAGS) $(LIBS) $(EXENAMEFLAG) $(LIBNAME)$(_EXE)
+
+
+%$(_OBJ): $(_SRC_DIR)%$(_C)
+	@echo Compiling $<
+	@$(CC) $(CFLAGS) $(CINCL) $(CDEFS) $(OBJOPT) $<
+
+
+clean:
+	$(RM) -f *.o *~
+
+distclean: clean
+	$(RM) bsopack.exe

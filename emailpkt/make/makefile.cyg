@@ -1,0 +1,59 @@
+# $Id: makefile.cyg,v 1.7 2002/12/05 13:41:06 stas_degteff Exp $
+#
+# Cygwin and Mingw32 CPD makefile for compiling Emailpkt for Win32
+#
+# Tested on Cygwin
+
+DEBUG=
+# set to -g for debugging, NEVER use -s !!!
+
+DOCSUBDIR=emailpkt
+
+DOCS	+= .forward
+
+CC=gcc
+EXENAMEFLAG=-o
+
+SRC_DIR = ../src/
+H_DIR   = ../h/
+
+INCLUDEDIRS = -I../.. -I$(H_DIR)
+
+CFLAGS	= -c -O3 -Wall $(DEBUG) -mno-cygwin -pedantic
+LFLAGS	= $(DEBUG) -mno-cygwin -L../../smapi  -L../../fidoconf
+CDEFS	= -DDIRSEP=\'/\'
+#CDEFS	+= -D__NT__
+
+OBJ=.o
+EXE=.exe
+RM=rm
+
+LIBS	=  -lfidoconfigcyg -lsmapicyg
+
+# Comment out next line for old cygwin
+Libs	+= -lmingwex
+
+default: all
+
+%$(OBJ): $(SRC_DIR)%.c $(H_DIR)$(HFILES)
+	$(CC) $(CFLAGS) $(CDEFS) $(INCLUDEDIRS) $(SRC_DIR)$*.c
+
+include makefile.inc
+
+all: commonall
+
+clean: commonclean
+
+distclean: commondistclean
+
+install:
+	$(INSTALL) $(IBOPT) hesend$(EXE) $(BINDIR)
+	$(INSTALL) $(IBOPT) hereceive$(EXE) $(BINDIR)
+#	$(MKDIR) $(MKDIROPT) $(HTMLDIR)$(DIRSEP)$(DOCSUBDIR)
+	$(INSTALL) $(IMOPT) README $(HTMLDIR)$(DIRSEP)$(DOCSUBDIR)
+
+uninstall:
+	-$(RM) $(RMOPT) $(BINDIR)$(DIRSEP)hesend$(EXE)
+	-$(RM) $(RMOPT) $(BINDIR)$(DIRSEP)hereceive$(EXE)
+	-$(RM) $(RMOPT) $(HTMLDIR)$(DIRSEP)$(DOCSUBDIR)
+	-$(RMDIR) $(RMOPT) $(HTMLDIR)$(DOCSUBDIR)

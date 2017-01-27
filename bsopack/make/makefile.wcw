@@ -1,0 +1,41 @@
+# $Id: makefile.wcw,v 1.7 2003/08/05 00:41:03 andr_lukyanov Exp $
+# Makefile for bilnd static program with Watcom C 11.0c for Win32
+#
+# Predefines: __WATCOMC__,
+# __NT__ (-bt=nt)
+
+
+CC      = wcc386
+LINK    = wlink
+RM	= del
+
+CFLAGS  = -zq -wx -bt=nt -oneatx -5
+CINCL	= -i=..\h;..\..\fidoconf;..\..smapi;..\..\huskylib
+LFLAGS  = system nt
+
+OSTYPE	= __NT__
+UNAME	= w32
+
+CDEFS	= -D$(OSTYPE) -DUNAME="$(UNAME)"
+SRC_DIR	= ..\src\
+
+OBJS	= log.obj config.obj bsoutil.obj bsopack.obj
+
+all: bsopack
+
+$(OBJS): $(SRC_DIR)\*.c
+	$(CC) $(CFLAGS) $(CINCL)  $(CDEFS) $(SRC_DIR)\$*.c
+
+bsopack: $(OBJS)
+	$(LINK) $(LFLAGS) FILE config.obj, bsoutil.obj, bsopack.obj, ..\..\fidoconf\fconfwcw.lib, ..\..\huskylib\make\huskywcw.lib NAME bsopack.exe
+
+
+.IGNORE        
+
+clean:
+	$(RM) *.obj
+	$(RM) *.err
+
+distclean: clean
+	$(RM) bsopack.exe
+        

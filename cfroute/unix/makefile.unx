@@ -1,0 +1,29 @@
+### Make file for CFRoute for FreeBSD, Linux and other Unixes with gcc
+### Requires gmake or another make that can cope with VPATH !!!
+
+### Directory options
+SRCDIR=../src
+SMAPIDIR=../../smapi
+FCDIR=../../fidoconf
+
+### Compiler flags
+CFLAGS = -O2 -DUNIX -DSQUISHCFS -I$(SMAPIDIR)
+### Linker flag
+LFLAGS = -s -L$(SMAPIDIR) -L$(FCDIR)
+LIBS=-lsmapiunix
+LIBS2=-lfidoconfigunix
+
+### Platform specifics
+DEL      = rm
+CXX      = g++
+CC       = gcc
+OBJ      = .o
+EXE      = 
+
+### List of object files
+cfrobjs = cfroute$(OBJ) dirute$(OBJ) buffer$(OBJ) structs$(OBJ) fecfg146$(OBJ) inbounds$(OBJ)
+
+
+### include the build rules that are common for all unix systems
+include common.mak
+

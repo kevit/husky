@@ -1,0 +1,83 @@
+# Legacy Makefile fBorland C for Win32
+# No support for the Husky build environment
+
+CC=	bcc32
+CFLAGS=	-w -WC -I..
+CDEFS=	-D__NT__ -DWINNT -DUSE_MSGAPI -I..\smapi
+COPT=	-O2
+
+TARGET=	msgednt.exe
+MSGAPI=	..\smapi\smapibcw.lib
+
+objs=	addr.obj     \
+	areas.obj    \
+	bmg.obj      \
+	charset.obj  \
+	config.obj   \
+	control.obj  \
+	date.obj     \
+	dialogs.obj  \
+	dirute.obj   \
+	dlgbox.obj   \
+	dlist.obj    \
+	echotoss.obj \
+	environ.obj  \
+	fconf.obj    \
+	fecfg145.obj \
+	fido.obj     \
+	filedlg.obj  \
+	flags.obj    \
+	freq.obj     \
+	gestr120.obj \
+	getopts.obj  \
+	group.obj    \
+	help.obj     \
+	helpcmp.obj  \
+	helpinfo.obj \
+	winntscr.obj \
+	init.obj     \
+	keycode.obj  \
+	list.obj     \
+	maintmsg.obj \
+	makemsgn.obj \
+	memextra.obj \
+	menu.obj     \
+	misc.obj     \
+	mnu.obj      \
+	msg.obj      \
+	msged.obj    \
+	mxbt.obj     \
+	normalc.obj  \
+	nshow.obj    \
+	quick.obj    \
+	quote.obj    \
+	readmail.obj \
+	screen.obj   \
+	strextra.obj \
+	system.obj   \
+	template.obj \
+	textfile.obj \
+	timezone.obj \
+	userlist.obj \
+	vsev.obj     \
+	vsevops.obj  \
+	win.obj      \
+	wrap.obj
+
+all: $(TARGET)
+
+.asm.obj:
+	$(ASM) $(AFLAGS) $(ADEFS) $<
+
+.c.obj:
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
+
+$(TARGET): $(objs)
+	$(CC) $(COPT) $(CFLAGS) -e$(TARGET) *.obj $(MSGAPI)
+
+clean:
+	del *.obj
+        del *.bak
+
+distclean: clean
+	del $(TARGET)

@@ -1,0 +1,28 @@
+# BORLAND C 2.0 FOR OS/2
+# legacy makefile
+
+SRC_DIR=..\src\
+CC=bcc -v
+OBJ=.obj
+RM=del
+EXE=.exe
+CFLAGS=-I..\h -I..\..\smapi -I..\..\fidoconf -DOS2
+LFLAGS=
+LIBS=..\..\fidoconf\fconfbco.lib ..\..\smapi\smapibco.lib
+
+include makefile.inc
+
+.SUFFIXES:
+.SUFFIXES: .c .obj .exe
+
+{$(SRC_DIR)}.c$(OBJ):
+	$(CC) $(CFLAGS) -c $<
+
+all: commonprogs
+
+default: all
+
+clean:
+	-$(RM) *$(OBJ)
+
+distclean: clean commondistclean

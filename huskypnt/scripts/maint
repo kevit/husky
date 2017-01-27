@@ -1,0 +1,20 @@
+#!/bin/sh
+
+function main()
+{
+  nlupdate
+  ulc
+  sqpack
+
+  if [ -f $WORKDIR$/echotoss.log ] ; then rm $WORKDIR$/echotoss.log ; fi
+  hpt scan
+
+  if [ -f $WORKDIR$/import.log ] ; then rm $WORKDIR$/import.log ; fi
+  hptutil link
+
+  purgeDupes
+  toss
+}
+
+main >> $logdir$/husky.log 2>&1
+

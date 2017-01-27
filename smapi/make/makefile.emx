@@ -1,0 +1,47 @@
+# $Id: makefile.emx,v 1.4 2010/05/13 07:16:25 stas_degteff Exp $
+# Makefile to build SMPI/OS2 with gcc 3.x.x from EMX v0.9d.
+# No support for the Husky build environment.
+
+# include Husky-Makefile-Config,
+# copy this file from ../../huskybse/huskymak.cfg.emx
+include ../../huskymak.cfg
+
+include makefile.inc
+
+# libraries need to build binary file
+CINCL	= -I$(H_DIR) -I../../huskylib
+
+# libraries need to build binary file
+LIBS	= ../../huskylib/make/$(LIBPREFIX)husky$(LIBSUFFIX)$(_LIB)
+
+READMEFILES= ../BEOS.TXT ../BUGS ../ChangeLog ../COPYING ../HISTORY ../INSTALL ../LICENSE ../readme.txt ../TODO ../VERSION
+
+## make rules ##
+
+default:
+	@echo Run 'make static' to build static version ($(TARGETLIB))
+	@echo Run 'make programs' to build static version of programs ($(TARGETLIB))
+	@echo Run 'make all' to build all above
+
+all:	static dll programs
+
+static: $(TARGETLIB)
+dll:	$(TARGETDLL)
+programs: $(TARGETLIB) $(PROGRAMS)
+dllprograms: $(TARGETLIB) $(TARGETDLL) $(PROGRAMS)
+
+%$(_EXE): $(SRC_DIR)%$(_C) $(TARGETLIB)
+	@echo Create $(PROGRAMS)
+	@$(CC) $(CFLAGS) $(CDEFS) $(CINCL) $(EXENAMEFLAG) $@ $^
+
+%$(_OBJ): $(SRC_DIR)%$(_C)
+	@echo Compiling $<
+	@$(CC) $(CFLAGS) $(CDEFS) $(CINCL) $(OPTCFLAGS) $<
+
+$(TARGETLIB):	$(OBJS)
+	@echo Create $(TARGETLIB)
+	@$(AR) $(AR_R) $@ $?
+
+$(TARGETDLL):	$(OBJS)
+	@echo Create $(TARGETDLL)
+	@$(CC) $(DLLOPT) $(CFLAGS) $(EXENAMEFLAG) $@ $^ $(LIBS)

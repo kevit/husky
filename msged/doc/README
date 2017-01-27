@@ -1,0 +1,13 @@
+
+This directory contains some sample files and the whatsnew file.
+
+It is strongly suggested that you read the full documentation of MsgEd TE.
+To do so, change to the "manual" subdirectory. There, type
+
+   make info
+   info -f msged.info
+
+in order to read the full documentation.
+
+The full documentation also contains DETAILED installation and compilation instructions.
+Please, really, do it like this!

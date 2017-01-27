@@ -1,0 +1,60 @@
+# $Id: makefile.cyg,v 1.12 2005/12/20 05:23:46 nick_voronin Exp $
+# Makefile to build HPT/win32 with Mingw32 from Cygwin.
+# No support for the Husky build environment.
+
+# include Husky-Makefile-Config,
+# copy this file from ../../huskybse/huskymak.cfg.cyg
+include ../../huskymak.cfg
+
+include makefile.inc
+
+# includes directories
+CINCL	= -I$(H_DIR) -I../../huskylib/ -I../../areafix/ -I../../fidoconf -I../../smapi/
+
+# libraries need to build binary file
+LIBS	= ../../areafix/make/$(LIBPREFIX)areafix$(LIBSUFFIX)$(_LIB) \
+	  ../../fidoconf/make/$(LIBPREFIX)fidoconfig$(LIBSUFFIX)$(_LIB) \
+	  ../../smapi/make/$(LIBPREFIX)smapi$(LIBSUFFIX)$(_LIB) \
+	  ../../huskylib/make/$(LIBPREFIX)husky$(LIBSUFFIX)$(_LIB)
+
+READMEFILES= ../BUG-REPORTING ../BUGS ../ChangeLog ../COPYING ../CREDITS \
+	     ../INSTALL ../README ../TODO ../VERSION ../filter.pl 
+
+default:
+	@echo
+	@echo Run \'make programs\' to build static version of programs
+	@echo \($(PROGRAMS)\)
+	@echo
+	@echo Run \'make all\' to build all above
+
+all:	programs
+
+programs: $(PROGRAMS)
+
+%$(_OBJ): $(_SRC_DIR)%$(_C)
+	@echo Compiling $<
+	@$(CC) $(CFLAGS) $(CDEFS) $(CINCL) $(OPTCFLAGS) $<
+
+$(PKTINFO): $(PKTINFOOBJS)
+	@echo Create $(PKTINFO)
+	@$(CC) $(STRIP) $(CFLAGS) $(CDEFS) $(CINCL) $(EXENAMEFLAG) $@ $^ $(LIBS)
+
+$(TPKT): $(TPKTOBJS)
+	@echo Create $(TPKT)
+	@$(CC) $(STRIP) $(CFLAGS) $(CDEFS) $(CINCL) $(EXENAMEFLAG) $@ $^ $(LIBS)
+
+$(TXT2PKT): $(TXT2PKTOBJS)
+	@echo Create $(TXT2PKT)
+	@$(CC) $(STRIP) $(CFLAGS) $(CDEFS) $(CINCL) $(EXENAMEFLAG) $@ $^ $(LIBS)
+
+$(HPTLINK): $(HPTLINKOBJS)
+	@echo Create $(HPTLINK)
+	@$(CC) $(STRIP) $(CFLAGS) $(CDEFS) $(CINCL) $(EXENAMEFLAG) $@ $^ $(LIBS)
+
+$(HPTTREE): $(HPTTREEOBJS)
+	@echo Create $(HPTTREE)
+	@$(CC) $(STRIP) $(CFLAGS) $(CDEFS) $(CINCL) $(EXENAMEFLAG) $@ $^ $(LIBS)
+
+$(HPT): $(HPTOBJS)
+	@echo Create $(HPT)
+	@$(CC) $(STRIP) $(CFLAGS) $(CDEFS) $(CINCL) $(EXENAMEFLAG) $@ $^ $(LIBS)

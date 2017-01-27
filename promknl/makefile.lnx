@@ -1,0 +1,29 @@
+#!/usr/bin/make -f
+
+DEBUG=1
+INCDIR=/usr/local/include
+BINDIR=/usr/local/bin
+IBOPT=
+
+ifeq ($(DEBUG), 1)
+  POPT = -dUNIX -Fu$(INCDIR) -dDEBUG
+else
+  POPT = -dUNIX -Fu$(INCDIR) -dRELEASE
+endif
+
+PASFILES = crc32.pas crc.pas generalp.pas inifile.pas log.pas mkdos.pas mkffile.pas mkfile.pas mkglobt.pas mkmisc.pas mkmsgabs.pas mkmsgezy.pas mkmsgfid.pas mkmsghud.pas mkmsgjam.pas mkmsgsqu.pas mkopen.pas mkstring.pas pmknl.pas types.pas
+
+all: pmknl
+
+pmknl: $(PASFILES)
+	ppc386 $(POPT) pmknl.pas
+
+clean:
+	-rm *.o *.ppu *~
+
+distclean: clean
+	-rm pmknl
+
+install:
+	install $(IBOPT) pmknl $(BINDIR)
+

@@ -1,0 +1,23 @@
+cfroute (1.0-3) unstable; urgency=low
+
+  * New maintainer
+  * debian/rules: DH_COMPAT=4
+  * debian/copyright: new http-location of sources
+  * debian/control: correct Build-Depends
+
+ -- Pavel Andreew <pavel@collage.etel.ru>  Mon, 26 Aug 2002 17:01:16 +0600
+
+cfroute (1.0-2) unstable; urgency=low
+
+  * Next Debian Package Version.
+  * Better Build-Depends.
+
+ -- Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>  Tue,  5 Mar 2002 13:47:56 +0100
+
+cfroute (1.0-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>  Sun,  8 Jul 2001 23:57:05 +0200
+
+

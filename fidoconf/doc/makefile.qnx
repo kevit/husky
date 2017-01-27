@@ -1,0 +1,5 @@
+# $Id: makefile.qnx,v 1.1 2003/05/25 12:46:44 lmike Exp $
+#
+# QNX makefile for building fidoconfig documentation
+
+include makefile.unx

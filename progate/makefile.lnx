@@ -1,0 +1,30 @@
+#!/usr/bin/make -f
+
+DEBUG=1
+INCDIR=/usr/local/include
+BINDIR=/usr/local/bin
+IBOPT=
+
+ifeq ($(DEBUG), 1)
+  POPT = -dUNIX -Fu$(INCDIR) -dDEBUG
+else
+  POPT = -dUNIX -Fu$(INCDIR) -dRELEASE
+endif
+
+
+PASFILES = crc32.pas generalp.pas inifile.pas log.pas mkdos.pas mkffile.pas mkfile.pas mkglobt.pas mkmisc.pas mkmsgabs.pas mkmsgezy.pas mkmsgfid.pas mkmsghud.pas mkmsgjam.pas mkmsgsqu.pas mkopen.pas mkstring.pas progate.pas types.pas
+
+all: progate
+
+progate: $(PASFILES)
+	ppc386 $(POPT) progate.pas
+
+clean:
+	-rm *.o *.ppu *~
+
+distclean: clean
+	-rm progate
+
+install:
+	install $(IBOPT) progate $(BINDIR)
+

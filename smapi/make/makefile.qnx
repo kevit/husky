@@ -1,0 +1,181 @@
+# $Id: makefile.qnx,v 1.5 2003/06/16 14:18:20 lmike Exp $
+#
+# Generic makefile for building huskylib (static and dynamic library)
+# for QNX 6.x.
+#
+# No support for the Husky build environment (huskymak.cfg)
+# Use GNU version of make utility with this file.
+
+prefix=/usr
+
+# Uncomment this for compile info for gdb and display more compiler warnings
+# DEBUG	= -g
+
+# Uncomment this for strip all simbols from binaries to reduce file sizes
+STRIPLIB = strip -g
+STRIPDLL = strip --strip-unneeded
+
+## Directories & permissions ##
+
+BINDIR	= $(prefix)/bin/
+LIBDIR	= $(prefix)/lib/
+INCDIR	= $(prefix)/include/smapi/
+IBOPT	= -m 555 -c
+ILOPT	= -m 444 -c
+IIOPT	= -m 444 -c
+IDOPT	= -d -m 755
+
+## programs ##
+GCC	= gcc
+AR	= ar
+RANLIB	= ranlib
+INSTALL	= install
+LN	= ln
+
+## file suffixes ##
+
+# source file
+_C	= .c
+# static library object file
+_LIBOBJ	= .o
+# dynamic object file
+_DLLOBJ	= .xo
+# binary (executable) file
+_EXE	=
+# static library
+_LIB	= .a
+# shared library
+_DLL	= .so
+# shared library definitions file (export/import lists & etc.)
+_DEF	= .def
+# shared library exported list
+_EXP	= .exp
+# archive (package) file
+_ARC	= .tar.gz
+# documentation file (".info", ".html", ".div", ...)
+_HTML	= .html
+# text file
+_TXT	= .txt
+
+
+## program options ##
+
+# compiler defines
+CDEFS	=
+# common compiler options
+CFLAGS	= -Wall -O2
+# options for compile only (link is off)
+OBJOPT	= -c
+# options for build dll
+DLLOPT  = -shared -fPIC
+# option for specify output file name
+NAMEOPT	= -o
+# options for $(AR) program
+ARFLAGS	= r
+# options for $(RM) program
+RMFLAGS	=
+
+
+## Library filename elements ##
+
+# Prefix to construct static library name
+LIBPREFIX=lib
+# Prefix to construct dll name
+DLLPREFIX=lib
+# Suffix to construct library name
+LIBSUFFIX=qnx
+# Suffix to construct dll name
+DLLSUFFIX=qnx
+
+## make directives ##
+
+.PHONY:	distclean clean all static programs dllprograms default \
+	install hinstall linstall pinstall dinstall \
+	uninstall-progs uninstall-lib uninstall-h
+
+
+## Default make rule ##
+
+default: all
+
+## include common makefiles part ##
+_OBJ:=$(_LIBOBJ)
+include makefile.inc
+LIBOBJS:=$(OBJS)
+
+_OBJ:=$(_DLLOBJ)
+include makefile.inc
+DLLOBJS:=$(OBJS)
+
+DLLPROGRAMS:=$(PROGRAMS)
+TARGETDLL:=$(DLLPREFIX)$(LIBNAME)$(DLLSUFFIX)-$(VER)$(_DLL)
+
+## Additions (add into end of strings) ##
+
+# libraries need to build binary file (add into end of string)
+LIBS	+=
+
+SLIBS    = -L../../huskylib/make -lhuskyqnx 
+
+# Append includes dir and debug code generate options (if defined)
+CFLAGS	+= -I$(H_DIR) -I../../huskylib $(DEBUG)
+
+## make rules ##
+
+all:	static dll programs
+
+static:		$(TARGETLIB)
+dll:		$(TARGETDLL)
+programs:	$(PROGRAMS)
+
+%$(_LIBOBJ):	$(SRC_DIR)%$(_C)
+		$(CC) $(CFLAGS) $(DEBUG) $(CDEFS) $(OBJOPT) $< $(NAMEOPT) $@
+
+%$(_DLLOBJ):	$(SRC_DIR)%$(_C)
+		$(CC) $(DLLOPT) $(CFLAGS) $(DEBUG) $(CDEFS) $(OBJOPT) $< $(NAMEOPT) $@
+
+$(TARGETLIB):	$(LIBOBJS)
+		$(AR) $(ARFLAGS) $@ $?
+		$(RANLIB) $@
+		$(STRIPLIB) $@
+
+$(TARGETDLL):	$(DLLOBJS)
+		$(CC) $(DLLOPT) $(CFLAGS) $(SLIBS) $(NAMEOPT)$@ $^
+		$(STRIPDLL) $@
+		$(LN) -f -s $@ $(DLLPREFIX)$(LIBNAME)$(DLLSUFFIX)$(_DLL)
+
+clean:
+	-$(RM) $(RMFLAGS) *$(_LIBOBJ) *$(_DLLOBJ) $(TARGETLIB) $(TARGETDLL) $(PROGRAMS) $(DLLPREFIX)$(LIBNAME)$(DLLSUFFIX)$(_DLL)
+
+distclean:
+	-$(RM) $(RMFLAGS) $(TARGETDLL) $(TARGETLIB) $(PROGRAMS)
+
+proginstall: $(PROGRAMS)
+	$(INSTALL) $(IDOPT) $(BINDIR)
+	$(INSTALL) $(IBOPT) $(PROGRAMS) $(BINDIR)
+
+linstall: $(TARGETLIB)
+	$(INSTALL) $(IDOPT) $(LIBDIR)
+	$(INSTALL) $(ILOPT) $(TARGETLIB) $(LIBDIR)
+
+dinstall: $(TARGETDLL)
+	$(INSTALL) $(IDOPT) $(LIBDIR)
+	$(INSTALL) $(ILOPT) $(TARGETDLL) $(LIBDIR)
+	ln -sf $(LIBDIR)$(TARGETDLL) $(LIBDIR)$(TARGETDLL).$(VERMAJOR)
+
+hinstall:
+	$(INSTALL) $(IDOPT) $(INCDIR)
+	$(INSTALL) $(IIOPT) $(TARGET_H) $(INCDIR)
+
+uninstall: uninstall-h uninstall-lib uninstall-progs
+
+uninstall-progs:
+	-cd $(BINDIR) ; $(RM) $(RMFLAGS) $(PROGRAMS)
+
+uninstall-lib:
+	-$(RM) $(RMFLAGS) $(LIBDIR)$(TARGETDLL)
+	-$(RM) $(RMFLAGS) $(LIBDIR)$(TARGETDLL).$(VERMAJOR)
+
+uninstall-h:
+	-cd $(INCDIR) ; $(RM) $(RMFLAGS) $(TARGET_H)
+	-$(RM) $(RMFLAGS) $(INCDIR)

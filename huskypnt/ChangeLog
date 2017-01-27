@@ -1,0 +1,31 @@
+----- cvs ci -----
+Mon Sep  4 00:02:28 UTC 2000
+sms:
+* saving config between sessions (useful if compiling fails)
+
+----- cvs ci -----
+Wed Aug 30 19:55:53 UTC 2000
+sms:
+* renamed msged.scheme.cfg to msged.colors.cfg, only including it if colors
+  are usable
+
+----- cvs ci -----
+Wed Aug 30 19:51:09 UTC 2000
+sms:
+* updated configs
+* nltools support
+
+----- cvs ci -----
+Wed Aug 30 18:20:17 UTC 2000
+sms:
+* finished support for GNU readline
+
+----- cvs ci -----
+Wed Aug 30 01:28:53 UTC 2000
+sms:
+* moved user-config into subdir .fido, using normal filenames there (no 
+  leading dot)
+* adding group fidoadm
+* setting ownership and permissions for user-config
+* preliminary support for GNU readline
+

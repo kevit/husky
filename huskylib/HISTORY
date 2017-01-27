@@ -1,0 +1,15 @@
+HUSKYLIB history file
+
+huskylib 0.1
+
+1. MAJOR feature improvements:
+  - move compiler-specific declarations, types of data and common functions
+    from smapi and fidoconfig: new life for huskylib.
+
+2. IMPORTANT bugfixes:
+
+3. MINOR changes:
+  - changed time separator in logs. now ':' will be used instead of '.'.
+    Don't forget to update your scripts.
+
+$Id: HISTORY,v 1.2 2003/09/16 21:24:47 d_sergienko Exp $

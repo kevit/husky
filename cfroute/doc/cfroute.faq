@@ -1,0 +1,89 @@
+CFRoute FAQ
+===========
+
+Originally written by Carlos Fernandez Sanz
+Now being maintained by Tobias Ernst
+
+All questions that have been asked twise at least in arbitrary order:
+
+I Technical Questions
+---------------------
+
+Q: I think CFR processes some netmail even if it was already processed. Why?
+A: CFR uses the file timestamp to determine when a .MSG should be queued for
+   processing.  The timestamp is updated  every  time a message is read (and
+   of course when it is written) because there is a 'times read' field  that
+   is  updated.  Also, an unsent message that is sent and gets its attribute
+   updated is processed in the next  run.  (Note from Tobias:  It seems that
+   the  timestamp  problem  has  been  fixed  by  the  introduction  of  the
+   LASTRUN.CFR flag file).
+
+Q: Are there any plans to add Squish/JAM/whatever support?
+A: CFRoute 1.0 supports both Squish and Jam. Use the NetSquish resp. NetJam
+   keywords to declare netmail folders in these formats.
+
+Q: Why doesn't CFR pack the netmail with echomail?
+A: Besides from some arguments why not packing netmail has strong advantages
+   (like:   netmail  begin  sent  first, or:  no danger of netmail not being
+   unpacked because of security problems),  there is a problem of uniqueness
+   of packet file names.  For example, if CFRoute gives an arbitary name  to
+   a netmail packet, and *later*, a tosser like Fastecho decides to give the
+   same name to an echomail packet and then adds this echomail packet to the
+   archive  that  already  contains  the netmail packet, the netmail will be
+   LOST!!!  Since I do not know  how  Fastecho (or any other tosser that you
+   might be using) creates packet names, I can't provide for this case.
+
+Q: Ok. Will CFR ever pack netmail?
+A: Only if I figure out how to solve the uniqueness-of-name problem.
+
+Q: Does cfroute support the "fidoconfig" file standard of the Husky project?
+A: Cfroute itself does not support fidoconfig, but you can use the fc2cfr
+   converter program, which comes bundled with cfroute, to generate a
+   cfroute config file. As long as you do not manually modify this config
+   file, cfroute behaves exactly has "hpt pack" does - but of course if you
+   want to exploit the special features of cfroute, you have to manually edit
+   this file. Also read FIDOCONF.TXT for more information.
+
+
+Interested Developer's Questions
+--------------------------------
+
+Q: Can I have the CFRoute code?
+A: Yes.  It is available from the Husky CVS server at
+   http://husky.physcip.uni-stuttgart.de. Or just write a mail to me and I'll
+   send it to you.
+
+Q: What do you want in exchange for the source code?
+A: The same that I give to the programmers of the source code I use.  That's
+   credit for every part of the code  I use, and a copy of the modifications
+   I do.
+
+Q: What compiler do I need to compile the source code?
+A: You need EMX 0.9d (GCC 2.8.1) for OS/2,  RSX  (GCC  2.7.2)  for  NT,  and
+   Borland  C  3.1 for DOS.  The source code also has some defines for other
+   compilers, but they are not  being  actively  maintained, i.E. if you use
+   any other compiler, you will have some additional work to do.
+
+Q: What tools have been used for CFRoute?
+A: Only  C++  compilers  and  the FTS-* and FSC-* documents.  If you want to
+   build  a  version  of CFRoute that can access Squish and Jam message base
+   files, you also need the  modified  Squish library labeled "SMAPI", of at
+   least revision 1.6.4b. It is available at
+   http://husky.physcip.uni-stuttgart.de
+
+III Other questions
+-------------------
+
+Q: Did Carlos Fernanez write any other program?
+A: Yes, of course.  Check DiskEmu (a nice  floppy  disk  emulator  for  fast
+   program  installation), CDUtil (a utility to check correctness of data to
+   be stored on a CD-R),  and  a  few  other  stuff.   He also has done also
+   commercial stuff, such as Microdoc Visual (a documental database  engine)
+   but  that's  very boring.  Also, he has joined the Binkley-XE development
+   team.
+
+Q: Is there any official betateam or something?
+A: Every time I get a version I  think  it is stable enough I simply release
+   it for public evaluation.  There isn't a closed group or  something  with
+   access  to  new  versions  before  the  rest of the people.  Also, CFR is
+   simply too small to organize anything for it.

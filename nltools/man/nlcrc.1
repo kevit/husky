@@ -1,0 +1,48 @@
+.TH NLCRC 1 "nltools" "18 April 2012" "Husky - Portable Fidonet Software"
+.SH NAME
+nlcrc \- Checks the CRC of a given Nodelist.
+.SH SYNOPSIS
+.B nlcrc
+.BR [/path/to/nodelist]
+.SH "DESCRIPTION"
+.B nlcrc
+are utility in the nltools package. It
+checks the CRC of a given Nodelist file and returns result code.
+.sp 1
+You do not need to call nlcrc manually, unless you are curious.
+.sp 1
+.B nlcrc
+is a part of the Husky Project (nltools module) but
+.B nlcrc
+doesn't use config file.
+.SH OPTIONS
+.B [/path/to/nodelist]
+The Nodelist to check.
+.SH EXIT STATUS
+.B 0
+Check succeeded.
+.SS ERRORS
+.B 1
+Illegal (unknown) option in comand line.
+.B 2
+Extra parameter(s) in command line or nodelist file name isn't specified.
+.B 4
+File Does not contain a CRC Checksum.
+.br
+.B 8
+File IO Error.
+.br
+.B 16
+Checksum test failed.
+.SH "SEE ALSO"
+ulc(1), nldiff(1), nlupd(1), info fidoconfig
+.SH CONFORMING TO
+.B nlcrc
+is conformed with FTS-5000.001 and (obsoleted) FTS-0005.
+.SH NOTES
+All Husky-Software is written by various developers. For detailed information
+about the Husky-Team take a look at 
+http://husky.sourceforge.net/team.html.
+.SH AUTHOR
+This manual page was written initially by Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>,
+and modified by other Husky developers.

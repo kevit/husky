@@ -1,0 +1,51 @@
+# $Id: makefile.cyg,v 1.14 2003/10/23 08:58:19 stas_degteff Exp $
+# Makefile to build HUSKYLIB/win32 with Mingw32 from Cygwin.
+# No support for the Husky build environment.
+
+# include Husky-Makefile-Config,
+# copy this file from ../../huskybse/huskymak.cfg.cyg
+include ../../huskymak.cfg
+
+include makefile.inc
+
+# includes directories
+CINCL	= -I$(H_DIR)
+
+READMEFILES= ../COPYING ../INSTALL ../License ../HISTORY ../ChangeLog ../VERSION
+
+## make rules ##
+
+default:
+	@echo
+	@echo Run \'make dll\' to build dll version \($(TARGETDLL)\)
+	@echo
+	@echo Run \'make static\' to build static version \($(TARGETLIB), $(PROGRAMS)\)
+	@echo
+	@echo Run \'make dllprograms\' to build dll version of programs \($(TARGETDLL), $(PROGRAMS)\)
+	@echo
+	@echo Run \'make programs\' to build static version of programs \($(PROGRAMS)\)
+	@echo
+	@echo Run \'make all\' to build all above
+
+all:	static dll programs
+
+static:	$(TARGETLIB)
+dll:	$(TARGETDLL)
+programs: $(TARGETLIB) $(PROGRAMS)
+dllprograms: $(TARGETLIB) $(TARGETDLL) $(PROGRAMS)
+
+%$(_EXE): $(SRC_DIR)%$(_C) $(TARGETLIB)
+	@echo Create $(PROGRAMS)
+	@$(CC) $(STRIP) $(CFLAGS) $(CDEFS) $(CINCL) $(EXENAMEFLAG)$@ $^
+
+%$(_OBJ): $(SRC_DIR)%$(_C)
+	@echo Compiling $<
+	@$(CC) $(CFLAGS) $(CDEFS) $(CINCL) $(OPTCFLAGS) $<
+
+$(TARGETLIB):	$(OBJS)
+	@echo Create $(TARGETLIB)
+	@$(AR) $(AR_R) $@ $?
+	
+$(TARGETDLL):	$(OBJS)
+	@echo Create $(TARGETDLL)
+	@$(CC) $(DLLOPT) $(CFLAGS) $(EXENAMEFLAG)$@ $^

@@ -1,0 +1,33 @@
+# $Id: makefile.mgw,v 1.5 2010/12/07 21:04:00 stas_degteff Exp $
+#
+# Makefile for Building hptkill with cross-compiler Mingw32
+# No support for the Husky build environment.
+
+## include common makefiles part ##
+include ../../huskybse/huskymak.mgw
+include makefile.inc
+
+CINCL	+= -I$(H_DIR) -I../../smapi -I../../huskylib
+
+LIBS	+= ../../smapi/make/$(LIBPREFIX)smapi$(LIBSUFFIX)$(_LIB) \
+	   ../../huskylib/make/$(LIBPREFIX)husky$(LIBSUFFIX)$(_LIB)
+
+
+default: all
+
+TARGET	= $(LIBNAME)$(_EXE)
+
+all: $(TARGET)
+
+%$(_OBJ): $(_SRC_DIR)%$(_C)
+	@echo Compiling $<
+	@$(CC) $(CFLAGS) $(CINCL) $(CDEFS) $(OBJOPT) $(_SRC_DIR)$*$(_C)
+
+$(TARGET): $(OBJS)
+	@$(CC) $(CFLAGS) $(EXENAMEFLAG) $(TARGET) $(OBJS) $(LIBS)
+
+clean:
+	-$(RM) *$(_OBJ)
+
+distclean:
+	-$(RM) $(TARGET)

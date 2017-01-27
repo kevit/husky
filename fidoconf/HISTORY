@@ -1,0 +1,85 @@
+FIDOCONFIG 1.9-current
+Changes after FIDOCONFIG 1.4
+
+1. MAJOR feature improvements:
+   - merge s_filearea into s_area, use one structure and one areafix functions
+     for all areas;
+
+2. CONFIG changes:
+   - new token grpDesc: group descriptions for -g groups in echoArea
+   - new token recodeMsgBase for hpt/htick;
+   - new token sendNotifyMessages for areafix;
+   - new token allowRemoteControl for areafix;
+   - new token unsubscribeOnAreaDelete for areafix;
+   - new token autoAreaPause for areafix;
+   - new tokens denyRescan and rescanGrp for areafix;
+   - new escaping seqienses: ["], ['], and also for CommentChar.
+
+3. IMPORTANT bugfixes:
+   - if link in area described twice - just warn, don't exit with error.
+
+4. KNOWN BUGS
+
+
+
+FIDOCONFIG 1.4-stable
+Changes after FIDOCONFIG 0.14
+
+1. MAJOR feature improvements:
+   - new parameters for bundlenamestyle: addrsCRC32 and addrsCRC32Always
+   - area definition options -manual & -mandatory are different:
+     '-mandatory' prevent unsubscribe, '-manual' disable subscribe;
+   - areafixorigin & origin statements parsing change: remove round quotes;
+     empty origin may be defined as "";
+   - compare with a pattern by using =~ and !~ instead of == and !=
+     in "if" expressions in the config;
+   - fconf2binkd, fconf2tornado and fconf2na converters;
+   - use TEMP, TMP or TMPDIR enviroment variables to point to directory for
+     create temporary files, also use system-default temporary directory;
+   - new MSGID generation algorithm
+
+2. CONFIG changes:
+   - new tokens for htick: annAddrFrom, annAddrTo, annFrom, annTo, annSubj,
+     annExclude, annInclude, announceSpool, annAreatag, annFileRFrom,
+     annFileOrigin, fileAreaCreatePerms, filefixFromName, FileFixEchoLimit;
+   - new tokens for hpt: newAreaRefuseFile, redusedSeenBy, areaFixFromName,
+     disablePID;
+   - pause statement expanded to: Pause ON, Pause OFF, Pause FAREA, Pause EAREA;
+   - new tokens: seqDir and seqOutrun; used for MSGID generation;
+   - new tokens: AreafixReportsAttr and FilefixReportsAttr: set attributes for
+     areafix & filefix reports/replies;
+   - tokens areafixKillReports and filefixKillReports removed;
+   - new token for link: PackAka.
+
+3. IMPORTANT bugfixes:
+   - fix line parsing if comment ends line.
+   - AllowEmptyPktPwd parsing: now enable 'off' and all boolean values;
+   - fix loglevels and screenloglevels parsing.
+
+4. KNOWN BUGS
+   - GCC 3.0 to 3.2 complains about va_start in line.c and refuses compiling
+     when invoked with "-O3". Lesser optimization levels or gcc 2.x don't
+     produce this error. Solution: replace -O3 with -O2 in CFLAGS line in
+     your makefile.
+
+
+FIDOCONFIG 0.14.3 release
+
+1. MAJOR feature improvements:
+   - log maintnance functions included
+   - temp files maintnance functions included
+
+2. CONFIG changes:
+
+   - the 'if' conditions must be quoted like this:
+       if "[OS]"=="UNIX"
+       endif
+
+3. IMPORTANT bugfixes:
+   - fix remap (replace INTL kludge)
+   - fix line parsing if comment ends line
+   - fix *nix versions (compile without semaphores)
+   - fix unpacker call string parsing
+   - fix several memory faults
+
+$Id: HISTORY,v 1.28 2008/01/27 13:17:31 stas_degteff Exp $

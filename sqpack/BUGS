@@ -1,0 +1,22 @@
+Serguei Revtov (sir@cb.tver.ru):
+
+  There're still problems with lastreads in sqpack with Jam bases. I've
+tryed to fix that but seems didn't :(
+
+  Don't purge JAM message bases with date parameters (-p <integer>).
+  example of tparer output:
+  max: 0 msgs purge: 30 days  dupeHistory 11
+
+Lodewijk Otto:
+
+ When the partition where the messagebases are situated runs full,
+sqpack still goos on purging messages, and in this process copies only
+part of large message-bases, and does not keep the old one, when it
+runs out of disk-space. I have twice lost an important number of
+messages now this way.
+
+
+2002-09-09 Stas Degteff:
+
+  Sqpack crash on very big messagebases (~50000 messages): it load all messages
+into RAM and aborted with "memory low" alert; sqpack/win32 killed by OS silent.

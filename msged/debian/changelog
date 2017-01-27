@@ -1,0 +1,49 @@
+msged (6.1.1-2) unstable; urgency=low
+
+  * New maintainer
+  * Add depends for texi2html, texinfo
+  * debian/examples: add doc/scheme.*
+  * debian/copyright: new http-location of sources
+  * Clean info dir after install
+
+ -- Pavel Andreew <pavel@collage.etel.ru>  Mon, 26 Aug 2002 16:26:42 +0600
+
+msged (6.1.1-1) unstable; urgency=low
+
+  * A new package.
+  * Changed build-depends for libfidoconf to 0.13
+  * Build-Depend on libncurses5-dev is a nice thing :)
+
+ -- Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>  Sun,  3 Mar 2002 23:38:59 +0100
+
+msged (6.1.0-2) unstable; urgency=low
+
+  * Newest CVS
+
+ -- Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>  Sun,  8 Jul 2001 23:06:11 +0200
+
+msged (6.1.0-1) unstable; urgency=low
+
+  * Newest CVS
+
+ -- Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>  Tue,  3 Jul 2001 00:25:22 +0200
+
+msged (0.6pre-3) unstable; urgency=low
+
+  * Moved all my changes from upstream makefile into debian/rules.
+
+ -- Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>  Thu, 12 Apr 2001 13:39:08 +0200
+
+msged (0.6pre-2) unstable; urgency=low
+
+  * Newest CVS-Snapshot.
+
+ -- Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>  Wed, 11 Apr 2001 23:38:41 +0200
+
+msged (0.6pre-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>  Tue, 10 Apr 2001 22:15:33 +0200
+
+

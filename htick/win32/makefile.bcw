@@ -1,0 +1,60 @@
+# $Id: makefile.bcw,v 1.13 2004/12/31 20:32:58 val_khokhlov Exp $
+# Legacy makefile to build htick with Borland C
+
+# DEBUG	= 1
+
+!IF $(DEBUG) == 1
+CFLAGS  = -WC -v -w -O2 -DDEBUG_HPT
+!ELSE
+CFLAGS  = -WC -v -w -O2
+!ENDIF
+
+CC      = bcc32
+
+OBJS    = global.obj \
+          toss.obj \
+          fcommon.obj \
+          scan.obj \
+          hptafix.obj \
+          add_desc.obj \
+          seenby.obj \
+          hatch.obj \
+          filelist.obj\
+          filecase.obj\
+          report.obj\
+          htick.obj\
+          clean.obj
+
+SRC_DIR = ..\src
+
+CDEFS	=  -DNT -D__NT__ -DWINNT
+CINCL	= -I..\h -I..\..\areafix -I..\..\fidoconf -I..\..\smapi -I..\..\huskylib
+LFLAGS  = -WC -v -w -L..\..\huskylib\make -L..\..\smapi\make -L..\..\fidoconf -L..\..\areafix\make
+
+all: $(OBJS) htick.exe
+
+htick.exe: $(OBJS)
+	$(CC) $(LFLAGS) @&&!
+htick.obj
+global.obj
+toss.obj
+fcommon.obj
+scan.obj
+areafix.obj
+add_desc.obj
+seenby.obj
+hatch.obj
+filelist.obj
+filecase.obj
+fconfbcw.lib
+smapibcw.lib
+!
+
+{..\src}.c.obj:
+	$(CC) $(CFLAGS) $(CINCL) $(CDEFS) -c $<
+
+clean:
+	del *.obj *.bak
+
+distclean: clean
+	del *.exe

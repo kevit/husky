@@ -1,0 +1,1969 @@
+#!/usr/bin/perl
+#
+use Curses;
+#
+# Idee  : 11.11.1998 (beim Schreiben des x-ten shell Scriptes fuer ifcico)
+# Beginn: 13.11.1998 
+# 
+# 27.11.98 v0.01b   (03:42)
+# 30.11.98 v0.02b   (20:23)     Announce in der LINUX.DEVELOP.GER
+# 02.01.99 v0.03b   (09:35)  
+#
+# Bugs / Tips / Anregungen / Vorschlaege an: 
+# Thomas Koch@2:2437/530 oder
+# no-return@gmx.net
+#  
+###############################################################################
+# Spezielle Variablen. Vorsichtig!! Nicht veraendern!! DON'T CHANGE IT!!      #
+#                                                                             #
+$logfilerl = "1"; $lcalls = "300"; $debugmode  = "noe"; $fehler=0; $dley=3;   #                                                                             #
+#                                                                             #
+###############################################################################
+###############################################################################                                                                                                                                            
+                                                                                                                                                                                   
+$version="0.03b";
+$rdatum="02.01.1999";
+
+#
+
+###############################################################################
+# Pruefe, wer sich ewig bindet....
+
+sub schaumamal {
+
+if($_[0] ne "") {
+
+  if($_[1] =~ /r/) {
+    if( -r "$_[0]") { $ok=1; } 
+      else {
+      print "$_[0] ist nicht lesbar!\n"; 
+      $fehler="1";
+    }
+  }
+
+  if($_[1] =~ /x/) {
+    if( -x "$_[0]") { $ok=1; } 
+      else {
+      print "$_[0] ist nicht ausfuehrbar!\n"; 
+      $fehler="1";
+    }
+  }
+
+  if($_[1] =~ /d/) {
+    if( -d "$_[0]") { $ok=1; } 
+      else {
+      print "Das Verzeichnis $_[0] ist nicht vorhanden!\n"; 
+      $fehler="1";
+    }
+  }
+
+  if($_[1] =~ /w/) {
+    if( -w "$_[0]") { $ok=1; } 
+      else {
+      print "$_[0] ist nicht schreibbar!\n"; 
+      $fehler="1";
+    }
+  }
+} else {
+  print "leer\n";
+  $fehler=1;
+}
+
+
+
+}
+
+
+sub fcaw {
+
+local($desc,$tmp,$tmp1,$tmp2,$tmp3,$tmp4,$muell);
+
+if(/^$_[1]/i) { 
+  ($tmp, $muell) = split(/\n/, $_[0]);
+  ($desc,$tmp1,$tmp2,$tmp3,$tmp4) = split(/ +|\t+/, $tmp); 
+  if($tmp1 ne "") {
+    if($tmp2 ne "") {
+      if($tmp3 ne "") {
+        if($tmp4 ne "") {
+          $_[2]="$tmp1 $tmp2 $tmp3 $tmp4";
+        } else {
+          $_[2]="$tmp1 $tmp2 $tmp3";
+        }
+      } else {
+        $_[2]="$tmp1 $tmp2";
+      }    
+    } else {
+        $_[2]="$tmp1";
+    }
+  }
+}
+
+}
+
+
+
+
+sub config_auslesen {
+
+schaumamal($config, "r");
+
+if($fehler eq "1") { 
+  print "Exit.\n"; 
+  exit(100); 
+}
+
+local($location);
+
+open(CF, $config) || die "Konnte $config nicht oeffnen\n!";
+while(<CF>) {
+
+     /#/ && next;
+     fcaw($_, "systemname ", $boxname);
+     fcaw($_, "ftnaddress 2\:", $ftnaddress);
+     fcaw($_, "ftninbound", $ftninbound);
+     fcaw($_, "ftnoutbound", $ftnoutbound);
+     fcaw($_, "systemart ", $systemart);
+     fcaw($_, "ftnaddress ", $ftnaddress);
+     fcaw($_, "ftnuplink ", $ftnuplink);
+     if($_ =~ /^ftnuplink/i) {
+       local($node,$desc,$desc1,$desc2,$desc3,$desc4)=split(/ +/,$ftnuplink);
+       push(@ftnuplinks, "$node $desc $desc1 $desc2 $desc3 $desc4");
+     }
+     fcaw($_, "sysopaddress ", $sysopaddress);     
+     fcaw($_, "useautotoss ", $useautotoss);
+     fcaw($_, "tosscommand ", $tosscommand);
+     fcaw($_, "mailreader ", $mailreader);
+     fcaw($_, "biglogs ", $biglogs);
+     fcaw($_, "ifconfig ", $ifconfig);
+     fcaw($_, "ifcico ", $ifcicocmd);
+     fcaw($_, "iflog ", $iflog);
+     fcaw($_, "ifstat ", $ifstat);
+     fcaw($_, "tmpvz ", $tmpvz);
+     
+}
+
+close(CF);
+
+ 
+
+schaumamal($ftninbound, "rd");
+schaumamal($mailreader, "rx");
+schaumamal($ifconfig, "r");
+schaumamal($ifcicocmd, "rx");
+schaumamal($iflog, "r");
+schaumamal($tosscommand, "rx");
+
+
+if($fehler eq "1") { 
+  print "Exit.\n"; 
+  exit(100); 
+}
+
+}
+
+
+# Bildaufbau
+sub machma {
+ 
+initscr();
+
+&color_pairs;
+
+local($dtext) = "#  Fido  Hilfe    (F10 = Menu)";
+
+
+attron(COLOR_PAIR(1));
+
+for($i=0; $i < $COLS; $i++) {
+   addstr(stdscr, $LINES - 1, $i, " ");
+   addstr(stdscr, 0, $i, " ");
+}
+
+addstr(stdscr, 0, 1, "$boxname ($ftnaddress)");
+addstr(stdscr, $LINES - 1, 1, "$dtext");
+
+$logwin = newwin($LINES - 8, $COLS, 7, 0);
+#$logwin = newwin(17, 80, 7, 0);
+
+attron(COLOR_PAIR(4));
+move(6, 0);
+if($systemart eq 0) {
+  $lcallwin = newwin(5, $COLS / 2 - 2, 1, 0);
+  $licallwin = newwin(5, $COLS / 2 - 1, 1, $COLS / 2 - 1);
+  for($i=0; $i < $COLS / 2 - 2; $i++) { addch(ACS_HLINE); }
+  addch(ACS_BTEE); 
+  for($i=$COLS / 2 - 1; $i < $COLS - 1; $i++) { addch(ACS_HLINE); }
+  for($i=1; $i < 6; $i++) { addch($i, $COLS / 2 - 2, ACS_VLINE); }
+} elsif($systemart eq 1) {
+  for($i=0; $i < $COLS - 1; $i++) { addch(ACS_HLINE); }
+  $lcallwin = newwin(5, $COLS -1, 1, 0);
+}
+
+
+attron(COLOR_PAIR(1)); 
+refresh();
+
+}
+
+
+sub color_pairs {
+ 
+start_color();
+
+if($bw ne 1) {
+  init_pair(1, COLOR_WHITE, COLOR_BLUE);
+  init_pair(2, COLOR_WHITE, COLOR_BLACK);
+  init_pair(3, COLOR_CYAN, COLOR_BLACK);
+  init_pair(4, COLOR_MAGENTA, COLOR_BLACK);
+  init_pair(5, COLOR_GREEN, COLOR_BLACK);
+  init_pair(6, COLOR_WHITE, COLOR_BLUE);
+  init_pair(7, COLOR_BLUE, COLOR_WHITE);
+  init_pair(8, COLOR_BLACK, COLOR_WHITE);
+  init_pair(9, COLOR_WHITE, COLOR_BLUE);
+  init_pair(10, COLOR_GREEN, COLOR_WHITE);
+  init_pair(11, COLOR_BLUE, COLOR_WHITE);
+} else {
+  init_pair(1, COLOR_BLACK, COLOR_GREEN);
+  init_pair(2, COLOR_WHITE, COLOR_BLACK);
+  init_pair(3, COLOR_CYAN, COLOR_BLACK);
+  init_pair(4, COLOR_WHITE, COLOR_BLACK);
+  init_pair(5, COLOR_GREEN, COLOR_BLACK);
+  init_pair(6, COLOR_WHITE, COLOR_BLUE);
+  init_pair(7, COLOR_BLUE, COLOR_WHITE);
+  init_pair(8, COLOR_BLACK, COLOR_WHITE);
+  init_pair(9, COLOR_WHITE, COLOR_BLACK);
+  init_pair(10, COLOR_GREEN, COLOR_WHITE);
+  init_pair(11, COLOR_BLUE, COLOR_WHITE);
+}
+  
+}
+
+
+# hline
+sub hline {
+
+move($_[0], $_[2], 0);
+addch($_[0], ACS_LTEE);
+
+for($i=0; $i < $_[1]; $i++) {
+   addch($_[0], ACS_HLINE);
+}
+
+addch($_[0], ACS_RTEE);
+   
+}
+
+
+# Scrollbalken
+sub sbalk {
+
+if($_[4] eq 1 || $_[4] eq -1) {
+  attron($_[0], COLOR_PAIR(9));
+}
+
+$xlaenge=$_[1];
+
+while(length($xlaenge) < $_[6]) {
+  $xlaenge=$xlaenge . " ";   
+}
+
+addstr($_[0], $_[2], $_[3], "$xlaenge");
+
+attron($_[0], COLOR_PAIR(7));
+
+$ylaenge=$_[5];
+
+while(length($ylaenge) < $_[6]) {
+     $ylaenge=$ylaenge . " ";
+}
+
+if($_[5] ne "0" && $_[4] eq 1) {
+  $u=$_[2] - 1;
+  addstr($_[0], $u, $_[3], "$ylaenge");
+} else {
+  $u=$_[2] + 1;
+  addstr($_[0], $u, $_[3], "$ylaenge");
+}
+
+}
+
+
+# Fido Window
+sub mfwin { 
+
+$nach_rechts=0; $nach_links=0; $aktion="";
+
+$fwin=newwin(9, 23, $LINES - 10, 3);
+ 
+attron($fwin, COLOR_PAIR(7));
+addstr($fwin, "                                                                                                                                                                                          ");
+
+$mfwin[1]="Files requesten...";
+$mfwin[2]="Outbound Manager...";
+$mfwin[3]="Mailreader starten";
+$mfwin[4]="Logfile scrollen";
+$mfwin[5]="Boss anrufen";
+$mfwin[6]="Direktanruf...";
+$mfwin[7]="Tosser starten";
+
+sbalk($fwin, $mfwin[1], 1, 1, 1, 0, 21);
+sbalk($fwin, $mfwin[2], 2, 1, 0, 0, 21);
+sbalk($fwin, $mfwin[3], 3, 1, 0, 0, 21);
+sbalk($fwin, $mfwin[4], 4, 1, 0, 0, 21);
+sbalk($fwin, $mfwin[5], 5, 1, 0, 0, 21);
+sbalk($fwin, $mfwin[6], 6, 1, 0, 0, 21);
+sbalk($fwin, $mfwin[7], 7, 1, 0, 0, 21);
+
+
+attron($fwin, COLOR_PAIR(8));
+
+box($fwin, 0, 0);
+refresh($fwin); 
+
+$z=1;
+for($i=0; $i = 1; $ii++) {
+
+   $ch = getch();
+   
+   if($ch == KEY_DOWN || $ch == KEY_UP || $ch == KEY_LEFT || $ch == KEY_RIGHT) {
+     if($ch == KEY_DOWN) {
+       if($z ne 7) {
+         $z++;
+       }
+       $n=$z - 1;
+       sbalk($fwin, $mfwin[$z], $z, 1, 1, $mfwin[$n], 21);
+     }
+   
+     if($ch == KEY_UP) {
+       if($z ne 1) { 
+          $z--;
+       }
+       $n=$z + 1;
+       sbalk($fwin, $mfwin[$z], $z, 1, -1, $mfwin[$n], 21);
+     }    
+
+     if($ch == KEY_LEFT) {
+       $window=0;
+       last;
+     }
+   
+     if($ch == KEY_RIGHT) {
+       $window=2;
+       last;
+     }
+   } else {
+   
+     $zn = unpack("C", $ch);
+         
+     if($zn eq 27) {
+       $raushier=1;
+       last;
+     }
+
+     if($zn eq 10) {
+       $aktion=$mfwin[$z];
+       $raushier=1;
+       last;
+     }
+   }
+
+if($ch eq -1) {
+  &akzeit; 
+} else {
+  refresh($fwin);
+}
+
+
+}
+
+}
+
+
+# rauten Window
+sub mrwin {
+
+$nach_rechts=0; $nach_links=0; $aktion="";
+
+$rwin=newwin(5, 24, $LINES - 6, 0);
+
+attron($rwin, COLOR_PAIR(7));
+addstr($rwin, "                                                                                                                                                                                          ");
+
+$mrwin[1]="Ueber...";
+$mrwin[2]="Desktop neu zeichnen";
+$mrwin[3]="Beenden";
+
+sbalk($rwin, $mrwin[1], 1, 1, 1, 0, 22);
+sbalk($rwin, $mrwin[2], 2, 1, 0, 0, 22);
+sbalk($rwin, $mrwin[3], 3, 1, 0, 0, 22);
+
+attron($rwin, COLOR_PAIR(8));
+
+box($rwin, 0, 0);
+refresh($rwin); 
+
+$z=1;
+for($i=0; $i = 1; $ii++) {
+
+   $ch = getch();
+
+   if($ch == KEY_DOWN || $ch == KEY_UP || $ch == KEY_LEFT || $ch == KEY_RIGHT) {
+     if($ch == KEY_DOWN) {
+       if($z ne 3) {
+         $z++;
+       }
+       $n=$z - 1;
+       sbalk($rwin, $mrwin[$z], $z, 1, 1, $mrwin[$n], 22);
+     }
+   
+     if($ch == KEY_UP) {
+       if($z ne 1) { 
+          $z--;
+       }
+       $n=$z + 1;
+       sbalk($rwin, $mrwin[$z], $z, 1, -1, $mrwin[$n], 22);
+     }   
+
+     if($ch == KEY_LEFT) {
+       $window=0;
+     }
+   
+     if($ch == KEY_RIGHT) {
+       $window=1;
+       last;
+     }
+   } else {
+  
+     $zn = unpack("C", $ch);
+   
+     if($zn eq 27) {
+       $raushier=1;
+       last;
+     }
+
+     if($zn eq 10) {
+       $aktion=$mrwin[$z];
+       $raushier=1;
+       last;
+     }
+   }
+
+if($ch eq -1) {
+  &akzeit; 
+} else {
+  refresh($rwin);
+}
+
+}
+
+}
+
+
+sub mhwin { 
+
+$hwin=newwin(3, 22, $LINES - 4, 9);
+
+attron($hwin, COLOR_PAIR(7));
+addstr($hwin, "                                                                                                                                                                                          ");
+
+$mhwin[1]="Hilfe";
+
+sbalk($hwin, $mhwin[1], 1, 1, 1, 0, 20);
+
+attron($hwin, COLOR_PAIR(8));
+
+box($hwin, 0, 0);
+refresh($hwin); 
+
+$z=1;
+for($i=0; $i = 1; $ii++) {
+
+   $ch = getch();
+
+   if($ch == KEY_DOWN || $ch == KEY_UP || $ch == KEY_LEFT || $ch == KEY_RIGHT) {
+   if($ch == KEY_DOWN) {
+     if($z ne 1) {
+       $z++;
+     }
+     $n=$z - 1;
+     sbalk($hwin, $mhwin[$z], $z, 1, 1, $mhwin[$n], 20);
+   }
+   
+   if($ch == KEY_UP) {
+     if($z ne 1) { 
+        $z--;
+     }
+     $n=$z + 1;
+     sbalk($hwin, $mhwin[$z], $z, 1, -1, $mhwin[$n], 20);
+   }   
+
+     if($ch == KEY_LEFT) {
+       $window=1;
+       last; 
+     }
+   
+     if($ch == KEY_RIGHT) {
+       $nach_rechts=0;
+#      last;
+     } 
+   } else {
+
+     $zn = unpack("C", $ch);
+
+     if($zn eq 27) {
+       $raushier=1;
+       last;
+     }
+
+     if($zn eq 10) {
+       $aktion=$mhwin[$z];
+       $raushier=1;
+       last;
+     }
+   }
+
+if($ch eq -1) {
+  &akzeit; 
+} else {
+  refresh($hwin);
+}
+
+}
+
+}
+
+
+sub menu {
+
+$raushier=0;
+mrwin;
+
+while($raushier ne 1) {
+
+     if($window eq 0) {
+       touchwin($logwin);
+       refresh($logwin);
+       mrwin;
+       next;
+     }
+
+     if($window eq 1) {
+       touchwin($logwin);
+       refresh($logwin);
+       mfwin;
+       next;
+     }
+
+     if($window eq 2) {
+       touchwin($logwin);
+       refresh($logwin);
+       mhwin;
+       next;
+     }
+}
+
+# #
+if($aktion eq "Beenden") { &ausgang }
+if($aktion eq "Desktop neu zeichnen") { &touchall("r") }
+if($aktion eq "Ueber...") { &uebergff }
+
+# Fido
+if($aktion eq "Files requesten...") { &request }
+if($aktion eq "Outbound Manager...") { &outbm }
+if($aktion eq "Mailreader starten") { &mailreader_go }
+if($aktion eq "Logfile scrollen") { &iflogfile_scrollen }
+if($aktion eq "Boss anrufen") { &poll_uplink }
+if($aktion eq "Direktanruf...") { &call_node }
+if($aktion eq "Tosser starten") { &autotoss }
+
+# Hilfe
+if($aktion eq "Hilfe") { &hilfe }
+
+
+touchwin($logwin);
+refresh($logwin);
+
+}
+
+
+sub uebergff {
+
+
+$win = newwin(10, 40, $LINES / 3, ($COLS - 40) / 2);
+
+attron($win, COLOR_PAIR(7));
+addstr($win, "                                                                                                                                                                                                                                                                                                                                                                                                                   ");
+attron($win, COLOR_PAIR(8));
+box($win, 0, 0);
+attron($win, COLOR_PAIR(11));
+addstr($win, 0, 3, " gff v$version ($rdatum) ");
+attron($win, COLOR_PAIR(8));
+addstr($win, 2, 2, "Graphisches Fido Frontend fuer Linux");
+addstr($win, 4, 12, "geschrieben von");
+addstr($win, 6, 10, "Thomas Koch 1998/99");
+&mcnru;
+refresh($win);
+nocbreak;
+getch();
+
+}
+ 
+
+sub mcnru {
+
+move($LINES - 1, $COLS - 1);
+
+}
+
+
+# automatisches Tossen
+sub autotoss {
+
+$toss_mich=0;
+
+@PKT=""; @pkt=""; @MO0=""; @mo0=""; @TU0=""; @tu0=""; @WE0=""; @we0="";
+@TH0=""; @th0=""; @FR0=""; @fr0=""; @SA0=""; @sa0=""; @SU0=""; @su0=""; 
+
+@PKT=glob(<$ftninbound/*.PKT>); if($PKT[0] ne "") { $toss_mich=1; }
+@pkt=glob(<$ftninbound/*.pkt>); if($pkt[0] ne "") { $toss_mich=1; }
+@MO0=glob(<$ftninbound/*.MO*>); if($MO0[0] ne "") { $toss_mich=1; }
+@mo0=glob(<$ftninbound/*.mo*>); if($mo0[0] ne "") { $toss_mich=1; }
+@TU0=glob(<$ftninbound/*.TU*>); if($TU0[0] ne "") { $toss_mich=1; }
+@tu0=glob(<$ftninbound/*.tu*>); if($tu0[0] ne "") { $toss_mich=1; }
+@WE0=glob(<$ftninbound/*.WE*>); if($WE0[0] ne "") { $toss_mich=1; }
+@we0=glob(<$ftninbound/*.we*>); if($we0[0] ne "") { $toss_mich=1; }
+@TH0=glob(<$ftninbound/*.TH*>); if($TH0[0] ne "") { $toss_mich=1; }
+@th0=glob(<$ftninbound/*.th*>); if($th0[0] ne "") { $toss_mich=1; }
+@FR0=glob(<$ftninbound/*.FR*>); if($FR0[0] ne "") { $toss_mich=1; }
+@fr0=glob(<$ftninbound/*.fr*>); if($fr0[0] ne "") { $toss_mich=1; }
+@SA0=glob(<$ftninbound/*.SA*>); if($SA0[0] ne "") { $toss_mich=1; }
+@sa0=glob(<$ftninbound/*.sa*>); if($sa0[0] ne "") { $toss_mich=1; }
+@SU0=glob(<$ftninbound/*.SU*>); if($SU0[0] ne "") { $toss_mich=1; }
+@su0=glob(<$ftninbound/*.su*>); if($su0[0] ne "") { $toss_mich=1; }
+
+
+if($toss_mich eq 1) {
+  if(-e "$tmpvz/gff.bsy") {
+    $nulliger=0;
+  } else {
+    logger("Tosse...");
+    $tosswin = newwin(3, 12, 8, ($COLS - 12) / 2);
+    
+    attron($tosswin, COLOR_PAIR(1));
+    box($tosswin, 0, 0);
+    addstr($tosswin, 1, 1, " Tosse... ");
+
+    refresh($tosswin);
+    system("$tosscommand >/dev/null 2>/dev/null");
+    touchwin($logwin);
+    refresh($logwin); 
+  }
+} 
+
+}
+
+
+# Ist ein Flowfile fuer den Sysop vorhanden, wird ein 'M' rechts unten 
+# eingeblendet. 
+sub sysop_mail {
+
+local($datei,$req,$outbound_ext);
+
+local($zone,$netnodepoint) = split(/:/, $sysopaddress);
+local($netnode,$point) = split(/\./, $netnodepoint);
+
+$req = sprintf("%04x%04x", split(/\//, $netnode));
+$point = sprintf("%08x", $point);
+
+if($zone eq 2) {
+  $datei="$ftnoutbound/outbound/$req.pnt/$point.hlo";
+} else {
+  $outbound_ext = sprintf("%03x", $zone);
+  $datei="$ftnoutbound/outbound.$outbound_ext/$req.pnt/$point.hlo";
+}
+
+if(-e $datei) {
+  addstr($LINES - 1, $COLS - 3, "M"); 
+} else {
+  addstr($LINES - 1, $COLS - 3, " "); 
+}  
+
+refresh();
+
+}
+
+
+
+# Request files...
+sub reqfile {
+
+if($_[0] =~ /\d+:\d+\/\d+/) {
+  ($zone, $address) = split(/:/, $_[0]);
+  $req = sprintf("%04x%04x", split(/\//, $address));
+  if($zone eq 2) { 
+    $reqfile="$ftnoutbound/outbound/$req.req";
+  } else {
+    $ooutbound = sprintf("%03x", $zone);
+    $reqfile="$ftnoutbound/outbound.$ooutbound/$req.req"; 
+  }
+}
+
+if( -e "$reqfile") {
+  open(REQFILE, ">>$reqfile");
+  print REQFILE "$_[1]\n";
+  close(REQFILE);
+} else {
+  open(REQFILE, ">$reqfile");
+  print REQFILE "$_[1]\n";
+  close(REQFILE);
+}
+
+}
+
+
+sub hex2dec {
+
+$net=hex(substr($_[0], 0, 4));
+$node=hex(substr($_[0], 4, 4));
+
+$_[1]="$net/$node";
+
+}
+
+
+sub additem {
+
+$fragwin=newwin(6, 20, 4, 4);
+attron($fragwin, COLOR_PAIR(8));
+addstr($fragwin, "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ");
+
+}
+
+
+sub outbm {
+
+local(@files, @flowfiles, @pntvz, @pntfiles);
+
+eval { keypad(1) };
+
+@files=glob("$ftnoutbound/outbound/*.*");
+
+for $file (@files) {
+   ($name, $ext) = split(/\./, $file);
+   if($ext =~ /flo|clo|dlo|ilo|hlo|req/i) {
+     ($pfad, $name)=split(/$ftnoutbound\/outbound/, $file); $name =~ s/\///;
+     push(@flowfiles, $name); 
+   }
+   if($ext =~ /pnt/i) { push(@pnt, $file); }
+}
+
+$zone=2;
+
+for(@flowfiles) { 
+   ($name, $ext) = split(/\./, $_); 
+   hex2dec($name, $dname);
+   if($ext =~ /flo/i) { push(@outbound, "....N $zone:$dname"); }
+   if($ext =~ /clo/i) { push(@outbound, "...C. $zone:$dname"); }
+   if($ext =~ /hlo/i) { push(@outbound, "..H.. $zone:$dname"); }
+   if($ext =~ /dlo/i) { push(@outbound, ".D... $zone:$dname"); }
+   if($ext =~ /ilo/i) { push(@outbound, "I.... $zone:$dname"); }
+   if($ext =~ /req/i) { push(@outbound, "....R $zone:$dname"); }
+}
+
+
+for $pntvz (@pnt) { 
+   @s=split(/\//, $pntvz);
+   for(@s) {
+      if($_ =~ /\.pnt/i) {
+        $_=~ s/\.pnt//i;
+	hex2dec($_, $dnode);
+      }
+   }
+   @pntfiles=glob("$pntvz/*.*");
+   for(@pntfiles) { 
+      ($pfad, $name)=split(/$pntvz/, $_); $name =~ s/\///;
+      ($name, $ext)=split(/\./, $name);
+      $pointnr=hex($name);
+      if($ext =~ /flo/i) { push(@pv, "....N $zone:$dnode.$pointnr"); }
+      if($ext =~ /clo/i) { push(@pv, "...C. $zone:$dnode.$pointnr"); }
+      if($ext =~ /hlo/i) { push(@pv, "..H.. $zone:$dnode.$pointnr"); }
+      if($ext =~ /dlo/i) { push(@pv, ".D... $zone:$dnode.$pointnr"); }
+      if($ext =~ /ilo/i) { push(@pv, "I.... $zone:$dnode.$pointnr"); }
+      if($ext =~ /req/i) { push(@pv, "....R $zone:$dnode.$pointnr"); }
+   }     
+}
+
+$outbm = newwin(18, 40, 3, ($COLS - 40) / 2);
+attron($outbm, COLOR_PAIR(8));
+addstr($outbm, "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ");
+box($outbm, 0, 0);
+addstr($outbm, 0, 11, " Outbound Manager ");
+#refresh($outbm);
+
+$laenge=@outbound;
+
+$outbmwin[1]=".."; $z=2;
+for($i=0; $i < $laenge; $i++) {
+   $outbmwin[$z] = "$outbound[$i]"; $z++;
+}
+
+$laenge=@outbmwin;
+
+sbalk($outbm, $outbmwin[1], 1, 1, 1, 0, 38);
+
+for($i=2; $i < $laenge; $i++) {
+   sbalk($outbm, $outbmwin[$i], $i, 1, 0, 0, 38);
+}
+
+refresh($outbm);
+
+$z=1;
+for($iii=0; $iii = 1; $ii++) {
+   $ch = getch();
+   if($ch == KEY_DOWN || $ch == KEY_UP || $ch == KEY_LEFT || $ch == KEY_RIGHT) {
+   if($ch == KEY_DOWN) {
+     if($z ne $laenge-1) {
+       $z++;
+     }
+     $n=$z - 1;
+     sbalk($outbm, $outbmwin[$z], $z, 1, 1, $outbmwin[$n], 38);
+   }
+   
+   if($ch == KEY_UP) {
+     if($z ne 1) { 
+        $z--;
+     }
+     $n=$z + 1;
+     sbalk($outbm, $outbmwin[$z], $z, 1, -1, $outbmwin[$n], 38);
+   }   
+
+   if($ch == KEY_LEFT) {
+     $iii=1;
+   }
+  
+   if($ch == KEY_RIGHT) {
+     $iii=1;
+   } 
+
+   if($ch eq 331) { 
+     additem;
+   }
+     
+   } else {
+
+   $zn = unpack("C", $ch);
+   
+   if($zn eq 27) {
+     last;
+   }
+
+   if($zn eq 10) {
+     $aktion=$outbmwin[$z];
+     $iii=1;
+     last;
+   }
+ }
+refresh($outbm);
+}
+
+
+
+
+}
+
+
+sub logger {
+
+system("logger -p local0.info $_[0]");
+
+}
+
+
+# Zeit holen
+sub zeit_holen {
+
+
+$zeit  = time(); 
+$zeit  = localtime($zeit);
+@Datum = split(/ +/, $zeit); 
+
+$gestern=$Datum[2] - 1;
+
+if(length($Datum[2]) eq 1) {
+  $grr="hmpf";
+  $Datum[2]=" $Datum[2]";   
+}
+
+$akdat = "$Datum[1] $Datum[2]";
+$akdatg= "$Datum[1] $gestern";
+
+&translatemonth;
+
+@Uhr = split(/ +/,$zeit);
+@Uhrzeit = split(/:/,$Uhr[3]);
+
+#$akdat = "$Uhr[0], der $Uhr[2] $Uhr[1] $Uhr[4] $Uhrzeit[0]:$Uhrzeit[1]"; 
+
+$akzeitd = "$Uhrzeit[0]:$Uhrzeit[1]:$Uhrzeit[2]"; 
+$akzeit = "$Uhrzeit[0]:$Uhrzeit[1]"; 
+
+}
+
+
+# Spielerei
+sub ringeldich {
+
+$uhu++;
+if($uhu == 0) { addstr(stdscr, 24, 71, "\/"); }
+if($uhu == 1) { addstr(stdscr, 24, 71, "\-"); }
+if($uhu == 2) { addstr(stdscr, 24, 71, "\\"); }
+if($uhu == 3) { $uhu=0; addstr(stdscr, 24, 71, "|"); }
+refresh();
+
+}
+
+
+sub l_up {
+
+if($lineup != -$laenge) { $lineup--; 
+  if($s[$lineup] ne "") { 
+     move($logwin, 0, 0); 
+     insdelln($logwin, 1);
+     addstr($logwin, 0, 0, "$s[$lineup]"); 
+  } else { beep; }
+}    
+if($lineup != -$laenge) { $line--; } 
+
+}
+
+
+sub l_down {
+
+if($s[$line] ne "") { 
+  move($logwin, 0, 0); 
+  deleteln($logwin);
+  move($logwin, $_[0], 0);
+  addstr($logwin, "$s[$line]");
+} else { beep; }
+
+if($line < $laenge) { $line++; $lineup++; }
+
+}
+
+
+sub iflogfile_scrollen {
+
+
+local(@s, @v, @splitt, @splitte, $tmp);
+
+#@s=""; @v=""; @splitt=""; @splitte=""; $tmp="";
+
+open(IFLOG, "$iflog") || die "Konnte $iflog nicht oeffnen!\n";
+
+addstr(stdscr, $LINES - 1, $COLS - 3, "l");
+
+refresh();
+
+while (<IFLOG>) {
+      if($biglogs eq 1) {
+          if(/$akdat|$akdatg/) {
+          if(/errno=5 : I\/O error/) { next; }
+          if(/send_str error/)       { next; }
+          if(/tcsetattr/)            { next; }
+          if(/ got SIGHUP/)          { next; }
+          if(/calls, maxrc/)         { next; }
+          if(/zmodem send rc=0/)     { next; }
+          if(/zmodem receive rc=0/)  { next; } 
+          if(/ remote tag: /)        { next; }
+	  if(/ remote timezone: /)   { next; }
+	  if(/ remote     time: /)   { next; }
+          if(/ options: Call /)      { next; }
+          @v=split(/\x0A/, $_);
+          @t=split(/ +/, $v[0]);
+          if (/ zmodem send /) {
+             @splitt=split(/\x0A/, $_);
+     	     @splitte=split(/ +/, $splitt[0]);
+   	     $tmp="$splitte[0] $splitte[1] $splitte[2] $splitte[5] $splitte[6] $splitte[9] $splitte[10] $splitte[11]";
+	     $tmp =~ s/   //g;
+	     push(@s, "$tmp\n");
+             next;
+          }        
+          if (/ remote     uses:/) {
+             @splitt=split(/\x0A/, $_);
+             @splitte=split(/ +/, $splitt[0]);
+	     $tmp="$splitte[0] $splitte[1] $splitte[2] $splitte[5] $splitte[6] $splitte[9] $splitte[10] $splitte[11] $splitte[12]";
+	     $tmp =~ s/  //g;
+	     push(@s, "$tmp\n");
+             next;
+          }
+          if (/\@fidonet/)            { $_ =~ s/\@fidonet//; }
+          if (/ bytes dated /) { 
+             @splitt=split(/ bytes dated /, $_); 
+             @splitte=split(/ +/, $splitt[0]);
+   	     $tmp="$splitte[0] $splitte[1] $splitte[2] $splitte[5] $splitte[6] $splitte[7] $splitte[8] bytes";
+	     $tmp =~ s/\x0A//g;
+             if ($i=length($tmp) > $COLS - 1) { 
+	        while ($i=length($tmp) > $COLS - 1) {
+	              chop($tmp);
+	        }
+	     }
+	     push(@s, "$tmp\n"); 
+          }
+          else {
+               @splitt=split(/\x0A/, $_);
+	       @splitte=split(/ +/, $splitt[0]);
+  	       $tmp="$splitte[0] $splitte[1] $splitte[2] $splitte[5] $splitte[6] $splitte[7] $splitte[8] $splitte[9] $splitte[10] $splitte[11] $splitte[12] $splitte[13] $splitte[14] $splitte[15] $splitte[16] $splitte[17] $splitte[18] $splitte[19] $splitte[20] $splitte[21] $splitte[22] $splitte[23] $splitte[24] $splitte[25]";
+               $tmp =~ s/\x0A//g;
+   	       $tmp =~ s/   //g;
+	       $tmp =~ s/\(update \(null\), password "\(null\)"\)//g;
+               if ($i=length($tmp) > $COLS - 1) { 
+                  while ($i=length($tmp) > $COLS - 1) {
+	                chop($tmp);
+    	          }
+               }
+	       push(@s, "$tmp\n");
+  	       }
+        }
+      } else {
+        if(/errno=5 : I\/O error/) { next; }
+        if(/send_str error/)       { next; }
+        if(/tcsetattr/)            { next; }
+        if(/ got SIGHUP/)          { next; }
+        if(/calls, maxrc/)         { next; }
+        if(/zmodem send rc=0/)     { next; }
+        if(/zmodem receive rc=0/)  { next; } 
+        if(/ remote tag: /)        { next; }
+        if(/ remote timezone: /)   { next; }
+        if(/ remote     time: /)   { next; }
+        if(/ options: Call /)      { next; }
+        @v=split(/\x0A/, $_);
+        @t=split(/ +/, $v[0]);
+        if (/ zmodem send /) {
+           @splitt=split(/\x0A/, $_);
+     	   @splitte=split(/ +/, $splitt[0]);
+   	   $tmp="$splitte[0] $splitte[1] $splitte[2] $splitte[5] $splitte[6] $splitte[9] $splitte[10] $splitte[11]";
+	   $tmp =~ s/   //g;
+	   push(@s, "$tmp\n");
+           next;
+        }        
+        if (/ remote     uses:/) {
+           @splitt=split(/\x0A/, $_);
+           @splitte=split(/ +/, $splitt[0]);
+	   $tmp="$splitte[0] $splitte[1] $splitte[2] $splitte[5] $splitte[6] $splitte[9] $splitte[10] $splitte[11] $splitte[12]";
+	   $tmp =~ s/  //g;
+	   push(@s, "$tmp\n");
+           next;
+        }
+        if (/\@fidonet/)            { $_ =~ s/\@fidonet//; }
+        if (/ bytes dated /) { 
+           @splitt=split(/ bytes dated /, $_); 
+           @splitte=split(/ +/, $splitt[0]);
+   	   $tmp="$splitte[0] $splitte[1] $splitte[2] $splitte[5] $splitte[6] $splitte[7] $splitte[8] bytes";
+	   $tmp =~ s/\x0A//g;
+           if ($i=length($tmp) > $COLS - 1) { 
+	      while ($i=length($tmp) > $COLS - 1)  {
+	            chop($tmp);
+	      }
+	   }
+	   push(@s, "$tmp\n"); 
+        }
+        else {
+           @splitt=split(/\x0A/, $_);
+	   @splitte=split(/ +/, $splitt[0]);
+  	   $tmp="$splitte[0] $splitte[1] $splitte[2] $splitte[5] $splitte[6] $splitte[7] $splitte[8] $splitte[9] $splitte[10] $splitte[11] $splitte[12] $splitte[13] $splitte[14] $splitte[15] $splitte[16] $splitte[17] $splitte[18] $splitte[19] $splitte[20] $splitte[21] $splitte[22] $splitte[23] $splitte[24] $splitte[25]";
+           $tmp =~ s/\x0A//g;
+   	   $tmp =~ s/   //g;
+	   $tmp =~ s/\(update \(null\), password "\(null\)"\)//g;              
+           if ($i=length($tmp) > $COLS - 1) { 
+              while ($i=length($tmp) > $COLS - 1) {
+	            chop($tmp);
+    	      }
+           }
+	   push(@s, "$tmp\n");
+  	   }
+    }
+
+}
+
+$laenge=@s;
+$z=0; 
+
+$sz=$LINES - 8;
+for($line=$laenge - $sz; $line < $laenge; $line++) {
+   addstr($logwin, $z, 0, "$s[$line]"); $z++;  
+}
+addstr(stdscr, $LINES - 1, $COLS - 3, " ");
+$lineup=$line - ($LINES - 8); 
+
+
+refresh();
+refresh($logwin);
+
+cbreak();
+eval { keypad(1) };
+
+
+
+for($ii=0; $ii = 1; $v=1)  {
+
+   $ch = getch();
+
+   if($ch == KEY_DOWN) { 
+     l_down($LINES - 9);
+   }
+   if($ch == KEY_UP) { l_up; }
+
+   # ESC
+   if($ch == KEY_ABORT) { last; }
+
+   # PUp
+   if($ch eq "339") { 
+     for($iu=0; $iu < $LINES - 9; $iu++) {
+        l_up; 
+     }
+   }
+
+   # PDown
+   if($ch eq "338") { 
+     for($iu=0; $iu < 16; $iu++) {
+        l_down($LINES - 9); 
+     }
+   }
+   touchwin($logwin);
+   refresh($logwin);
+}
+
+
+$z=0; 
+
+$sz=$LINES - 8;
+for($line=$laenge - $sz; $line < $laenge; $line++) {
+   addstr($logwin, $z, 0, "$s[$line]"); $z++;
+}
+
+
+
+touchwin($logwin);
+refresh($logwin);
+
+neuaufbau;
+
+}
+
+
+sub request {
+
+$files=""; $requestnow=0;
+
+echo;
+
+$reqwin = newwin(14, 40, 6, ($COLS - 40) / 2);
+attron($reqwin, COLOR_PAIR(1));
+addstr($reqwin, "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ");
+box($reqwin, 0, 0);
+addstr($reqwin, 0, 15, " Request ");
+addstr($reqwin, 1, 1, "Node: ");
+hline($reqwin, 38, 2);
+move(7, ($COLS - 40) / 2 + 7);
+refresh($reqwin);
+cbreak();
+getstr($node);
+
+if($node ne "" && $node =~ /\d+:\d+\/\d+/) {
+  move(8, 21);
+  refresh($reqwin);
+
+  $z=3; $zz=9;
+  for($nix=1; $iii = 2; $nix++) {
+     addstr($reqwin, $z, 1, "$nix: ");
+     move($zz, ($COLS - 40) / 2 + 4);
+     refresh($reqwin);
+     getstr($file);
+     $z++; $zz++;
+     if($file eq "") { last; }
+     push(@files, "$file\r");
+  } 
+
+  clear($reqwin);
+
+  $reqwin = newwin(5, 27, 9, ($COLS - 27) / 2);
+  attron($reqwin, COLOR_PAIR(4));
+  box($reqwin, 0, 0);
+  hline($reqwin, 25, 2);
+
+  attron($reqwin, COLOR_PAIR(2));
+  addstr($reqwin, 1, 1, " Request sofort starten? ");
+  addstr($reqwin, 3, 1, "                         ");
+  attron($reqwin, COLOR_PAIR(6));
+  addstr($reqwin, 3, 3, "< jau >");
+  attron($reqwin, COLOR_PAIR(2));
+  addstr($reqwin, 3, 17, "< noe >");
+  refresh($reqwin);
+  $requestnow=1;
+
+  eval { keypad(1) };
+  noecho();
+
+  for($iii=0; $iii = 1; $zz++) {
+
+     $ch=getch();
+
+     if($ch == KEY_LEFT) {  
+       attron($reqwin, COLOR_PAIR(6));
+       addstr($reqwin, 3, 3, "< jau >");
+       attron($reqwin, COLOR_PAIR(2));
+       addstr($reqwin, 3, 17, "< noe >");
+       $requestnow=1;
+     }
+
+     if($ch == KEY_RIGHT) { 
+       attron($reqwin, COLOR_PAIR(2));
+       addstr($reqwin, 3, 3, "< jau >");
+       attron($reqwin, COLOR_PAIR(6));
+       addstr($reqwin, 3, 17, "< noe >");
+       $requestnow=0;
+     }
+
+     if($ch == KEY_RETURN) { last; }
+
+     refresh($reqwin);
+  
+  }
+  for(@files) {   
+     &reqfile($node, $_);
+  } 
+
+}
+
+if($requestnow == 1) { 
+  &convftn($node, $ftnnode);
+  system("echo > $tmpvz/gff.bsy && $ifcicocmd -I$ifconfig -r 1 $ftnnode && rm -f $tmpvz/gff.bsy &");    
+}
+
+#&neuaufbau;
+&touchall("r");
+noecho();
+
+}
+
+
+sub touchall {
+
+if($_[0] eq "r") {
+  touchwin(stdscr);
+}
+
+refresh(stdscr);
+
+touchwin($logwin);
+refresh($logwin);
+
+touchwin($lcallwin);
+refresh($lcallwin);
+
+if($systemart eq 0) {
+  touchwin($licallwin);
+  refresh($licallwin);
+}
+
+}
+
+
+# Bild-Neuaufbau
+sub neuaufbau {
+
+attron(COLOR_PAIR(4));
+move(6, 0);
+if($systemart eq 0) {
+  $lcallwin = newwin(5, $COLS / 2 - 2, 1, 0);
+  $licallwin = newwin(5, $COLS / 2 - 1, 1, $COLS / 2 - 1);
+  for($i=0; $i < $COLS / 2 - 2; $i++) { addch(ACS_HLINE); }
+  addch(ACS_BTEE); 
+  for($i=$COLS / 2 - 1; $i < $COLS - 1; $i++) { addch(ACS_HLINE); }
+  for($i=1; $i < 6; $i++) { addch($i, $COLS / 2 - 2, ACS_VLINE); }
+} elsif($systemart eq 1) {
+  for($i=0; $i < $COLS - 1; $i++) { addch(ACS_HLINE); }
+  $lcallwin = newwin(5, $COLS -1, 1, 0);
+}
+
+&touchall;
+
+}
+
+
+# hilfe!
+sub hilfe {
+
+local(@helptext, $z);
+
+$helptext[0]="c  Call Node";
+$helptext[1]="h  Hilfefenster";
+$helptext[2]="l  iflog-file blaettern";
+$helptext[3]="m  Mailreader starten";
+$helptext[4]="n  Desktop neu zeichnen";
+$helptext[5]="p  Poll Uplink";
+$helptext[6]="r  Request files";
+$helptext[7]="s  Outbound anzeigen";
+$helptext[8]="x  Quit";
+$helptext[9]="F10  Menu";
+
+
+$helpwin = newwin(21, 60, $LINES - ($LINES - 2), ($COLS - 60) / 2);
+
+attron($helpwin, COLOR_PAIR(2));
+addstr($helpwin, "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ");
+attron($helpwin, COLOR_PAIR(4));
+box($helpwin, 0, 0); 
+hline($helpwin, 58, 2);
+attron($helpwin, COLOR_PAIR(5));
+addstr($helpwin, 0, 26, " Hilfe ");
+attron($helpwin, COLOR_PAIR(3));
+  
+local($z)=4;
+  
+for(@helptext) {
+   addstr($helpwin, $z, 2, "$_"); $z++;
+}
+refresh($helpwin);
+&mcnru;
+refresh();
+
+nocbreak();
+getch;
+cbreak();
+
+clear($helpwin);
+refresh($helpwin);
+
+&touchall("r");
+
+}
+
+
+# exit
+sub ausgang {
+
+clear(); 
+refresh();
+endwin();
+exit(0);
+
+}
+
+
+# startup
+sub hello {
+
+print "gff $version Graphisches Fido Frontend fuer Linux\n";
+print "Written by Thomas Koch\n";
+sleep (1);
+
+}
+
+
+# call node
+sub call_node {
+
+echo;
+nocbreak;
+$callwin = newwin(3, 20, 10, 28);
+box($callwin, 0, 0);
+addstr($callwin, 0, 5, " Addresse? ");
+addstr($callwin, 1, 1, "                  ");
+move($callwin, 1, 2);
+move(11, 30);
+refresh($callwin);
+getstr($eingabe);
+touchwin($logwin); refresh($logwin);
+
+if($eingabe =~ /\d+:\d+\/\d+/) {
+  &convftn($eingabe, $ausgabe);
+  system("echo > $tmpvz/gff.bsy && $ifcicocmd -I$ifconfig -r 1 $ausgabe && rm -f $tmpvz/gff.bys &");
+}
+
+
+noecho;
+
+}
+
+
+# logfiles (puh)
+sub iflogfile_aufbereiten {
+
+local(@iflines, @splitt, @splitte, $tmp);
+
+$filenew=(-s "$iflog");
+
+if($filenew ne $fileold || $_[0] eq "r") {
+
+  open (IFLOG, "tail --lines=80 $iflog |") || die "Konnte tail nicht korrekt ausfuehren";
+  
+  while (<IFLOG>) {
+        if (/errno=5 : I\/O error/) { next; }
+        if (/send_str error/)       { next; }
+        if (/tcsetattr/)            { next; }
+        if (/ got SIGHUP/)          { next; }
+        if (/calls, maxrc/)         { next; }
+        if (/zmodem send rc=0/)     { next; }
+        if (/zmodem receive rc=0/)  { next; }
+        if(/ remote tag: /)         { next; }
+        if(/ remote timezone: /)    { next; }
+        if(/ remote     time: /)    { next; }
+        if (/ options: Call /)      { next; }
+        if (/ zmodem send /) {
+           @splitt=split(/\x0A/, $_);
+  	   @splitte=split(/ +/, $splitt[0]);
+	   $tmp="$splitte[0] $splitte[1] $splitte[2] $splitte[5] $splitte[6] $splitte[9] $splitte[10] $splitte[11]";
+	   $tmp =~ s/   //g;
+	   push(@iflines, "$tmp\n");
+           next;
+        }        
+        if (/ remote     uses:/) {
+           @splitt=split(/\x0A/, $_);
+           @splitte=split(/ +/, $splitt[0]);
+	   $tmp="$splitte[0] $splitte[1] $splitte[2] $splitte[5] $splitte[6] $splitte[9] $splitte[10] $splitte[11] $splitte[12]";
+	   $tmp =~ s/  //g;
+	   push(@iflines, "$tmp\n");
+           next;
+        }
+        if (/\@fidonet/)            { $_ =~ s/\@fidonet//; }
+        if (/ bytes dated /) { 
+           @splitt=split(/ bytes dated /, $_); 
+           @splitte=split(/ +/, $splitt[0]);
+	   $tmp="$splitte[0] $splitte[1] $splitte[2] $splitte[5] $splitte[6] $splitte[7] $splitte[8] bytes";
+	   $tmp =~ s/\x0A//g;
+           if ($i=length($tmp) > $COLS - 1) { 
+	      while ($i=length($tmp) > $COLS - 1) {
+	            chop($tmp);
+	      }
+	   }
+	   push(@iflines, "$tmp\n"); }
+        else {
+             @splitt=split(/\x0A/, $_);
+	     @splitte=split(/ +/, $splitt[0]);
+ 	     $tmp="$splitte[0] $splitte[1] $splitte[2] $splitte[5] $splitte[6] $splitte[7] $splitte[8] $splitte[9] $splitte[10] $splitte[11] $splitte[12] $splitte[13] $splitte[14] $splitte[15] $splitte[16] $splitte[17] $splitte[18] $splitte[19] $splitte[20] $splitte[21] $splitte[22] $splitte[23] $splitte[24] $splitte[25]";
+             $tmp =~ s/\x0A//g;
+	     $tmp =~ s/   //g;
+	     $tmp =~ s/\(update \(null\), password "\(null\)"\)//g;
+             if ($i=length($tmp) > $COLS - 1) { 
+                while ($i=length($tmp) > $COLS - 1) {
+	              chop($tmp);
+    	        }
+             }
+	     push(@iflines, "$tmp\n");
+  	     }
+      
+        }
+
+  $laenge = @iflines;
+  $z=$laenge - 2;
+
+  $oo=0;
+
+  
+  for ($i=$laenge - ($LINES - 8); $i < $laenge; $i++) {  
+      addstr($logwin, $oo, 0, "$iflines[$i]"); 
+      $oo++;
+  }
+
+  touchwin($logwin);
+  refresh($logwin);
+  close(IFLOG);
+
+}
+
+
+$fileold=(-s "$iflog");
+
+
+}
+
+
+# Die schwachsinnige Internetschreibweise von fido Addressen (die ifcico
+# benutzt) aendern
+sub convftn {
+
+@tmp=split(/:/, $_[0]);
+@tmp1=split(/\//, $tmp[1]);
+
+$_[1]="f$tmp1[1].n$tmp1[0].z$tmp[0].fidonet.org";
+
+if($_[1] !~ /z2./) {
+  $_[1] =~ s/.fidonet.org//;
+}
+
+}
+
+
+# show outbound
+sub show_outbound { 
+
+local(@outbound, $laenge);
+
+open (IFSTAT, "$ifstat -I$ifconfig |") || die "Kann $ifstat nicht ausfuehren!";
+while (<IFSTAT>) {
+      push(@outbound, $_);
+}      
+$laenge = @outbound;
+
+$outbwin = newwin(21, 60, 2, ($COLS - 60) / 2);
+move($outbwin, 1, 1);
+attron($outbwin, COLOR_PAIR(3));
+addstr($outbwin, "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ");
+for ($i=1; $i < $laenge; $i++) {
+    move($outbwin, $i, 1);
+    addstr($outbwin, $outbound[$i]);
+}
+
+attron($outbwin, COLOR_PAIR(4));
+box($outbwin, 0, 0);
+attron($outbwin, COLOR_PAIR(5));
+addstr($outbwin, 0, 25, " Outbound ");
+attron($outbwin, COLOR_PAIR(4));
+&mcnru;
+refresh($outbwin);
+
+getch();
+
+clear($outbwin);
+refresh($outbwin);
+
+&touchall("r");
+
+}
+
+
+# Uplinks Anrufen
+sub poll_uplink {
+
+local($laenge,@win,$i,$ii,$iii,$x);
+
+$laenge = @ftnuplinks;
+if($laenge > 1) {
+
+  $nach_rechts=0; $nach_links=0; $aktion="";
+  
+  $x=$laenge + 2; $b=38;
+  $win=newwin($x, 40, 8, ($COLS - 41) / 2);
+  
+  attron($win, COLOR_PAIR(7));
+  addstr($win, "                                                                                                                                                                                          ");
+  
+  $ii=1; 
+  for($i=0; $i < @ftnuplinks; $i++) {
+     $win[$ii] = $ftnuplinks[$i]; $ii++;
+  }
+  
+  sbalk($win, $win[1], 1, 1, 1, 0, $b);
+   
+  $ii=2;
+  for($i=0; $i < @ftnuplinks; $i++) {     
+  sbalk($win, $win[$ii], $ii, 1, 0, 0, $b); $ii++;
+  }
+  
+  attron($win, COLOR_PAIR(8));
+
+  box($win, 0, 0);
+  refresh($win); 
+  
+  $z=1;
+  for($i=0; $i = 1; $ii++) {
+
+     $ch = getch();
+     if($ch == KEY_DOWN || $ch == KEY_UP || $ch == KEY_LEFT || $ch == KEY_RIGHT) {
+       if($ch == KEY_DOWN) {
+         if($z ne $laenge) {
+           $z++;
+         }
+         $n=$z - 1;
+         sbalk($win, $win[$z], $z, 1, 1, $win[$n], $b);
+       }
+    
+       if($ch == KEY_UP) {
+         if($z ne 1) { 
+            $z--;  
+         }
+         $n=$z + 1;
+         sbalk($win, $win[$z], $z, 1, -1, $win[$n], $b);
+       }   
+
+     } else {
+  
+       $zn = unpack("C", $ch);
+   
+       if($zn eq 27) {
+         $raushier=1;
+         last;
+       }
+
+       if($zn eq 10) {
+         $aktion=$win[$z];
+         $raushier=1;
+         last;
+       }
+     }
+  if($ch eq -1) {
+    &akzeit; 
+  } else {
+    refresh($win);
+  }
+  
+  }  
+} else {
+  $aktion=$ftnuplinks[0];
+}
+
+touchwin($logwin);
+refresh($logwin);
+
+if($aktion ne "") {
+  local($aktion,$muell)=split(/ +/, $aktion);
+  &convftn($aktion, $uplink);
+  system("echo > $tmpvz/gff.bsy && $ifcicocmd -I$ifconfig -r 1 $uplink && rm -f $tmpvz/gff.bsy &");
+} 
+
+}
+
+ 
+# letzte (ausgehende) Anrufe einblenden
+sub letzte_anrufe {
+
+&zeit_holen;
+
+local(@s, @iflogentrys, @sf, @r);
+
+open (IFLOGFILE, "$iflog") || die "Kann $iflog nicht oeffnen!";
+while (<IFLOGFILE>) {
+      if (/$akdat/) { 
+          if (/ calling /) {
+             @s=split(/ +/, $_);
+	     $s[6] =~ s/\@fidonet//;
+	     $s[6] =~ s/\@linuxnet//;
+	     @sf=split(/,/, "$s[7] $s[8] $s[9] $s[10] $s[11] $s[12] $s[13]");
+	     $sf[0] =~ s/\(//; 
+	     @r=split(/:/, $s[2]);
+	     $tmp="$r[0]:$r[1] $s[6] ($sf[0])\n";
+             push(@iflogentrys, $tmp);
+          }
+      }
+}
+
+move($lcallwin, 1, 1);
+$laenge = @iflogentrys; $z=0;
+attron($lcallwin, COLOR_PAIR(2));
+
+if($laenge > 11) {
+  for($i=$laenge - 11; $i < $laenge; $i++) {
+  addstr($lcallwin, $z, 0, "$iflogentrys[$i]");
+  $z++;
+  }
+} else {
+  for($i=0; $i < 11; $i++) {
+  addstr($lcallwin, $z, 0, "$iflogentrys[$i]");
+  $z++;
+  }
+}  
+
+
+attron($lcallwin, COLOR_PAIR(4));
+touchwin($lcallwin);
+refresh($lcallwin);
+
+}
+
+
+# letzte Anrufe (eingehend) einblenden
+sub letzte_i_anrufe {
+
+local(@s, @pids, @t, @u, @v, @r, @iclogins, $found);
+
+zeit_holen;
+
+open(IFLOGFILE, "$iflog") || die "Konnte $iflog nicht oeffnen!\n";
+while(<IFLOGFILE>) {
+     if(/$akdat/) {
+       push(@s, $_);
+     }
+}
+
+
+for(@s) {
+   if($found eq 1) {
+     @t=split(/\[/, $_);
+     @u=split(/\]/, $t[1]);  
+     push(@pids, $u[0]);
+     $found=0;
+   }
+   if(/Eingehender Anruf.../) {
+     $found=1;
+   }
+}
+
+
+$x=0; $icname="";
+
+for $pid (@pids) {
+    for $i (@s) {
+        if($i =~ /\[$pid\]/) {
+             if($i =~ /remote  address: 2:24/) {
+	       if($grr eq "hmpf") {	       
+                 @t=split(/ /, $i);
+	         $t[9] =~ s/\@fidonet|\@Fidonet//;
+	         @u=split(/\x0A/, $t[9]);
+	         @v=split(/:/, $t[3]);
+	         $address="$v[0]:$v[1]";
+	       } else {
+   	         @t=split(/ +/, $i);
+ 		 if($grr eq "hmpf") {
+ 		   $t[8] =~ s/\@fidonet|\@Fidonet//;
+	           @u=split(/\x0A/, $t[8]);
+		 } else {
+ 		   $t[7] =~ s/\@fidonet|\@Fidonet//;
+	           @u=split(/\x0A/, $t[7]);
+		 }
+   	         @v=split(/:/, $t[2]);
+	         $address="$v[0]:$v[1]";
+	       }
+	     }
+             if($i =~ /remote operator/) {
+	       @r=split(/ +/, $i);
+	       @t=""; @t=split(/\x0A/, $r[8]);
+	       $icname="$address $r[7] $t[0] ($u[0])";
+	     }
+        }
+    }
+$iclogins[$x]=$icname; $x++;
+}
+
+
+#$muell=shift(@iclogins); 
+
+$y=0; $laenge=@iclogins; $x=0; $w=0;
+
+
+if($laenge > 11) {
+  for($x=$laenge - 11; $x < $laenge; $x++) {
+     addstr($licallwin, $w, 0, "$iclogins[$x]    "); 
+     $w++;
+  }
+} else {
+  for($x=0; $x < 11; $x++) {
+     addstr($licallwin, $w, 0, "$iclogins[$x]    "); 
+     $w++;
+  }
+}
+  
+touchwin($licallwin); 
+refresh($licallwin);
+
+close(IFLOGFILE);
+
+}
+
+
+# Mailreader Starten
+sub mailreader_go {
+
+endwin();
+
+system("$mailreader");
+
+neuaufbau;
+
+}
+
+
+# Monate  Englisch -=> Deutsch 
+sub translatemonth {
+
+$zeit =~ s/Mon/Montag/;
+$zeit =~ s/Tue/Dienstag/;
+$zeit =~ s/Wed/Mittwoch/;
+$zeit =~ s/Thu/Donnerstag/;
+$zeit =~ s/Fri/Freitag/;
+$zeit =~ s/Sat/Samstag/;
+$zeit =~ s/Sun/Sonntag/;
+$zeit =~ s/Jan/Januar/;
+$zeit =~ s/Feb/Februar/;
+$zeit =~ s/Mar/Maerz/;
+$zeit =~ s/Apr/April/;
+$zeit =~ s/May/Mai/;
+$zeit =~ s/Jun/Juni/;
+$zeit =~ s/Jul/Juli/;
+$zeit =~ s/Aug/August/;
+$zeit =~ s/Sep/September/;
+$zeit =~ s/Oct/Oktober/;
+$zeit =~ s/Nov/November/; 
+$zeit =~ s/Dec/Dezember/; 
+
+}
+
+
+# Uhrzeit aktualisieren
+sub akzeit { 
+
+&zeit_holen;
+
+attron(COLOR_PAIR(1));
+
+if ($debugmode eq "jup") {
+   addstr(stdscr, 0, $COLS - 9, "$akzeitd"); }
+   else { addstr(stdscr, 0, $COLS - 6, "$akzeit"); }
+
+&mcnru;
+
+}
+
+
+# Hilfe
+sub help {
+
+print "Folgende Parameter sind moeglich:\n";
+print "-c    Pfad der Konfigurationsdatei\n";
+print "-bw   Schwarz-Weis modus\n";
+print "-h    Hilfe\n\n";
+
+}
+
+
+#Signal Handling
+sub sighdnl {
+
+local($sig) = @_;
+$sigtermed = $sig;
+
+}
+
+
+# -=> Hauptprogramm <=- #######################################################
+
+local($i,$z);
+
+for($i=0; $i < @ARGV; $i++) {
+   if($ARGV[$i] =~ /--help|-h/) {
+     &help;
+     exit(0);
+   }
+   if($ARGV[$i] =~ /-c/) {
+     $z=$i + 1;
+     $config=$ARGV[$z];
+   }
+   if($ARGV[$i] =~ /-bw|--bw/) {
+     $bw=1;
+   } else { 
+     $bw=0;
+   }
+}
+
+
+if($config eq "") {
+  $config = $ENV{'GFFCFG'};
+} 
+
+if($config eq "") {
+  print "\nKann die Konfigurationsdatei nicht finden.\n";
+  &help;
+  print "Exit.\n";
+  exit(100);
+} 
+
+
+#&hello;
+
+$SIG{INT} = \&sighdnl;
+$SIG{TERM} = \&sighdnl;
+$SIG{WINCH} = \&sighdnl;
+
+config_auslesen;
+
+
+#system("setterm -cursor off");
+
+machma;
+
+
+if($systemart eq 0) {
+  letzte_anrufe;
+  letzte_i_anrufe;
+} elsif($systemart eq 1) {
+  letzte_anrufe("p");
+}
+
+sysop_mail;
+
+halfdelay(1); 
+noecho(); 
+eval { keypad(1) };
+
+$ende=0; $zmi=0;
+
+
+while($ende ne 1) {
+
+     $eingabe=getch();
+     
+     if($eingabe ne -1) {
+       if($eingabe eq 265 || $eingabe eq "h") { &hilfe; halfdelay(1); }
+       if($eingabe eq "r") { nocbreak(); &request; cbreak(); halfdelay(1); }
+       if($eingabe eq "q" || $eingabe eq "x") { &ausgang }
+       if($eingabe eq "c") { nocbreak(); &call_node; cbreak(); halfdelay(1); }
+       if($eingabe eq "p") { &poll_uplink }
+       if($eingabe eq "s") { nocbreak(); &show_outbound; cbreak(); halfdelay(1); }  
+       if($eingabe eq "n") { &neuaufbau }
+       if($eingabe eq "m") { &mailreader_go }
+       if($eingabe eq "l") { nocbreak(); &iflogfile_scrollen; cbreak(); halfdelay(1); }
+       if($eingabe eq "274") { &menu; cbreak(); halfdelay(1); }
+       }
+     
+     $zmi++; $cpuz++; $cpul++;
+
+     if($zmi eq $dley) {
+       &akzeit;
+       $zmi=0;
+       iflogfile_aufbereiten; 
+     }
+
+     if($cpul eq $lcalls) {  
+       if($useautotoss eq 1) {
+         autotoss;
+       }
+       &sysop_mail;	 
+       if($systemart eq 0) {
+         letzte_anrufe;
+         letzte_i_anrufe;
+       } elsif($systemart eq 1) {
+         letzte_anrufe("p");
+       }
+       $cpul=0;
+       if($akzeit eq "00:00") {
+         if($systemart eq 0) { 
+           clear($licallwin);
+           refresh($licallwin);
+           clear($lcallwin); 
+           refresh($lcallwin);
+         } elsif($systemart eq 1) {
+           clear($letzte_anrufe);
+           refresh($letzte_anrufe);
+         }
+       }
+    } 
+    if($sigtermed) {
+      last;
+    }
+}
+
+endwin();
+
+print "\naborting. SIG$sigtermed!\n" if $sigtermed;
+
+
+#system("setterm -cursor on");
+
+#
+
+
+__END__
+
+ToDo:
+
+-outbound manager 

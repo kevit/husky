@@ -1,0 +1,32 @@
+currently:
+- BinkD support
+
+near future:
+- use nmcopy
+- multi-user support
+- scroll texts in showFile
+- check entered data
+- put maint etc. into crontab
+- use adduser etc. (see LSB standards) if possible
+- update english part
+- CDP support
+- use new version of carc (yet to be written)
+- write intro screen on how to use HuskyPnt (GNU readline etc.)
+- use less fixed-size buffers (like cwd[1024])
+
+later:
+- shortname support
+- support for other platforms (especially OS/2 and Win32)
+- outbound-viewer for HuskyUI
+- translation to other languages (volunteers needed, I only speak german and
+  english)
+- AreaFix interface
+- FLS (File List Server / Search) interface
+- Update mode
+- Uninstall
+
+I'm not angry if you send patches for bugfixes or new features. :)
+
+--
+Sascha Silbe <Sascha.Silbe@ldknet.org>
+

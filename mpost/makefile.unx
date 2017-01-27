@@ -1,0 +1,10 @@
+
+INCDIR=..
+LIBDIR=../smapi
+SMAPI=smapiunix
+
+CC  =cc
+COPT= -I$(INCDIR) -DUNIX
+
+mpostp: mpostp.c
+	$(CC) $(COPT) -s -o mpost mpostp.c -L$(LIBDIR) -l$(SMAPI)

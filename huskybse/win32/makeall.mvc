@@ -1,0 +1,237 @@
+# $Id: makeall.mvc,v 1.7 2011/03/09 23:09:46 stas_degteff Exp $
+# This makefile will help you build everything you want in proper
+# sequence with single 'nmake' command.
+# It is not very smart though and won't be of much help if you get massive
+# update and rely on makefile to rebuild everything needed.
+#
+# Do 'nmake distclean' first if unsure!!
+
+!if "$(LOGFILE)"==""
+LOGFILE = nmake-log.txt
+!endif
+
+LOGFILE_OPTIONS = >>$(LOGFILE) 2>&1
+
+JUSTDEFINES=1
+!include huskymak.cfg.mvc
+
+!if $(USE_HPTZIP)==1
+HPTZIP = .hptzip
+!endif
+
+BASE3 = .huskylib .smapi .fidoconfig
+
+NMAKE_OPTIONS = -nologo MAKEFILE_HUSKYMAK=../../huskymak.cfg.mvc
+!if "$(DYNLIBS)"=="1"
+NMAKE_OPTIONS = $(NMAKE_OPTIONS) DYNLIBS=1
+!endif
+
+
+# this is what happens when you just run 'nmake'
+default: .initlog .huskylib .smapi .fidoconfig .areafix $(HPTZIP) .hpt .hptkill .hptutil .hptsqfix .hpucode .sqpack .htick .nltools .bsopack .areastat .msged .fidoroute
+
+.initlog:
+	@cd . $(LOGFILE_OPTIONS)
+	echo ==== Compilation start ==== $(LOGFILE_OPTIONS)
+	@date /t $(LOGFILE_OPTIONS)
+	@time /t $(LOGFILE_OPTIONS)
+	@echo "                         " $(LOGFILE_OPTIONS)
+.huskylib:
+        cd huskylib\make
+        @echo *** huskylib\make $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+        cd ..\..
+
+.smapi: .huskylib
+        cd smapi\make
+        @echo *** smapi\make $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+        cd ..\..
+
+.fidoconfig: .huskylib .smapi
+        cd fidoconf\make
+        @echo *** fidoconf\make $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+        cd ..\..
+
+.areafix: $(BASE3)
+        cd areafix\make
+        @echo *** areafix\make $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+        cd ..\..
+
+.hptzip:
+        cd hptzip\make
+        @echo *** hptzip\make $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+        cd ..\..
+
+.hpt: $(BASE3) .areafix $(HPTZIP)
+        cd hpt\make
+        @echo *** hpt\make $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+        cd ..\..
+
+.htick: $(BASE3) .areafix $(HPTZIP)
+        cd htick\win32
+        @echo *** htick\win32 $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+        cd ..\..
+
+.hptkill: $(BASE3)
+        cd hptkill\make
+        @echo *** hptkill\make $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+        cd ..\..
+
+.hptutil: $(BASE3)
+        cd hptutil\make
+        @echo *** hptutil\make $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+        cd ..\..
+
+.hpucode: $(BASE3)
+        cd hpucode\make
+        @echo *** hpucode\make $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+        cd ..\..
+
+.sqpack: $(BASE3)
+        cd sqpack\make
+        @echo *** sqpack\make $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+        cd ..\..
+
+.nltools: $(BASE3) $(HPTZIP)
+        cd nltools\make
+        @echo *** nltools\make $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+        cd ..\..
+
+.bsopack: .huskylib .fidoconfig $(HPTZIP)
+        cd bsopack\make
+        @echo *** bsopack\make $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+        cd ..\..
+
+.areastat: .huskylib .smapi
+        cd areastat\make
+        @echo *** areastat\make $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+        cd ..\..
+
+.hptsqfix: $(BASE3)
+        cd hptsqfix\make
+        @echo *** hptsqfix\make $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+        cd ..\..
+
+.msged: $(BASE3)
+	cd msged\make
+	@echo *** msged\make $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+	cd ..\..
+
+.fidoroute:
+	cd hpt\fidoroute
+	@echo *** hpt\fidoroute $(LOGFILE_OPTIONS)
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) all $(LOGFILE_OPTIONS)
+	cd ..\..
+
+# all targets mentioned here will be passed on to nmakes in all subdirectories.
+# this will work nicely for building binaries too, so keep commands sorted to build
+# dependences before dependents (i.e. libraries before programs).
+all clean distclean:
+        cd huskylib\make
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+        cd ..\..\smapi\make
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+        cd ..\..\fidoconf\make
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+        cd ..\..\areafix\make
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+        cd ..\..\hptzip\make
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+        cd ..\..\hpt\make
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+        cd ..\..\htick\win32
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+        cd ..\..\hptkill\make
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+        cd ..\..\hptutil\make
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+        cd ..\..\hptsqfix\make
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+        cd ..\..\hpucode\make
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+        cd ..\..\sqpack\make
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+        cd ..\..\nltools\make
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+        cd ..\..\bsopack\make
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+        cd ..\..\areastat\make
+        nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+	cd ..\..\msged\make
+	nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+	cd ..\..\hpt\fidoroute
+	nmake -f makefile.mvc $(NMAKE_OPTIONS) $@
+        cd ..\..
+
+# this should not concern you unless you build with msvc2005 and newer and want
+# to hide generated manifests inside binaries
+embedmanifestd:
+        cd Debug\bin
+        -for %%f in (*.exe.manifest) do (mt.exe -manifest %%f -outputresource:%%~nf;1)
+        -for %%f in (*.dll.manifest) do (mt.exe -manifest %%f -outputresource:%%~nf;2)
+        -del *.manifest
+        cd ..\..
+embedmanifestr:
+        cd Release\bin
+        -for %%f in (*.exe.manifest) do (mt.exe -manifest %%f -outputresource:%%~nf;1)
+        -for %%f in (*.dll.manifest) do (mt.exe -manifest %%f -outputresource:%%~nf;2)
+        -del *.manifest
+        cd ..\..
+
+# ah, well. probably releaser will be able to utilize this
+# rebase is a right thing to do!
+# bind is good too, but strictly speaking it should be done on target system
+# I'm not sure that it won't give unnecessary effects if target system will have
+# different libraries than a system on which bind was done.
+pack: embedmanifestr
+        cd Release\bin
+        -..\..\rebase.cmd ..\..\leave.txt ..\..\group.txt
+        -rem ..\..\bind.cmd
+        -md5sum *>..\husky-1_9-w_perl510-2010mmdd.md5
+        -rem md5sum *>..\husky-1_9-2010mmdd.md5
+        -rar.exe a -s -m5 -ag-YYYYMMDD ..\husky-1_9-w_perl510 *
+        -rem rar.exe a -s -m5 -ag-YYYYMMDD ..\husky-1_9 *
+        @echo don\'t forget to rename files
+
+# these may be useful for developers after appropriate hacking
+cvscl:
+        cd huskylib
+        sh ..\cvs2cl.sh
+
+# you won't believe me, but windows want manifests to have rights to execute too.
+# and cygwin has no clue :-D
+massinstall:
+        -cp -uv Debug/bin/*.exe X:/ftn/husky/test-system/bin/husky/
+        -cp -uv Debug/bin/*.dll X:/ftn/husky/test-system/bin/husky/
+        -cp -uv Debug/bin/*.manifest X:/ftn/husky/test-system/bin/husky/
+        -chmod +x X:/ftn/husky/test-system/bin/husky/*.manifest
+
+.help:
+        @echo '*************************************************************'
+        @echo '* Invoking nmake with no target will build all modules.'
+	@echo ' '
+	@echo '* Invoking nmake with name of module prepended by dot'
+	@echo '(i.e. nmake .hpt) will build this named module with'
+	@echo 'every module it depends on. Possible targets:'
+        @echo '.huskylib .smapi .fidoconfig .areafix .hptzip'
+        @echo '.hpt .hptkill .hptutil .hptsqfix .hpucode'
+        @echo '.sqpack .htick .nltools .bsopack .areastat'
+	@echo '.msged .fidoroute'
+	@echo ' '
+        @echo '* Invoking nmake with these targets -- clean, distclean, all'
+	@echo 'will run nmake for every module with the same targets.'

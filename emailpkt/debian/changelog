@@ -1,0 +1,23 @@
+emailpkt (0.3-1) unstable; urgency=low
+
+  * New CVS version (0.3-current)
+  * debian/rules: DH_COMPAT=4
+  * debian/copyright: new http-location of sources
+
+ -- Pavel Andreew <pavel@collage.etel.ru>  Mon, 26 Aug 2002 13:52:54 +0600
+
+emailpkt (0.2-2) unstable; urgency=low
+
+  * New maintainer
+  * New CVS release (0.2-stable)
+  * Write small man page
+
+ -- Pavel Andreew <pavel@collage.etel.ru>  Fri, 23 Aug 2002 15:23:43 +0600
+
+emailpkt (0.2-1) unstable; urgency=low
+
+  * Initial Release.
+  * Birthday of my Mother Release :)
+
+ -- Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>  Tue,  5 Mar 2002 21:30:10 +0100
+

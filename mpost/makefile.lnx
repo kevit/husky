@@ -1,0 +1,16 @@
+SMAPI=smapilnx
+
+CC  =gcc
+COPT=-I.. -DUNIX -s
+LOPT=-L../smapi
+
+all: mpost
+
+mpost: mpostp.c
+	$(CC) $(COPT) $(LOPT) -o mpost mpostp.c -l$(SMAPI)
+
+clean:
+	-rm *.o *~ core
+
+distclean: clean
+	-rm mpost

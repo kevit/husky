@@ -1,0 +1,4 @@
+hpt 1.9.0-current
+cvs tag: HEAD
+required: fidoconfig 1.9-current, smapi 2.5-current, huskylib 1.9-current,
+			areafix 1.9-current, hptzip 1.9-current (optional)

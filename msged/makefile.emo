@@ -1,0 +1,88 @@
+# Makefile for EMX GCC OMF-style on OS/2
+# No support for the Husky build environment
+
+CC=	 gcc
+CFLAGS=	-Wall -Zomf -Zsys -s
+CDEFS=	-DOS2 -DUSE_MSGAPI -I..
+COPT=   -O3 -fomit-frame-pointer -fstrength-reduce
+LFLAGS= $(CFLAGS)
+
+.SUFFIXES:
+.SUFFIXES: .c .obj
+
+TARGET=	msgedp.exe
+TMPLIB= msgedemo.lib
+LIB=    emxomfar
+MSGAPI= ../smapi/smapiemo.lib
+
+objs=	addr.obj     \
+	areas.obj    \
+	bmg.obj      \
+	charset.obj  \
+	config.obj   \
+	control.obj  \
+	date.obj     \
+	dialogs.obj  \
+	dirute.obj   \
+	dlgbox.obj   \
+	dlist.obj    \
+	echotoss.obj \
+	environ.obj  \
+	fconf.obj    \
+	fecfg145.obj \
+	fido.obj     \
+	filedlg.obj  \
+	flags.obj    \
+	freq.obj     \
+	gestr120.obj \
+	getopts.obj  \
+	group.obj    \
+	help.obj     \
+	helpcmp.obj  \
+	helpinfo.obj \
+	init.obj     \
+	keycode.obj  \
+	list.obj     \
+	maintmsg.obj \
+	makemsgn.obj \
+	malloc16.obj \
+	memextra.obj \
+	menu.obj     \
+	misc.obj     \
+	mnu.obj      \
+	msg.obj      \
+	msged.obj    \
+	mxbt.obj     \
+	normalc.obj  \
+	nshow.obj    \
+	os2scr.obj   \
+	quick.obj    \
+	quote.obj    \
+	readmail.obj \
+	screen.obj   \
+	strextra.obj \
+	system.obj   \
+	template.obj \
+	textfile.obj \
+	timezone.obj \
+	userlist.obj \
+	vsev.obj     \
+	vsevops.obj  \
+	win.obj      \
+	wrap.obj
+
+all: $(TARGET)
+
+.c.obj:
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
+	$(LIB) r $(TMPLIB) $@
+
+$(TARGET): $(objs)
+	$(CC) $(COPT) $(LFLAGS) -Zlinker "/pm:vio" -o $(TARGET) msged.obj $(TMPLIB) $(MSGAPI)
+
+clean:
+	-del *.obj
+	-del *.bak
+
+distclean: clean
+	-del $(TARGET)

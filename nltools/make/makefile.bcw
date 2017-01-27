@@ -1,0 +1,53 @@
+# Legacy makefile: Borland C for Windows
+
+SRC_DIR=..\src\
+CC=bcc32 -O1 -WC
+OBJ=.obj
+RM=del
+TLIB=tlib
+CFLAGS=-I..\h -I..\..\smapi -I..\..\fidoconf -DNT -DWINNT -D__NT__
+LFLAGS=
+LIBS=  bcwtmp.lib ..\..\fidoconf\fconfbcw.lib  ..\..\smapi\smapibcw.lib
+
+include makefile.inc
+
+
+.SUFFIXES:
+.SUFFIXES: .c .obj .exe
+
+{$(SRC_DIR)}.c$(OBJ):
+	$(CC) $(CFLAGS) -c $<
+	$(TLIB) bcwtmp.lib -+$@
+
+ulc.obj: {$(SRC_DIR)}.ulc.c
+	$(CC) $(CFLAGS) -c {$(SRC_DIR)}.ulc.c
+
+nldiff.obj: {$(SRC_DIR)}.nldiff.c
+	$(CC) $(CFLAGS) -c {$(SRC_DIR)}.nldiff.c
+nlcrc.obj: {$(SRC_DIR)}.nlcrc.c
+	$(CC) $(CFLAGS) -c {$(SRC_DIR)}.nlcrc.c
+nlupdate.obj: {$(SRC_DIR)}.nlupdate.c
+	$(CC) $(CFLAGS) -c {$(SRC_DIR)}.nlupdate.c
+
+
+nldiff.exe:  $(NLDIFFOBJS)
+	$(CC) $(LFLAGS) -enldiff.exe $(NLDIFFOBJS)
+
+nlcrc.exe: $(NLCRCOBJS)
+	$(CC) $(LFLAGS) -enlcrc.exe $(NLCRCOBJS)
+
+ulc.exe: $(ULCOBJS)
+	$(CC) $(LFLAGS) -eulc.exe $(ULCOBJS) $(LIBS)
+
+nlupdate.exe: $(NLUPDATEOBJS)
+	$(CC) $(LFLAGS) -enlupdate.exe $(NLUPDATEOBJS) $(LIBS)
+
+
+clean:
+	-$(RM) *$(OBJ)
+
+distclean: clean
+	-$(RM) nlcrc.exe
+	-$(RM) nldiff.exe
+	-$(RM) ulc.exe
+	-$(RM) nlupdate.exe

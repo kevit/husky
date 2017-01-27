@@ -1,0 +1,18 @@
+Source: emailpkt
+Section: contrib/mail
+Priority: optional
+Maintainer: Pavel Andreew <pavel@collage.etel.ru>
+Build-Depends: debhelper (>> 4.0.0), libsmapi2cur-dev(>=2.5-1), libfidoconf1-dev(>= 1.9-1)
+Standards-Version: 3.5.6
+
+Package: emailpkt
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Send FTN bundles via mail.
+ EmailPKT is a program to send & receive FTN bundles (echomail, netmail,
+ tics and files in general) via e-mail. It sends outgoing files either as
+ MIME Base64 or UUE attachments that can be decoded and processed either
+ manually with a normal email client or automatically with any software like
+ EmailPKT. To receive incoming files, it reads the standard input and
+ processes emails with either MIME attachments (base64, quoted printable or
+ plain text) or UUENCODED files.
